@@ -70,7 +70,7 @@ class TweetTile extends StatelessWidget {
                 ],
               ),
               SizedBox(height: 4),
-              Text('最高でした。'),
+              Text('最高でした'),
               IconButton(
                 onPressed: () {},
                 icon: Icon(Icons.favorite_border),
