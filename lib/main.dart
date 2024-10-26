@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/gestures.dart';
+import 'Store_Screens.dart';
+
 
 void main() {
   runApp(const MyApp());
@@ -7,77 +10,52 @@ void main() {
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
 
+  // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      home: Scaffold(
-        appBar: AppBar(
-          backgroundColor: Color.fromARGB(255, 29, 161, 242),
-          title: const Text(
-            'こんぶ @ Flutter大学',
-            style: TextStyle(
-              fontWeight: FontWeight.bold,
-              fontSize: 16,
-            ),
-          ),
-        ),
-        body: SingleChildScrollView(
-          child: Column(
-            children: [
-              TweetTile(),
-              TweetTile(),
-              TweetTile(),
-              TweetTile(),
-              TweetTile(),
-              TweetTile(),
-              TweetTile(),
-              TweetTile(),
-              TweetTile(),
-            ],
-          ),
-        ),
+      title: 'Flutter Demo',
+      debugShowCheckedModeBanner: false,
+      theme: ThemeData(
+        colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
+        useMaterial3: true,
       ),
+      home: const MyHomePage(title: 'Flutter Demo Home Page'),
     );
   }
 }
+class MyHomePage extends StatefulWidget {
+  const MyHomePage({super.key, required this.title});
+  final String title;
+  @override
+  State<MyHomePage> createState() => _MyHomePageState();
+}
 
-class TweetTile extends StatelessWidget {
-  const TweetTile({
-    super.key,
-  });
+class _MyHomePageState extends State<MyHomePage> {
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.all(8.0),
-      child: Row(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        // Column を Row でラップ
-        children: [
-          // ここにユーザーアイコンを追加する
-          CircleAvatar(
-            backgroundImage: NetworkImage('http:'),
+    return Scaffold(
+      appBar: AppBar(),
+      body: Center(
+        child: RichText(
+          text: TextSpan(
+            children: <TextSpan>[
+              TextSpan(
+                text: 'ホーム(未完成)',
+                style: TextStyle(color: Colors.blue),
+                recognizer: TapGestureRecognizer()
+                  ..onTap = () {
+                    // ここにタップ時のアクションを追加します
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (context) => Store_ScreensPage()),
+                    );
+                  },
+                ),
+              ]
+            ),
           ),
-          SizedBox(width: 8),
-          Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Row(
-                children: [
-                  Text('こんぶ @ Flutter大学'),
-                  SizedBox(width: 8),
-                  Text('2022/05/05'),
-                ],
-              ),
-              SizedBox(height: 4),
-              Text('最高でした。'),
-              IconButton(
-                onPressed: () {},
-                icon: Icon(Icons.favorite_border),
-              ),
-            ],
-          ),
-        ],
       ),
     );
   }
