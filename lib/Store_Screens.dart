@@ -40,7 +40,7 @@ class _Store_ScreensPageState extends State<Store_ScreensPage> {
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: <Widget>[
-                Text('定食なら大盛りでも\n1200円以内!!!'),
+                Text('定食なら大盛りでも\n1200円以内!!'),
               ],
             ),
            ),
