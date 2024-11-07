@@ -1,61 +1,50 @@
-import 'package:flutter/material.dart';
+// import 'package:flutter/material.dart';
 
 
-class Store_ScreensPage extends StatefulWidget {
-  const Store_ScreensPage({super.key});
 
-  @override
-  State<Store_ScreensPage> createState() => _Store_ScreensPageState();
-}
+// class Store_ScreensPage extends StatefulWidget {
+//   final Map<String, String> store;
+//   const Store_ScreensPage({super.key, required this.store});
+  
 
-class _Store_ScreensPageState extends State<Store_ScreensPage> {
-  @override
-  Widget build(BuildContext context) {
-    final screenWidth = MediaQuery.of(context).size.width; // 画面の幅を取得
-    final screenHeight = MediaQuery.of(context).size.height; // 画面の高さを取得
+//   @override
+//   State<Store_ScreensPage> createState() => _Store_ScreensPageState();
+// }
 
-    return Scaffold(
-      appBar: AppBar(
-        title: Text(
-          'ロゴ(ホームに戻れる機能付き)',
-          style: TextStyle(fontSize: 15),
-        ),
-      ),
-      body: SingleChildScrollView(
-        child: Column(
-          children: <Widget>[
-            Stack(
-          children: [
-            Image.asset('assets/images/IMG_8718.jpg'),
-            Text(
-              '炭火焼き定食\nしんんぱち食堂',
-              style: TextStyle(
-                color: Colors.white,
-                ),
-              ),
-            ],
-           ),
-           Container(
-            padding: EdgeInsets.only(left: 10),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: <Widget>[
-                Text('定食なら大盛りでも\n1200円以内!!'),
-              ],
-            ),
-           ),
-           Container(
-            padding: EdgeInsets.only(top: 0, left: 0, right: 0, bottom: 50),
-            child: Column(
-              children: [
-                Text('ユーザー評価'),
-                Text('運営評価'),
-              ],
-            ),
-           ),
-          ],
-        ),
-      )
-    );
-  }
-}
+// class _Store_ScreensPageState extends State<Store_ScreensPage> {
+
+//   @override
+//   Widget build(BuildContext context) {
+//     return Scaffold(
+//       appBar: AppBar(
+//         title: Text(widget.store['name'] ?? '店舗名がありません'), // storeから店名を表示
+//       ),
+//       body: Column(
+//         children: [
+//           // 店舗の画像
+//           widget.store['image'] != null
+//               ? Image.asset(
+//                   widget.store['image']!, // 画像パスがnullでない場合、画像を表示
+//                   width: double.infinity,
+//                   height: 200,
+//                   fit: BoxFit.cover,
+//                 )
+//               : SizedBox(
+//                   height: 200,
+//                   child: Center(child: Text('画像がありません')), // 画像がない場合のフォールバック
+//                 ),
+//           // 店舗の説明
+//           Padding(
+//             padding: const EdgeInsets.all(8.0),
+//             child: Text(
+//               widget.store['details']?.isNotEmpty == true
+//                   ? widget.store['details']!
+//                   : '詳細情報がありません', // detailsが空文字やnullの場合
+//               style: TextStyle(fontSize: 16),
+//             ),
+//           ),
+//         ],
+//       ),
+//     );
+//   }
+// }
