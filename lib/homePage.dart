@@ -3,6 +3,7 @@ import 'Store_Screens.dart';
 import 'navigation.dart';
 
 
+
 class MyHomePage extends StatefulWidget {
   const MyHomePage({super.key, required this.title});
   final String title;
@@ -32,7 +33,6 @@ class _MyHomePageState extends State<MyHomePage> {
       'details': '調査中',
     },
   ];
-
 
   @override
   Widget build(BuildContext context) {
@@ -72,6 +72,16 @@ class _MyHomePageState extends State<MyHomePage> {
         },
       ),
       
+            // onTap: () {
+            //   Navigator.push(
+            //     context,
+            //     MaterialPageRoute(builder: (context) => Store_ScreensPage(store: store,)),
+            //   );
+            // },
+          ),
+        );
+        },
+      ),
     );
   }
 }
