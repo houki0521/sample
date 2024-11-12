@@ -1,8 +1,11 @@
 import 'package:flutter/material.dart';
-import 'homePage.dart';
+import 'package:firebase_core/firebase_core.dart';
+import 'navigation.dart';
 
 
-void main() {
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp();
   runApp(const MyApp());
 }
 
@@ -18,7 +21,7 @@ class MyApp extends StatelessWidget {
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
         useMaterial3: true,
       ),
-      home: const MyHomePage(title: 'Flutter Demo Home Page'),
+      home: NavigationPage(),
     );
   }
 }

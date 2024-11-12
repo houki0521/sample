@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-
+import 'Store_Screens.dart';
 
 class MyHomePage extends StatefulWidget {
   const MyHomePage({super.key, required this.title});
@@ -58,12 +58,12 @@ class _MyHomePageState extends State<MyHomePage> {
                   
               ],
             ),
-            // onTap: () {
-            //   Navigator.push(
-            //     context,
-            //     MaterialPageRoute(builder: (context) => Store_ScreensPage(store: store,)),
-            //   );
-            // },
+            onTap: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => Store_ScreensPage(store: store)),
+              );
+            },
           ),
         );
         },

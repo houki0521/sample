@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "949587554725",
+    "project_id": "sotutenn-app-b208c",
+    "storage_bucket": "sotutenn-app-b208c.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:949587554725:android:3800486598089ffc33384c",
+        "android_client_info": {
+          "package_name": "com.example.sample"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCoEvlK09J8xXOQ5XROLlDTRrEd4Nun7zA"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
