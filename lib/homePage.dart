@@ -35,17 +35,25 @@ class _MyHomePageState extends State<MyHomePage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('ホーム画面'),
+        title: TextField(
+            style: const TextStyle(
+              fontSize: 18,
+              color: Colors.black,
+            ),
+            decoration: const InputDecoration(
+              hintText: 'お店を検索'
+            ),
+        ),
       ),
       body: ListView.builder(
         itemCount: stores.length,
         itemBuilder: (context, index) {
           final store = stores[index]; // 各店舗データを取得
-        return Card(
-          child: ListTile(
-            title: Text(store['name']!),
-            subtitle: Column(
-              children: <Widget>[
+          return Card(
+            child: ListTile(
+              title: Text(store['name']!),
+              subtitle: Column(
+                children: <Widget>[
                   // 店舗の画像
                   Image.asset(
                     store['image']!,
@@ -55,17 +63,16 @@ class _MyHomePageState extends State<MyHomePage> {
                   ),
                   // 店の説明
                   Text(store['description']!),
-                  
-              ],
+                ],
+              ),
+              // onTap: () {
+              //   Navigator.push(
+              //     context,
+              //     MaterialPageRoute(builder: (context) => Store_ScreensPage(store: store,)),
+              //   );
+              //  },
             ),
-            onTap: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(builder: (context) => Store_ScreensPage(store: store)),
-              );
-            },
-          ),
-        );
+          );
         },
       ),
     );
