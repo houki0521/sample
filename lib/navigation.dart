@@ -10,13 +10,13 @@ class NavigationPage extends StatefulWidget {
 }
 
 class _NavigationPageState extends State<NavigationPage> {
+  int _loginCount = 0;
   int _currentIndex = 0;
   bool _isLoggedIn = false; // ログイン状態を追跡
   
 
   final List<Widget> _pages = [
     const Center(child: MyHomePage(title: 'ホーム画面')),
-    const Center(child: Text('検索')),
     const Center(child: Text('保存リスト')),
     const Center(child: Text('タイムライン'),),
     const Center(child: Text('閲覧履歴'),),
@@ -33,9 +33,9 @@ class _NavigationPageState extends State<NavigationPage> {
   void _checkLoginStatus() async {
     final user = FirebaseAuth.instance.currentUser;
     if (user != null) {
+
       setState(() {
         _isLoggedIn = true;
-        _currentIndex = 5; // ログインしている場合はマイページを最初に表示
       });
     } else {
       setState(() {
@@ -65,10 +65,6 @@ class _NavigationPageState extends State<NavigationPage> {
           BottomNavigationBarItem(
             icon: Icon(Icons.home),
             label: 'ホーム',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.search),
-            label: '検索',
           ),
           BottomNavigationBarItem(
             icon: Icon(Icons.settings),

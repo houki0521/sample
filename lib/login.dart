@@ -1,6 +1,5 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:sample/myPage.dart';
 import 'navigation.dart';
 import 'package:flutter/gestures.dart';
 import 'signup.dart';
@@ -123,7 +122,7 @@ class _LoginPageState extends State<LoginPage> {
     );
     await Navigator.of(context).pushReplacement(
       MaterialPageRoute(builder: (context) {
-        return Mypage(title: 'マイページ',);
+        return NavigationPage();
         }),
       );
   } catch (e) {

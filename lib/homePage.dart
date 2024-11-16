@@ -65,12 +65,12 @@ class _MyHomePageState extends State<MyHomePage> {
                   Text(store['description']!),
                 ],
               ),
-              // onTap: () {
-              //   Navigator.push(
-              //     context,
-              //     MaterialPageRoute(builder: (context) => Store_ScreensPage(store: store,)),
-              //   );
-              //  },
+              onTap: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => Store_ScreensPage(store: store,)),
+                );
+               },
             ),
           );
         },
