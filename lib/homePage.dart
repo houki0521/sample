@@ -35,14 +35,40 @@ class _MyHomePageState extends State<MyHomePage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: TextField(
-            style: const TextStyle(
+        title: const TextField(
+            style: TextStyle(
               fontSize: 18,
               color: Colors.black,
             ),
-            decoration: const InputDecoration(
+            decoration: InputDecoration(
               hintText: 'お店を検索'
             ),
+        ),
+      ),
+      endDrawer: Drawer(
+        child: ListView(
+          padding: EdgeInsets.fromLTRB(2, 4, 2, 4),
+          children: [
+            const DrawerHeader(
+              child: Text('メニュー'),
+            ),
+            ListTile(
+              title: Text('レビュアーを探す'),
+              trailing: const Icon(Icons.arrow_forward_ios),
+            ),
+            ListTile(
+              title: Text('このアプリについて'),
+              trailing: const Icon(Icons.arrow_forward_ios),
+            ),
+            ListTile(
+              title: Text('ヘルプ・お問い合わせ'),
+              trailing: const Icon(Icons.arrow_forward_ios),
+            ),
+            ListTile(
+              title: Text('利用規約'),
+              trailing: const Icon(Icons.arrow_forward_ios),
+            ),
+          ],
         ),
       ),
       body: ListView.builder(
