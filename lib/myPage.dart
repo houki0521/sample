@@ -3,6 +3,7 @@ import 'login.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'navigation.dart';
 import 'profile.dart';
+import 'posting.dart';
 
 class Mypage extends StatefulWidget {
   const Mypage({super.key, required this.title});
@@ -283,13 +284,17 @@ void _incrementwentCounter() {
           ),
         ),
         Container(
-          child: ElevatedButton(onPressed: () {},
+          child: ElevatedButton(onPressed: () {
+            Navigator.push(
+              context,
+              MaterialPageRoute(builder: (context) => PostingPage()),
+            );
+          },
           child: Row(
             mainAxisSize: MainAxisSize.min,
 
             children: <Widget>[
               Icon(Icons.mode_edit_outline_outlined),
-              // SizedBox(width: 8),
               Text('投稿'),
             ],
           ),
