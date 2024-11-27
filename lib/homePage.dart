@@ -36,13 +36,13 @@ class _MyHomePageState extends State<MyHomePage> {
     return Scaffold(
       appBar: AppBar(
         title: const TextField(
-            style: TextStyle(
-              fontSize: 18,
-              color: Colors.black,
-            ),
-            decoration: InputDecoration(
-              hintText: 'お店を検索'
-            ),
+          style: TextStyle(
+            fontSize: 18,
+            color: Colors.black,
+          ),
+          decoration: InputDecoration(
+            hintText: 'お店を検索',
+          ),
         ),
       ),
       endDrawer: Drawer(
@@ -94,9 +94,12 @@ class _MyHomePageState extends State<MyHomePage> {
               onTap: () {
                 Navigator.push(
                   context,
-                  MaterialPageRoute(builder: (context) => Store_ScreensPage(store: store,)),
+                  MaterialPageRoute(
+                      builder: (context) => Store_ScreensPage(
+                            store: store,
+                          )),
                 );
-               },
+              },
             ),
           );
         },

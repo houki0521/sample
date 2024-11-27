@@ -453,10 +453,10 @@ class _RegistrationPageState extends State<RegistrationPage> {
                           ],
                         ),
                         SizedBox(height: _screenSize.height * 0.008,),
-                        ListView.builder(
-                          itemCount: weekdays.length,
+                        //ListView.builder(
+                          //itemCount: weekdays.length,
                           
-                        ),
+                        //),
                       ],
                     ),
                   ),
