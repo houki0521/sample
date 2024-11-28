@@ -17,18 +17,18 @@ class _MyHomePageState extends State<MyHomePage> {
       'description': '渋谷駅徒歩6~7分の魚料理店。朝食・モーニングあり。',
       'details': '定食なら大盛りでも\n1200円以内!!!',
     },
-    {
-      'name': '他の店名',
-      'image': 'assets/images/IMG_8720.jpg',
-      'description': '東京駅近くのカフェ。リラックスできる雰囲気。',
-      'details': '調査中',
-    },
-    {
-      'name': 'また別の店',
-      'image': 'assets/images/IMG_8721.jpg',
-      'description': '渋谷で人気のイタリアンレストラン。',
-      'details': '調査中',
-    },
+    // {
+    //   'name': '他の店名',
+    //   'image': 'assets/images/IMG_8720.jpg',
+    //   'description': '東京駅近くのカフェ。リラックスできる雰囲気。',
+    //   'details': '調査中',
+    // },
+    // {
+    //   'name': 'また別の店',
+    //   'image': 'assets/images/IMG_8721.jpg',
+    //   'description': '渋谷で人気のイタリアンレストラン。',
+    //   'details': '調査中',
+    // },
   ];
 
   @override
