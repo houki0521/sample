@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'lists.dart';
+import 'package:flutter/material.dart';
+import 'registration_detailed.dart';
 
 class RegistrationPage extends StatefulWidget {
   const RegistrationPage({super.key});
@@ -11,20 +13,44 @@ class RegistrationPage extends StatefulWidget {
 class _RegistrationPageState extends State<RegistrationPage> {
   
 
-  // String? _selectedprefecturesValue = '選択してください';
-  List<String> weekdays = ['月', '火', '水', '木', '金', '土', '日'];
+  List<String> weekdays = ['月曜日', '火曜日', '水曜日', '木曜日', '金曜日', '土曜日', '日曜日'];
+  List<String> weekday = ['月', '火', '水', '木', '金', '土', '日'];
+  List<String> selectedTime = ['時間を指定','24時間営業', '定休日'];
+  Map<String, String?> _selectedTimes = {};
   String _selectedValue = '有';
   int? _selectedMonth;
   int? _selectedDay;
-  String? _day;
+  String startTime = '';
+  String endTime = '';
   String? _selectedPrefecture;
   String? _selectedCategory;
   String? _selectedSubCategory;
   String? _selectedDish;
+  final Map<String, TextEditingController> _startTimeControllers = {};
+  final Map<String, TextEditingController> _endTimeControllers = {};
+  
+   @override
+
+  void initState() {
+  super.initState();
+  weekdays.forEach((day) {
+      _startTimeControllers[day] = TextEditingController();
+      _endTimeControllers[day] = TextEditingController();
+      _selectedTimes[day] = null;
+    });
+}
+
+@override
+void dispose() {
+  _startTimeControllers.values.forEach((controller) => controller.dispose());
+  _endTimeControllers.values.forEach((controller) => controller.dispose());
+  super.dispose();
+}
+
+
   @override
   Widget build(BuildContext context) {
     var _screenSize = MediaQuery.of(context).size;
-    
 
     return Scaffold(
       appBar: AppBar(),
@@ -86,7 +112,7 @@ class _RegistrationPageState extends State<RegistrationPage> {
                             color: Colors.orange,
                             ),
                             Container(
-                              padding: EdgeInsets.only(left: _screenSize.width * 0.050),
+                              padding: EdgeInsets.only(left: _screenSize.width * 0.008),
                               child: const Text(
                                 '電話番号',
                                 style: TextStyle(
@@ -266,7 +292,6 @@ class _RegistrationPageState extends State<RegistrationPage> {
                             ),
                             Flexible(
                               child: Container(
-                                // padding: EdgeInsets.symmetric(horizontal: 16.0),
                                 child: DropdownButtonFormField<int>(
                                   decoration: const InputDecoration(
                                     hintText: '12',
@@ -453,13 +478,114 @@ class _RegistrationPageState extends State<RegistrationPage> {
                           ],
                         ),
                         SizedBox(height: _screenSize.height * 0.008,),
-                        //ListView.builder(
-                          //itemCount: weekdays.length,
-                          
-                        //),
+                        Container(
+                          width: _screenSize.width * 1.5,
+                          padding: EdgeInsets.symmetric(vertical: _screenSize.height * 0.01),
+                          decoration: BoxDecoration(
+                            border: Border(
+                              // top: BorderSide(color: const Color.fromARGB(255, 0, 0, 0)),
+                              // left: BorderSide(color: const Color.fromARGB(255, 0, 0, 0)),
+                              // right: BorderSide(color: const Color.fromARGB(255, 0, 0, 0)),
+                              bottom: BorderSide(color: const Color.fromARGB(255, 0, 0, 0)),
+                            )
+                          ),
+                          // child: GestureDetector(
+                          // onTap: () {
+                          //   // _showTimeDialogBatchEditing(context);
+                          // },
+                          // child:  Text(
+                          //   '曜日を指定して一括編集',
+                          //   style: TextStyle(
+                          //     color: Colors.blue,
+                          //   ),
+                          //   textAlign: TextAlign.center,
+                          //   ),
+                          // ),
+                        ),
+                        ListView.builder(
+                          shrinkWrap: true, // 高さを親に依存させない
+                          physics: NeverScrollableScrollPhysics(), // 内部でスクロールを防ぐ
+                          itemCount: weekdays.length,
+                          itemBuilder: (context, index) {
+                            final day = weekdays[index];
+                            return Container(
+                              decoration: BoxDecoration(
+                                border: Border(
+                                  left: BorderSide(color: const Color.fromARGB(255, 0, 0, 0)),
+                                  right: BorderSide(color: const Color.fromARGB(255, 0, 0, 0)),
+                                  bottom: BorderSide(color: const Color.fromARGB(255, 0, 0, 0)),
+                                )
+                              ),
+                              child: ListTile(
+                                title: Row(
+                                  mainAxisAlignment: MainAxisAlignment.spaceBetween, // 子ウィジェットの配置
+                                  children: [
+                                    Text(weekdays[index]),
+                                    Icon(Icons.arrow_drop_down),
+                                  ],
+                                ),
+                                subtitle: _selectedTimes[day] == '時間を指定'
+                                  ? Text('${_startTimeControllers[day]?.text ?? ''} ～ ${_endTimeControllers[day]?.text ?? ''}')
+                                  : Text(_selectedTimes[day] ?? '未選択'),
+                                onTap: () {
+                                  _showTimeDialog(context, day);
+                                },
+                              ),
+                            );
+                          },
+                        )
+
                       ],
                     ),
                   ),
+                ),
+                Column(
+                  children: <Widget>[
+                    Container(
+                      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                      child: TextFormField(
+                        maxLines: 6,
+                        minLines: 6,
+                        keyboardType: TextInputType.multiline,
+                        decoration: InputDecoration(
+                          labelText: '備考',
+                          enabledBorder: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(0),
+                            borderSide: const BorderSide(
+                              width: 1,
+                              color: Colors.black,
+                            ),
+                          ),
+                          focusedBorder: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(0),
+                            borderSide: const BorderSide(
+                              width: 1,
+                              color: Colors.black,
+                            ),
+                          ),
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+                Container(
+                  padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                  child: ElevatedButton(
+                      onPressed: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(builder: (context) => RegistrationDetailedPage()),
+                        );
+                      },
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: Colors.green,  // 背景色
+                        foregroundColor: Colors.white,  // 文字色
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(0),  // 丸みをつける
+                        ),
+                      ),
+                      child: const Text('次へ'),
+                    ),
                 ),
               ],
             ),
@@ -468,4 +594,149 @@ class _RegistrationPageState extends State<RegistrationPage> {
       ),
     );
   }
+  Future<void> _showTimeDialog(BuildContext context, String day) async {
+
+
+
+  await showModalBottomSheet(
+    context: context,
+    builder: (context) {
+      return Container(
+          width: MediaQuery.of(context).size.width, // 画面幅いっぱい
+          // height: MediaQuery.of(context).size.height,
+          child: Column(
+            mainAxisSize: MainAxisSize.min, // Columnのサイズを最小限に設定
+            children: <Widget>[
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  IconButton(
+                    onPressed: () {
+                      Navigator.of(context).pop();
+                    },
+                    icon: Icon(Icons.close),
+                  ),
+                  Text(day),
+                  GestureDetector(
+                    onTap: () {
+                      // 入力クリア処理
+                      _startTimeControllers[day]!.clear();
+                      _endTimeControllers[day]!.clear();
+                    },
+                    child: Text(
+                      'クリア',
+                      style: TextStyle(
+                        color: Colors.blue,
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+              StatefulBuilder(
+                builder: (BuildContext context, StateSetter setState) {
+                  return Column(
+                    children: [
+                      ...selectedTime.map((String value) {
+                        return RadioListTile<String>(
+                          title: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: <Widget>[
+                              Text(value),
+                              if (_selectedTimes[day] == '時間を指定' && value == '時間を指定') ...[
+                                SizedBox(height: 8),
+                                Row(
+                                  children: <Widget>[
+                                    Expanded(
+                                      child: SizedBox(
+                                        height: 40,
+                                        child: TextFormField(
+                                          controller: _startTimeControllers[day],
+                                          decoration: const InputDecoration(
+                                            border: OutlineInputBorder(),
+                                            hintText: '開始時間',
+                                            contentPadding: EdgeInsets.symmetric(
+                                              vertical: 8.0, horizontal: 12.0),
+                                          ),
+                                          style: TextStyle(fontSize: 14.0),
+                                          onTap: () async {
+                                            _selectTime(context, _startTimeControllers[day]!);
+                                          },
+                                        ),
+                                      ),
+                                    ),
+                                    SizedBox(width: 8),
+                                    Expanded(
+                                      child: SizedBox(
+                                        height: 40,
+                                        child: TextFormField(
+                                          controller: _endTimeControllers[day],
+                                          decoration: const InputDecoration(
+                                            border: OutlineInputBorder(),
+                                            hintText: '終了時間',
+                                            contentPadding: EdgeInsets.symmetric(
+                                              vertical: 8.0, horizontal: 12.0),
+                                          ),
+                                          style: TextStyle(fontSize: 14.0),
+                                          onTap: () async {
+                                            _selectTime(context, _endTimeControllers[day]!);
+                                          },
+                                        ),
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ],
+                            ],
+                          ),
+                          value: value,
+                          groupValue: _selectedTimes[day],
+                          onChanged: (String? selectedValue) {
+                            setState(() {
+                              _selectedTimes[day] = selectedValue; // 選択を更新
+                              print('選択された値: $_selectedTimes[day]');
+                            });
+                          },
+                        );
+                      }).toList(),
+                    ],
+                  );
+                },
+              ),
+              Container(
+                padding: EdgeInsets.only(top: 10, bottom: 30),
+                child: ElevatedButton(
+                onPressed: (){
+                  _saveData(context);
+                  Navigator.of(context).pop();
+                },
+                child: Text('決定')
+                ),
+              ),
+            ],
+          ),
+      );
+    },
+  );
+}
+
+Future<void> _selectTime(BuildContext context, TextEditingController controller) async {
+  final TimeOfDay? picked = await showTimePicker(
+    context: context,
+    initialTime: TimeOfDay.now(),
+  );
+
+  if (picked != null) {
+    controller.text = picked.format(context);
+    // print("選択した時間: ${controller.text}"); // コンソールに出力
+  }
+}
+Future<void> _saveData(BuildContext context) async {
+  setState(() {
+     for (var day in weekdays) {
+        String startTime = _startTimeControllers[day]!.text;
+        String endTime = _endTimeControllers[day]!.text;
+    print('$day - 開始時間: $startTime - 終了時間: $endTime');
+  }
+  });
+}
 }

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:sample/homePage.dart';
 import 'myPage.dart';
+import 'map.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 
 class NavigationPage extends StatefulWidget {
@@ -20,7 +21,7 @@ class _NavigationPageState extends State<NavigationPage> {
     const Center(child: Text('保存リスト')),
     const Center(child: Text('タイムライン'),),
     const Center(child: Text('閲覧履歴'),),
-    const Center(child: Text('マップ'),),
+    const Center(child: MapPage(),),
     const Center(child: Mypage(title: 'マイページ',),)
   ];
 
