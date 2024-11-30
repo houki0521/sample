@@ -50,6 +50,11 @@
     '沖縄県',
   ];
 
+  final List<String> selection = [
+    '非公開',
+    '公開',
+  ];
+
   final List<int> month_number = [
     1,
     2,
