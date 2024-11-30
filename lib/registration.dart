@@ -489,18 +489,6 @@ void dispose() {
                               bottom: BorderSide(color: const Color.fromARGB(255, 0, 0, 0)),
                             )
                           ),
-                          // child: GestureDetector(
-                          // onTap: () {
-                          //   // _showTimeDialogBatchEditing(context);
-                          // },
-                          // child:  Text(
-                          //   '曜日を指定して一括編集',
-                          //   style: TextStyle(
-                          //     color: Colors.blue,
-                          //   ),
-                          //   textAlign: TextAlign.center,
-                          //   ),
-                          // ),
                         ),
                         ListView.builder(
                           shrinkWrap: true, // 高さを親に依存させない
