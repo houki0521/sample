@@ -49,10 +49,7 @@ final List<String> prefectures = [
     '沖縄県',
   ];
 
-  final List<String> selection = [
-    '非公開',
-    '公開',
-  ];
+final List<int> day_number = [for (int day = 1; day < 32; day++) day];
 
   final List<int> month_number = [
     1,
@@ -81,3 +78,5 @@ Map<int, String> weekdayNames = {
   DateTime.sunday: '日',
 };
 List<String> weekdays = ['月', '火', '水', '木', '金', '土', '日'];
+
+final List<int> year_number = [for (int year = 1900; year <= 2024; year++) year];
