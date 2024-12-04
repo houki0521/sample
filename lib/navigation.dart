@@ -19,9 +19,7 @@ class _NavigationPageState extends State<NavigationPage> {
   final List<Widget> _pages = [
     const Center(child: MyHomePage(title: 'ホーム画面')),
     const Center(child: Text('保存リスト')),
-    const Center(child: Text('タイムライン'),),
-    const Center(child: Text('閲覧履歴'),),
-    const Center(child: MapPage(),),
+
     const Center(child: Mypage(title: 'マイページ',),)
   ];
 
@@ -71,18 +69,7 @@ class _NavigationPageState extends State<NavigationPage> {
             icon: Icon(Icons.settings),
             label: '保存リスト',
           ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.account_circle),
-            label: 'タイムライン',
-            ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.account_circle),
-            label: '閲覧履歴',
-            ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.map_sharp),
-            label: 'マップ',
-          ),
+
           BottomNavigationBarItem(
             icon: Icon(Icons.account_circle),
             label: 'マイページ',

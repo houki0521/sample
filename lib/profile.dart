@@ -14,18 +14,26 @@ class ProfilePage extends StatefulWidget {
 class _ProfilePageState extends State<ProfilePage> {
   String? _selectedPrefecture;
   String? _selectedgender;
-  String? _selection = '非公開';
+  String? _P_selection = '非公開';
   List<String> gender = [
     '未設定',
     '男性',
     '女性',
   ];
-  final List<String> selection = ['非公開','公開',];
-  final List<String> s_selection = ['非公開','公開',];
+  final List<String> selection = [
+    '非公開',
+    '公開',
+  ];
+  final List<String> s_selection = [
+    '非公開',
+    '公開',
+  ];
   int? _selectedYear;
   int? _selectedMonth;
   int? _selectedDay;
-  String? _s_selection = '非公開';
+  String? _g_selection = '非公開';
+  TextEditingController _controller = TextEditingController();
+  String _result = "";
 
   @override
   Widget build(BuildContext context) {
@@ -42,50 +50,82 @@ class _ProfilePageState extends State<ProfilePage> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  const Text('ニックネーム'),
-                  const SizedBox(height: 10),
+                  Row(
+                    children: [
+                      Text(
+                        'ニックネーム',
+                        style: TextStyle(
+                          fontWeight: FontWeight.bold
+                        ),
+                      ),
+                      SizedBox(
+                        width: 5,
+                      ),
+                      Container(
+                        decoration: BoxDecoration(
+                        color: Colors.red,
+                        borderRadius: BorderRadius.circular(3),
+                        border: Border.all(color: Colors.red),
+                      ),
+                      child: Text(
+                        "必須",
+                        style: TextStyle(
+                          color: Colors.white
+                        ),
+                      ),
+                      ),
+                    ],
+                  ),
+                  SizedBox(height: 10),
                   TextFormField(
                     decoration: const InputDecoration(
                       hintText: '入力フォーム',
                       border: OutlineInputBorder(),
                     ),
                   ),
-                  const SizedBox(height: 30,),
+                  const SizedBox(
+                    height: 30,
+                  ),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: <Widget>[
-                      Text('現住所'),
+                      Text(
+                        '現住所',
+                        style: TextStyle(
+                          fontWeight: FontWeight.bold
+                        ),
+                      ),
                       PopupMenuButton(
                         child: Row(
                           children: <Widget>[
-                            Text('$_selection',),
+                            Text(
+                              '$_P_selection',
+                            ),
                             Icon(Icons.arrow_drop_down),
                           ],
                         ),
-                        itemBuilder: (BuildContext context){
-                          return selection.map((String value){
+                        itemBuilder: (BuildContext context) {
+                          return selection.map((String value) {
                             return PopupMenuItem(
-                              value: value,
-                              child: RadioListTile(
-                                title: Text(value),
                                 value: value,
-                                groupValue: _selection,
-                                onChanged: (String? value) {
-                                  setState(() {
-                                    _selection = value;
-                                    print('$_selection');
-                                    Navigator.of(context).pop();
-                                  });
-                                }
-                              )
-                            );
+                                child: RadioListTile(
+                                    title: Text(value),
+                                    value: value,
+                                    groupValue: _P_selection,
+                                    onChanged: (String? value) {
+                                      setState(() {
+                                        _P_selection = value;
+                                        print('$_P_selection');
+                                        Navigator.of(context).pop();
+                                      });
+                                    }));
                           }).toList();
                         },
-                        initialValue: _selection,
+                        initialValue: _P_selection,
                         onSelected: (String? value) {
                           setState(() {
-                            _selection = value;
-                            print('$_selection');
+                            _P_selection = value;
+                            print('$_P_selection');
                           });
                         },
                       ),
@@ -106,42 +146,49 @@ class _ProfilePageState extends State<ProfilePage> {
                       });
                     },
                   ),
-                  const SizedBox(height: 30,),
+                  const SizedBox(
+                    height: 30,
+                  ),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: <Widget>[
-                      Text('性別'),
+                      Text(
+                        '性別',
+                        style: TextStyle(
+                          fontWeight: FontWeight.bold
+                        ),
+                      ),
                       PopupMenuButton(
                         child: Row(
                           children: <Widget>[
-                            Text('$_s_selection',),
+                            Text(
+                              '$_g_selection',
+                            ),
                             Icon(Icons.arrow_drop_down),
                           ],
                         ),
-                        itemBuilder: (BuildContext context){
-                          return s_selection.map((String value){
+                        itemBuilder: (BuildContext context) {
+                          return s_selection.map((String value) {
                             return PopupMenuItem(
-                              value: value,
-                              child: RadioListTile(
-                                title: Text(value),
                                 value: value,
-                                groupValue: _s_selection,
-                                onChanged: (String? value) {
-                                  setState(() {
-                                    _s_selection = value;
-                                    print('$_s_selection');
-                                    Navigator.of(context).pop();
-                                  });
-                                }
-                              )
-                            );
+                                child: RadioListTile(
+                                    title: Text(value),
+                                    value: value,
+                                    groupValue: _g_selection,
+                                    onChanged: (String? value) {
+                                      setState(() {
+                                        _g_selection = value;
+                                        print('$_g_selection');
+                                        Navigator.of(context).pop();
+                                      });
+                                    }));
                           }).toList();
                         },
-                        initialValue: _s_selection,
+                        initialValue: _g_selection,
                         onSelected: (String? value) {
                           setState(() {
-                            _selection = value;
-                            print('$_s_selection');
+                            _g_selection = value;
+                            print('$_g_selection');
                           });
                         },
                       ),
@@ -165,7 +212,12 @@ class _ProfilePageState extends State<ProfilePage> {
                   const SizedBox(
                     height: 30,
                   ),
-                  const Text('生年月日'),
+                  Text(
+                    '生年月日',
+                    style: TextStyle(
+                      fontWeight: FontWeight.bold
+                    ),
+                  ),
                   Row(
                     children: <Widget>[
                       Expanded(
@@ -175,9 +227,9 @@ class _ProfilePageState extends State<ProfilePage> {
                               border: OutlineInputBorder(),
                             ),
                             items: year_number
-                            .map<DropdownMenuItem<int>>((int value) {
+                                .map<DropdownMenuItem<int>>((int value) {
                               return DropdownMenuItem(
-                                value: value, child: Text(value.toString()));
+                                  value: value, child: Text(value.toString()));
                             }).toList(),
                             value: _selectedYear,
                             onChanged: (int? value) {
@@ -195,15 +247,15 @@ class _ProfilePageState extends State<ProfilePage> {
                       ),
                       Expanded(
                         child: DropdownButtonFormField(
-                          decoration: const InputDecoration(
-                            hintText: '-',
-                            border: OutlineInputBorder(),
-                          ),
-                          items: month_number
-                          .map<DropdownMenuItem<int>>((int value) {
-                            return DropdownMenuItem(
-                              value: value, child: Text(value.toString()));
-                          }).toList(),
+                            decoration: const InputDecoration(
+                              hintText: '-',
+                              border: OutlineInputBorder(),
+                            ),
+                            items: month_number
+                                .map<DropdownMenuItem<int>>((int value) {
+                              return DropdownMenuItem(
+                                  value: value, child: Text(value.toString()));
+                            }).toList(),
                             value: _selectedMonth,
                             onChanged: (int? value) {
                               setState(() {
@@ -216,36 +268,89 @@ class _ProfilePageState extends State<ProfilePage> {
                       const SizedBox(width: 7),
                       Expanded(
                         child: DropdownButtonFormField(
-                          decoration: const InputDecoration(
-                            hintText: '-',
-                            border: OutlineInputBorder(),
-                          ),
-                          items: day_number
-                          .map<DropdownMenuItem<int>>((int value) {
-                            return DropdownMenuItem(
-                              value: value, child: Text(value.toString()));
-                          }).toList(),
-                          value: _selectedDay,
-                          onChanged: (int? value) {
-                            setState(() {
-                              _selectedDay = value!;
-                            });
-                          }),
+                            decoration: const InputDecoration(
+                              hintText: '-',
+                              border: OutlineInputBorder(),
+                            ),
+                            items: day_number
+                                .map<DropdownMenuItem<int>>((int value) {
+                              return DropdownMenuItem(
+                                  value: value, child: Text(value.toString()));
+                            }).toList(),
+                            value: _selectedDay,
+                            onChanged: (int? value) {
+                              setState(() {
+                                _selectedDay = value!;
+                              });
+                            }),
                       ),
                       const SizedBox(width: 7),
                       const Text('日'),
                     ],
                   ),
                   const SizedBox(height: 7),
-                  
-                ],
-              )  
+                  const SizedBox(
+                    height: 30,
+                  ),
+                  Row(
+                    children: [
+                      Text(
+                        'タイトル',
+                        style: TextStyle(
+                          fontWeight: FontWeight.bold
+                        ),
+                      ),
+                      SizedBox(
+                        width: 5,
+                      ),
+                      Container(
+                        decoration: BoxDecoration(
+                        color: Colors.red,
+                        borderRadius: BorderRadius.circular(3),
+                        border: Border.all(color: Colors.red),
+                      ),
+                      child: Text(
+                        "必須",
+                        style: TextStyle(
+                          color: Colors.white
+                        ),
+                      ),
+                    ),
+                  ],
+                )
+              ],
+            )
           )
         ],
       ),
     );
   }
+
   Future<void> _calculation(BuildContext context) async {
-    
+    int? age = int.tryParse(_controller.text);
+
+    if (age == null) {
+      setState(() {
+        _result = "-";
+      });
+      return;
+    }
+
+    if (age < 20) {
+      setState(() {
+        _result = "10代以下";
+      });
+    } else {
+      int remainder = age % 10;
+      if (remainder < 5) {
+        setState(() {
+          _result = "${age ~/ 10 * 10}代前半";
+        });
+      } else {
+        setState(() {
+          _result = "${age ~/ 10 * 10}代後半";
+        });
+      }
+    }
   }
 }
