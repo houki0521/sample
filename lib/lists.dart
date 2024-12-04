@@ -65,7 +65,7 @@ final List<int> day_number = [for (int day = 1; day < 32; day++) day];
     12,
   ];
 
-  final List<int> day_number = [for(int day = 1; day < 32; day++) day];
+  // final List<int> day_number = [for(int day = 1; day < 32; day++) day];
 
   
 Map<int, String> weekdayNames = {
