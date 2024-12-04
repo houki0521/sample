@@ -1,14 +1,18 @@
 import 'package:flutter/material.dart';
 import 'package:table_calendar/table_calendar.dart';
 
+
 class CalendarScreen extends StatefulWidget {
   @override
   _CalendarScreenState createState() => _CalendarScreenState();
 }
 
 class _CalendarScreenState extends State<CalendarScreen> {
-  DateTime _focusedDay = DateTime.now(); // 現在の日付
-  DateTime? _selectedDay; // 選択された日付
+    // カレンダーが表示される日付
+  DateTime _focusedDay = DateTime.now();
+  // カレンダー上でマークが表示される日付
+  DateTime _currentDay = DateTime.now();
+
 
   @override
   Widget build(BuildContext context) {
@@ -21,21 +25,18 @@ class _CalendarScreenState extends State<CalendarScreen> {
               child: TableCalendar(
                 firstDay: DateTime.utc(2020, 1, 1), // 表示する最初の日
                 lastDay: DateTime.utc(2030, 12, 31), // 表示する最後の日
+                locale: "ja_JP",
                 focusedDay: _focusedDay,
-                selectedDayPredicate: (day) => isSameDay(_selectedDay, day),
+                currentDay: _currentDay,
                 onDaySelected: (selectedDay, focusedDay) {
                   setState(() {
-                    _selectedDay = selectedDay;
-                    _focusedDay = focusedDay; // 現在のフォーカス日を更新
+                    _currentDay = selectedDay; // タップした際にマーク位置を更新
+                    _focusedDay = selectedDay; // タップした際にカレンダーの表示位置を更新
                   });
                 },
                 calendarStyle: const CalendarStyle(
                   todayDecoration: BoxDecoration(
                     color: Colors.blue,
-                    shape: BoxShape.circle,
-                  ),
-                  selectedDecoration: BoxDecoration(
-                    color: Colors.orange,
                     shape: BoxShape.circle,
                   ),
                 ),
