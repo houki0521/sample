@@ -168,7 +168,7 @@ packages:
       sha256: "9e69806bb3d905aeec3c1242e0e1475de6ea6d48f456af29d598fb229a2b4e5e"
       url: "https://pub.dev"
     source: hosted
-    version: "2.18.1"
+    version: "2.18.2"
   firebase_storage:
     dependency: "direct main"
     description:
@@ -193,7 +193,6 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "3.10.5"
->>>>>>> main
   flutter:
     dependency: "direct main"
     description: flutter
@@ -215,14 +214,6 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "7.0.2"
-  flutter_rating_bar:
-    dependency: "direct main"
-    description:
-      name: flutter_rating_bar
-      sha256: d2af03469eac832c591a1eba47c91ecc871fe5708e69967073c043b2d775ed93
-      url: "https://pub.dev"
-    source: hosted
-    version: "4.0.1"
   flutter_plugin_android_lifecycle:
     dependency: transitive
     description:
@@ -231,6 +222,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "2.0.23"
+  flutter_rating_bar:
+    dependency: "direct main"
+    description:
+      name: flutter_rating_bar
+      sha256: d2af03469eac832c591a1eba47c91ecc871fe5708e69967073c043b2d775ed93
+      url: "https://pub.dev"
+    source: hosted
+    version: "4.0.1"
   flutter_test:
     dependency: "direct dev"
     description: flutter
