@@ -4,6 +4,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'navigation.dart';
 import 'profile.dart';
 import 'posting.dart';
+import 'calendar.dart';
 
 class Mypage extends StatefulWidget {
   const Mypage({super.key, required this.title});
@@ -277,7 +278,7 @@ void _incrementwentCounter() {
                   ],
                 ),
               ),
-              Center(child: Text('晴れ')),
+              Center(child: CalendarScreen()),
               Center(child: Text('日本地図'),)
 
             ],
@@ -300,26 +301,26 @@ void _incrementwentCounter() {
           ),
           ),
         ),
-        Container(
-          child: ElevatedButton(
-              onPressed: () async {
-                await FirebaseAuth.instance.signOut();
-                await Navigator.of(context).pushReplacement(
-                  MaterialPageRoute(builder: (context) {
-                    return NavigationPage();
-                  }),
-                );
-              },
-              child: Row(
-                mainAxisSize: MainAxisSize.min, // ボタンのサイズをテキストに合わせる
-                children: [
-                  Text('ログアウト'),
-                  SizedBox(width: 8), // テキストとアイコンの間にスペースを追加
-                  Icon(Icons.logout),
-                ],
-              ),
-            ),
-        ),
+        // Container(
+        //   child: ElevatedButton(
+        //       onPressed: () async {
+        //         await FirebaseAuth.instance.signOut();
+        //         await Navigator.of(context).pushReplacement(
+        //           MaterialPageRoute(builder: (context) {
+        //             return NavigationPage();
+        //           }),
+        //         );
+        //       },
+        //       child: Row(
+        //         mainAxisSize: MainAxisSize.min, // ボタンのサイズをテキストに合わせる
+        //         children: [
+        //           Text('ログアウト'),
+        //           SizedBox(width: 8), // テキストとアイコンの間にスペースを追加
+        //           Icon(Icons.logout),
+        //         ],
+        //       ),
+        //     ),
+        // ),
       ],
     );
   }
