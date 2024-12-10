@@ -37,6 +37,8 @@ dependencies:
   flutter_map: ^7.0.2
   latlong2: ^0.9.1
   table_calendar: ^3.1.2
+  flutter_rating_bar: ^4.0.1
+  carousel_slider: ^4.1.1
 
 
 
@@ -57,5 +59,7 @@ flutter:
   uses-material-design: true
   assets:
     - assets/images/IMG_8718.jpg
+    - assets/images/IMG_0823.jpg
+    - assets/images/IMG_8731.jpg
 
 
