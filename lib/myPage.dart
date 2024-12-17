@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'login.dart';
-import 'package:firebase_auth/firebase_auth.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
 import 'navigation.dart';
 import 'profile.dart';
 import 'posting.dart';
@@ -15,6 +15,7 @@ class Mypage extends StatefulWidget {
 }
 
 class _MypageState extends State<Mypage> {
+  final SupabaseClient supabase = Supabase.instance.client;
   bool _isLoggedIn = false; // ログイン状態を追跡
   User? user;
   String? userEmail;
@@ -30,7 +31,7 @@ class _MypageState extends State<Mypage> {
 
   // ログイン状態を確認するメソッド
   void _checkLoginStatus() async {
-    final user = FirebaseAuth.instance.currentUser;
+    final User? user = supabase.auth.currentUser;
     if (user != null) {
       setState(() {
         _isLoggedIn = true;
@@ -45,7 +46,7 @@ class _MypageState extends State<Mypage> {
   }
   // ユーザーデータを取得する非同期メソッド
   Future<void> _loadUserData() async {
-  user = FirebaseAuth.instance.currentUser;
+  user = supabase.auth.currentUser;
   if (user != null) {
     setState(() {
       userEmail = user?.email;
@@ -301,26 +302,6 @@ void _incrementwentCounter() {
           ),
           ),
         ),
-        // Container(
-        //   child: ElevatedButton(
-        //       onPressed: () async {
-        //         await FirebaseAuth.instance.signOut();
-        //         await Navigator.of(context).pushReplacement(
-        //           MaterialPageRoute(builder: (context) {
-        //             return NavigationPage();
-        //           }),
-        //         );
-        //       },
-        //       child: Row(
-        //         mainAxisSize: MainAxisSize.min, // ボタンのサイズをテキストに合わせる
-        //         children: [
-        //           Text('ログアウト'),
-        //           SizedBox(width: 8), // テキストとアイコンの間にスペースを追加
-        //           Icon(Icons.logout),
-        //         ],
-        //       ),
-        //     ),
-        // ),
       ],
     );
   }

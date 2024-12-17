@@ -1,4 +1,4 @@
-import 'package:firebase_auth/firebase_auth.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:flutter/material.dart';
 import 'navigation.dart';
 import 'package:flutter/gestures.dart';
@@ -11,7 +11,9 @@ class LoginPage extends StatefulWidget {
 }
 
 class _LoginPageState extends State<LoginPage> {
-  final FirebaseAuth auth = FirebaseAuth.instance;
+  final SupabaseClient supabase = Supabase.instance.client;
+  final SupabaseClient supabaseClient = Supabase.instance.client;
+
   // メッセージ表示用
   String infoText = '';
   // 入力したメールアドレス・パスワード
@@ -92,20 +94,25 @@ class _LoginPageState extends State<LoginPage> {
                           );
                         }
                       ),
-                      TextSpan(
-                        text: 'をクリック',
-                        style: TextStyle(color: Colors.black),
-                      )
                     ]
                   ),
                 ),
               ),
               Container(
+                width: 400,
                 child: ElevatedButton(
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: const Color.fromARGB(255, 221, 202, 32)
+                  ),
                   onPressed: () {
                     signInWithEmailPassword(email, password);
                   },
-                  child: Text('ログイン')
+                  child: Text(
+                    'ログイン',
+                    style: TextStyle(
+                      color: Colors.black
+                    ),
+                    ),
                 ),
               )
             ],
@@ -116,19 +123,40 @@ class _LoginPageState extends State<LoginPage> {
   }
   Future<void> signInWithEmailPassword(String email, String password) async {
   try {
-    await auth.signInWithEmailAndPassword(
+    final supabase = Supabase.instance.client;
+
+    // Supabaseクライアントを利用してログイン
+    final AuthResponse res = await supabase.auth.signInWithPassword(
       email: email,
       password: password,
     );
-    await Navigator.of(context).pushReplacement(
-      MaterialPageRoute(builder: (context) {
-        return NavigationPage();
+
+    final Session? session = res.session; // セッション情報
+    final User? user = res.user;         // ユーザー情報
+
+    // ログイン成功後に次のページへ遷移
+    if (session != null && user != null) {
+      await Navigator.of(context).pushReplacement(
+        MaterialPageRoute(builder: (context) {
+          return NavigationPage(); // ログイン後のページ
         }),
       );
+    } else {
+      setState(() {
+        infoText = 'ログイン失敗: セッションまたはユーザー情報がありません。';
+      });
+    }
+  } on AuthException catch (e) {
+    // Supabase認証エラー
+    setState(() {
+      infoText = 'ログイン失敗: ${e.message}';
+    });
   } catch (e) {
+    // その他のエラー
     setState(() {
       infoText = 'ログイン失敗: ${e.toString()}';
     });
   }
-  }
+}
+
 }

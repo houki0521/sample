@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:hive_flutter/hive_flutter.dart';
+import 'models/store_data.dart';
 
 class Store_ScreensPage extends StatefulWidget {
   const Store_ScreensPage({super.key, required this.store});
@@ -9,6 +11,7 @@ class Store_ScreensPage extends StatefulWidget {
 }
 
 class _Store_ScreensPage extends State<Store_ScreensPage> {
+  List<Map<String, String>> stores = [];
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -24,9 +27,10 @@ class _Store_ScreensPage extends State<Store_ScreensPage> {
           height: 200,
           fit: BoxFit.cover,
           ),
-          Text(widget.store['details'] ?? '説明がありません')
+          Text(widget.store['details'] ?? '説明がありません'),
         ],
       ),
     );
   }
+
 }

@@ -1,6 +1,6 @@
-import 'package:firebase_auth/firebase_auth.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:flutter/material.dart';
-import 'package:sample/myPage.dart';
+import 'navigation.dart';
 import 'package:flutter/gestures.dart';
 import 'login.dart';
 
@@ -11,7 +11,8 @@ class SignupPage extends StatefulWidget {
 }
 
 class _SignupPageState extends State<SignupPage> {
-  final FirebaseAuth auth = FirebaseAuth.instance;
+  final SupabaseClient supabase = Supabase.instance.client;
+
   // メッセージ表示用
   String infoText = '';
   // 入力したメールアドレス・パスワード
@@ -54,7 +55,7 @@ class _SignupPageState extends State<SignupPage> {
                       });
                     },
                   icon: Icon(
-                    _isVisible ? Icons.visibility : Icons.visibility_off,  // 状態に応じてアイコンを切り替え
+                    _isVisible ? Icons.visibility_off : Icons.visibility,  // 状態に応じてアイコンを切り替え
                   ),
                   ),
                   border: OutlineInputBorder(
@@ -92,20 +93,25 @@ class _SignupPageState extends State<SignupPage> {
                           );
                         }
                       ),
-                      TextSpan(
-                        text: 'をクリック',
-                        style: TextStyle(color: Colors.black),
-                      )
                     ]
                   ),
                 ),
               ),
               Container(
+                width: 400,
                 child: ElevatedButton(
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: const Color.fromARGB(255, 221, 202, 32)
+                  ),
                   onPressed: () {
                     createUserWithEmailAndPassword(email, password);
                   },
-                  child: Text('ユーザー登録')
+                  child: Text(
+                    'ユーザー登録',
+                    style: TextStyle(
+                      color: Colors.black
+                    ),
+                    )
                 ),
               )
             ],
@@ -116,19 +122,40 @@ class _SignupPageState extends State<SignupPage> {
   }
   Future<void> createUserWithEmailAndPassword(String email, String password) async {
   try {
-    await auth.createUserWithEmailAndPassword(
-      email: email,
+    // Supabaseで新規ユーザー登録
+    final AuthResponse res = await supabase.auth.signUp(
+      email: email, // 関数の引数を使用
       password: password,
     );
-    await Navigator.of(context).pushReplacement(
-      MaterialPageRoute(builder: (context) {
-        return Mypage(title: 'マイページ',);
+
+    // ユーザー情報とセッション情報を取得
+    final Session? session = res.session;
+    final User? user = res.user;
+
+    // ユーザーが正常に作成されたか確認
+    if (user != null) {
+      // ユーザー登録が成功した場合
+      setState(() {
+        infoText = 'ユーザー登録が成功しました: ${user.email}';
+      });
+
+      // マイページへ遷移
+      await Navigator.of(context).pushReplacement(
+        MaterialPageRoute(builder: (context) {
+          return NavigationPage();
         }),
       );
+    } else {
+      // ユーザー情報が取得できない場合
+      setState(() {
+        infoText = 'ユーザー情報の取得に失敗しました';
+      });
+    }
   } catch (e) {
+    // エラーハンドリング
     setState(() {
       infoText = 'ユーザー登録失敗: ${e.toString()}';
     });
   }
-  }
+}
 }

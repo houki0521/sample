@@ -2,7 +2,11 @@ import 'package:flutter/material.dart';
 import 'editStoreInformation.dart';
 
 class RegistrationDetailedPage extends StatefulWidget {
-  const RegistrationDetailedPage({super.key});
+
+  const RegistrationDetailedPage({
+    super.key,
+   
+    });
 
   @override
   State<RegistrationDetailedPage> createState() => _RegistrationDetailedPageState();
@@ -17,7 +21,8 @@ class _RegistrationDetailedPageState extends State<RegistrationDetailedPage> {
   List<String?> _reservationOptions = ['予約可', '予約不可', '完全予約制', '未確認'];
   List<String?> _card = ['カード可', 'カード不可', '未確認'];
   List<String?> _electronicMoney = ['電子マネー可', '電子マネー不可', '未確認'];
-  List<String?> _budget = ['1000円', '2000円', '3000円', '4000円'];
+  List<String?> _budgetNoon = ['1000円', '2000円', '3000円', '4000円'];
+  List<String?> _budgetNight = ['1000円', '2000円', '3000円', '4000円'];
   List<String?> _privateRoom = ['有', '無', '未確認'];
   List<String?> _charteringOption = ['可', '不可', '未確認'];
   List<String?> _parkingLotOption = ['有', '無', '未確認'];
@@ -93,14 +98,43 @@ class _RegistrationDetailedPageState extends State<RegistrationDetailedPage> {
     {'value': 'ベビーカー入店可', 'checked': false},
   ];
   String? _selectedReservation;
-  String? _selectedValue;
+  String? _selectedValueNoon;
+  String? _selectedValueNight;
   String? _selectedcardItem;
   String? _selectedElectronicMoneyItem;
   String? _selectedPrivateRoomItem;
   String? _selectedcharteringOptionItem;
   String? _selectedParkingLotOptionItem;
-
   bool _spaceFacilitiesIsChecked = false;
+  final TextEditingController _contractController = TextEditingController();
+  final TextEditingController _transportationController = TextEditingController();
+  final TextEditingController _serviceChargeAndFeeController = TextEditingController();
+  final TextEditingController _numberOfseatsController = TextEditingController();
+  final TextEditingController _seatingDetailsController = TextEditingController();
+  final TextEditingController _whenSeatedController = TextEditingController();
+  final TextEditingController _functionController = TextEditingController();
+  final TextEditingController _privateRoomController = TextEditingController();
+  final TextEditingController _parkingLotController = TextEditingController();
+  final TextEditingController _supplementaryInformationController = TextEditingController();
+  final TextEditingController _dressCodeController = TextEditingController();
+  final TextEditingController _remarksController = TextEditingController();
+
+@override
+void dispose() {
+  _contractController.dispose();
+  _transportationController.dispose();
+  _serviceChargeAndFeeController.dispose();
+  _numberOfseatsController.dispose();
+  _whenSeatedController.dispose();
+  _functionController.dispose();
+  _privateRoomController.dispose();
+  _parkingLotController.dispose();
+  _supplementaryInformationController.dispose();
+  _dressCodeController.dispose();
+  _remarksController.dispose();
+  super.dispose();
+}
+
   @override
   Widget build(BuildContext context) {
     var _screenSize = MediaQuery.of(context).size;
@@ -157,7 +191,6 @@ class _RegistrationDetailedPageState extends State<RegistrationDetailedPage> {
                         onChanged: (String? newValue) {
                           setState(() {
                             _selectedReservation = newValue;
-                            print(_selectedReservation);
                           });
                         },
                       ),
@@ -166,16 +199,15 @@ class _RegistrationDetailedPageState extends State<RegistrationDetailedPage> {
                   );
                 }).toList(),
               ),
-              // SizedBox(height: _screenSize.height * 0.008),
               const Text(
                 '予約時の注意事項',
                 style: TextStyle(
                   fontWeight: FontWeight.bold,
                 ),
               ),
-              // SizedBox(height: _screenSize.height * 0.008),
               Container(
                 child: TextFormField(
+                  controller: _contractController,
                   maxLines: 6,
                   minLines: 6,
                   keyboardType: TextInputType.multiline,
@@ -249,6 +281,7 @@ class _RegistrationDetailedPageState extends State<RegistrationDetailedPage> {
               SizedBox(height: _screenSize.height * 0.008),
               Container(
                 child: TextFormField(
+                  controller: _transportationController,
                   maxLines: 3,
                   minLines: 3,
                   keyboardType: TextInputType.multiline,
@@ -334,8 +367,8 @@ class _RegistrationDetailedPageState extends State<RegistrationDetailedPage> {
                         decoration: InputDecoration(
                           border: OutlineInputBorder()
                         ),
-                        value: _selectedValue,
-                        items: _budget.map((String? value) {
+                        value: _selectedValueNoon,
+                        items: _budgetNoon.map((String? value) {
                           return DropdownMenuItem(
                             value: value,
                             child: Text(value!)
@@ -343,7 +376,7 @@ class _RegistrationDetailedPageState extends State<RegistrationDetailedPage> {
                         }).toList(),
                         onChanged: (String? value) {
                           setState(() {
-                            _selectedValue = value;
+                            _selectedValueNoon = value;
                           });
                         }
                       ),
@@ -356,8 +389,8 @@ class _RegistrationDetailedPageState extends State<RegistrationDetailedPage> {
                         decoration: InputDecoration(
                           border: OutlineInputBorder()
                         ),
-                        value: _selectedValue,
-                        items: _budget.map((String? value) {
+                        value: _selectedValueNight,
+                        items: _budgetNight.map((String? value) {
                           return DropdownMenuItem(
                             value: value,
                             child: Text(value!)
@@ -365,7 +398,7 @@ class _RegistrationDetailedPageState extends State<RegistrationDetailedPage> {
                         }).toList(),
                         onChanged: (String? value) {
                           setState(() {
-                            _selectedValue = value;
+                            _selectedValueNight = value;
                           });
                         }
                       ),
@@ -443,10 +476,13 @@ class _RegistrationDetailedPageState extends State<RegistrationDetailedPage> {
               SizedBox(height: _screenSize.height * 0.008),
               Container(
                 child: TextFormField(
+                  controller: _serviceChargeAndFeeController,
                   decoration: InputDecoration(
                     border: OutlineInputBorder(),
                     hintText: '例 サービス料10%、チャージ料なし'
                   ),
+                  onChanged: (value) {
+                  },
                 ),
               ),
               SizedBox(height: _screenSize.height * 0.050,),
@@ -480,10 +516,13 @@ class _RegistrationDetailedPageState extends State<RegistrationDetailedPage> {
                 children: <Widget>[
                   Expanded(
                     child: TextFormField(
+                      controller: _numberOfseatsController,
                       decoration: InputDecoration(
                         border: OutlineInputBorder(),
                         hintText: '例 30席'
                       ),
+                      onChanged: (value) {
+                      },
                     ),
                   ),
                   Text('席')
@@ -491,10 +530,13 @@ class _RegistrationDetailedPageState extends State<RegistrationDetailedPage> {
               ),
               SizedBox(height: _screenSize.height * 0.008),
               TextFormField(
+                controller: _seatingDetailsController,
                 decoration: InputDecoration(
                   border: OutlineInputBorder(),
                   hintText: '例 カウンター10席、テーブル20席'
                 ),
+                onChanged: (value) {
+                },
               ),
               SizedBox(height: _screenSize.height * 0.008),
               Text(
@@ -511,10 +553,13 @@ class _RegistrationDetailedPageState extends State<RegistrationDetailedPage> {
                   ),
                   Expanded(
                     child: TextFormField(
+                      controller: _whenSeatedController,
                       decoration: InputDecoration(
                         border: OutlineInputBorder(),
                         hintText: '例 30'
                       ),
+                      onChanged: (value) {
+                      },
                     ),
                   ),
                   Text('人'),
@@ -528,10 +573,13 @@ class _RegistrationDetailedPageState extends State<RegistrationDetailedPage> {
                   ),
                   Expanded(
                     child: TextFormField(
+                      controller: _functionController,
                       decoration: InputDecoration(
                         border: OutlineInputBorder(),
                         hintText: '例 40'
                       ),
+                      onChanged: (value) {
+                      },
                     )
                   ),
                   Text('人')
@@ -555,7 +603,6 @@ class _RegistrationDetailedPageState extends State<RegistrationDetailedPage> {
                           onChanged: (String? value) {
                             setState(() {
                               _selectedPrivateRoomItem = value;
-                              print(_selectedPrivateRoomItem);
                             });
                           },
                         ),
@@ -566,6 +613,7 @@ class _RegistrationDetailedPageState extends State<RegistrationDetailedPage> {
                 ),
                 Container(
                   child: TextFormField(
+                    controller: _privateRoomController,
                     maxLines: 3,
                     minLines: 3,
                     keyboardType: TextInputType.multiline,
@@ -653,7 +701,6 @@ class _RegistrationDetailedPageState extends State<RegistrationDetailedPage> {
                         onChanged: (String? value) {
                           setState(() {
                             _selectedParkingLotOptionItem = value;
-                            print(_selectedParkingLotOptionItem);
                           });
                         }
                       ),
@@ -663,10 +710,13 @@ class _RegistrationDetailedPageState extends State<RegistrationDetailedPage> {
                 }).toList(),
               ),
               TextFormField(
+                controller: _parkingLotController,
                 decoration: InputDecoration(
                   border: OutlineInputBorder(),
                   hintText: '例 10台、近所にコインバーキングあり'
                 ),
+                onChanged: (value) {
+                },
               ),
               SizedBox(height: _screenSize.height * 0.008),
               const Text(
@@ -689,7 +739,6 @@ class _RegistrationDetailedPageState extends State<RegistrationDetailedPage> {
                           onChanged: (bool? checkedValue) {
                             setState(() {
                               e['checked'] = checkedValue;
-                              print('${e['value']} ${e['checked']}');
                             });
                           },
                         ),
@@ -725,7 +774,6 @@ class _RegistrationDetailedPageState extends State<RegistrationDetailedPage> {
                           onChanged: (bool? checkedValue) {
                             setState(() {
                               e['checked'] = checkedValue;
-                              print('${e['value']} ${e['checked']}');
                             });
                           },
                         ),
@@ -780,7 +828,6 @@ class _RegistrationDetailedPageState extends State<RegistrationDetailedPage> {
                           onChanged: (bool? checkedValue) {
                             setState(() {
                               e['checked'] = checkedValue;
-                              print('${e['value']} ${e['checked']}');
                             });
                           },
                         ),
@@ -815,7 +862,6 @@ class _RegistrationDetailedPageState extends State<RegistrationDetailedPage> {
                           onChanged: (bool? checkedValue) {
                             setState(() {
                               e['checked'] = checkedValue;
-                              print('${e['value']} ${e['checked']}');
                             });
                           },
                         ),
@@ -869,7 +915,6 @@ class _RegistrationDetailedPageState extends State<RegistrationDetailedPage> {
                           onChanged: (bool? checkedValue) {
                             setState(() {
                               e['checked'] = checkedValue;
-                              print('${e['value']} ${e['checked']}');
                             });
                           }
                         ),
@@ -901,7 +946,6 @@ class _RegistrationDetailedPageState extends State<RegistrationDetailedPage> {
                           onChanged: (bool? checkedValue) {
                             setState(() {
                               e['checked'] = checkedValue;
-                              print('${e['value']} ${e['checked']}');
                             });
                           }
                         ),
@@ -933,7 +977,6 @@ class _RegistrationDetailedPageState extends State<RegistrationDetailedPage> {
                           onChanged: (bool? checkedValue) {
                             setState(() {
                               e['checked'] = checkedValue;
-                              print('${e['value']} ${e['checked']}');
                             });
                           }
                         ),
@@ -953,6 +996,7 @@ class _RegistrationDetailedPageState extends State<RegistrationDetailedPage> {
                 ),
               Container(
                 child: TextFormField(
+                  controller: _supplementaryInformationController,
                   maxLines: 3,
                   minLines: 3,
                   keyboardType: TextInputType.multiline,
@@ -1005,6 +1049,7 @@ class _RegistrationDetailedPageState extends State<RegistrationDetailedPage> {
                 ),
               Container(
                 child: TextFormField(
+                  controller: _dressCodeController,
                   maxLines: 3,
                   minLines: 3,
                   keyboardType: TextInputType.multiline,
@@ -1050,6 +1095,7 @@ class _RegistrationDetailedPageState extends State<RegistrationDetailedPage> {
                 ),
               Container(
                 child: TextFormField(
+                  controller: _remarksController,
                   maxLines: 6,
                   minLines: 6,
                   keyboardType: TextInputType.multiline,
@@ -1070,6 +1116,8 @@ class _RegistrationDetailedPageState extends State<RegistrationDetailedPage> {
                         ),
                       ),
                     ),
+                    onChanged: (value) {
+                    },
                   ),
                 ),
                 SizedBox(height: _screenSize.height * 0.008),
@@ -1077,6 +1125,7 @@ class _RegistrationDetailedPageState extends State<RegistrationDetailedPage> {
                   width: _screenSize.width * 1.0,
                   child: ElevatedButton(
                     onPressed: () {
+                      _saveData(context);
                       Navigator.push(
                         context,
                         MaterialPageRoute(builder: (context) => EditStoreInformation()),
@@ -1098,5 +1147,84 @@ class _RegistrationDetailedPageState extends State<RegistrationDetailedPage> {
         ),
       ),  
     );
+  }
+  Future<void> _saveData(BuildContext context) async {
+    String? selectedReservation = _selectedReservation;
+    print('予約：$selectedReservation');
+    String contractController = _contractController.text;
+    print('予約時の注意事項：$contractController');
+    String transportationController = _transportationController.text;
+    print('交通手段：$transportationController');
+    String? selectedValueNoon = _selectedValueNoon;
+    print('昼 予算:$selectedValueNoon');
+    String? selectedValueNight = _selectedValueNight;
+    print('夜 予算:$selectedValueNight');
+    String? selectedcardItem = _selectedcardItem;
+    print('支払い方法：$selectedcardItem');
+    String serviceChargeAndFeeController = _serviceChargeAndFeeController.text;
+    print('サービス料・チャージ：$serviceChargeAndFeeController');
+    String numberOfseatsController = _numberOfseatsController.text;
+    print('座席：$numberOfseatsController');
+    String seatingDetailsController = _seatingDetailsController.text;
+    print(seatingDetailsController);
+    String whenSeatedController = _whenSeatedController.text;
+    print('着席時：$whenSeatedController');
+    String functionController = _functionController.text;
+    print('立食事：$functionController');
+    String? selectedPrivateRoomItem = _selectedPrivateRoomItem;
+    print('個室：$selectedPrivateRoomItem');
+    String privateRoomController = _privateRoomController.text;
+    print(privateRoomController);
+    String? selectedcharteringOptionItem = _selectedcharteringOptionItem;
+    print('貸切：$selectedcharteringOptionItem');
+    String? selectedParkingLotOptionItem = _selectedParkingLotOptionItem;
+    print('駐車場：$_selectedParkingLotOptionItem');
+    String parkingLotController = _parkingLotController.text;
+    print(parkingLotController);
+    String supplementaryInformationController = _supplementaryInformationController.text;
+    print('補足情報：$supplementaryInformationController');
+    String dressCodeController = _dressCodeController.text;
+    print('ドレスコード：$dressCodeController');
+    String remarksController = _remarksController.text;
+    print('備考：$remarksController');
+
+    setState(() {
+      for (var e in _spaceFacilitiesCheckbox) {
+      String facility = e['value'];
+      bool? isChecked = e['checked'];
+      // チェックされている施設の名前と状態を保存する例
+      print('$facility: $isChecked');
+      }
+      for (var e in _cellularTelephoneCheckbox) {
+        String facility = e['value'];
+        bool? isChecked = e['checked'];
+        print('$facility: $isChecked');
+      }
+      for (var e in _beverageCheckBox) {
+        String facility = e['value'];
+        bool? isChecked = e['checked'];
+        print('$facility: $isChecked');
+      }
+      for (var e in _cookingCheckBox) {
+        String facility = e['value'];
+        bool? isChecked = e['checked'];
+        print('$facility: $isChecked');
+      }
+      for (var e in _locationCheckBox) {
+        String facility = e['value'];
+        bool? isChecked = e['checked'];
+        print('$facility: $isChecked');
+      }
+      for (var e in _serviceCheckBox) {
+        String facility = e['value'];
+        bool? isChecked = e['checked'];
+        print('$facility: $isChecked');
+      }
+      for (var e in _childCheckbox) {
+        String facility = e['value'];
+        bool? isChecked = e['checked'];
+        print('$facility: $isChecked');
+      }
+    });
   }
 }

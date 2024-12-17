@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'Store_Screens.dart';
+import 'package:hive_flutter/hive_flutter.dart';
+import 'models/store_data.dart';
 
 class MyHomePage extends StatefulWidget {
   const MyHomePage({super.key, required this.title});
@@ -10,26 +12,39 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-  final List<Map<String, String>> stores = [
-    {
-      'name': 'しんぱち食堂',
-      'image': 'assets/images/IMG_8718.jpg',
-      'description': '渋谷駅徒歩6~7分の魚料理店。朝食・モーニングあり。',
-      'details': '定食なら大盛りでも\n1200円以内!!!',
-    },
-    // {
-    //   'name': '他の店名',
-    //   'image': 'assets/images/IMG_8720.jpg',
-    //   'description': '東京駅近くのカフェ。リラックスできる雰囲気。',
-    //   'details': '調査中',
-    // },
-    // {
-    //   'name': 'また別の店',
-    //   'image': 'assets/images/IMG_8721.jpg',
-    //   'description': '渋谷で人気のイタリアンレストラン。',
-    //   'details': '調査中',
-    // },
-  ];
+
+  @override
+  void initState() {
+    super.initState();
+    _getAllData(); // データを初期化時に取得
+  }
+
+  late Box box;
+  List<Map<String, String>> stores = [];
+
+  Future<void> _getAllData() async {
+  try {
+    final box = Hive.box<StoreData>('storeDataBox'); // ボックスを開く
+    final hiveStores = box.values.toList(); // 全データをリストで取得
+    final List<Map<String, String>> storeList = [];
+    print('Store List Length: ${storeList.length}');
+    for (var store in hiveStores) {
+      storeList.add({
+        'name': store?.storeName ?? '',
+        'image': store?.storeImages[0] ?? '',
+        'description': store?.featureText ?? '',
+        'details': store?.commitment ?? '',
+      });
+    }
+
+    setState(() {
+        stores = storeList; // データをState変数に設定
+      });
+
+  } catch (e) {
+    print('エラーが発生しました: $e');
+  }
+}
 
   @override
   Widget build(BuildContext context) {
@@ -72,6 +87,8 @@ class _MyHomePageState extends State<MyHomePage> {
         ),
       ),
       body: ListView.builder(
+        shrinkWrap: true, // 子要素に合わせてサイズを調整
+        // physics: NeverScrollableScrollPhysics(), // スクロールを無効化
         itemCount: stores.length,
         itemBuilder: (context, index) {
           final store = stores[index]; // 各店舗データを取得
@@ -95,9 +112,9 @@ class _MyHomePageState extends State<MyHomePage> {
                 Navigator.push(
                   context,
                   MaterialPageRoute(
-                      builder: (context) => Store_ScreensPage(
-                            store: store,
-                          )),
+                    builder: (context) => Store_ScreensPage(
+                      store: store,
+                  )),
                 );
               },
             ),
@@ -106,4 +123,5 @@ class _MyHomePageState extends State<MyHomePage> {
       ),
     );
   }
+  
 }
