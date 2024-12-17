@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'Store_Screens.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'models/store_data.dart';
+import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 
 class MyHomePage extends StatefulWidget {
   const MyHomePage({super.key, required this.title});
@@ -12,6 +13,7 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
+
 
   @override
   void initState() {
@@ -46,9 +48,12 @@ class _MyHomePageState extends State<MyHomePage> {
   }
 }
 
+  final List<Map<String, dynamic>> stores = [];
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: const Color.fromARGB(255, 244, 220, 183),
       appBar: AppBar(
         title: const TextField(
           style: TextStyle(
@@ -92,20 +97,85 @@ class _MyHomePageState extends State<MyHomePage> {
         itemCount: stores.length,
         itemBuilder: (context, index) {
           final store = stores[index]; // 各店舗データを取得
+
           return Card(
             child: ListTile(
-              title: Text(store['name']!),
+              title: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  // 店舗名
+                  Text(
+                    store['name']!,
+                    style: const TextStyle(fontWeight: FontWeight.bold),
+                  ),
+                  const SizedBox(width: 8), // テキストとアイコンの間に余白を入れる
+
+                  // ブックマークアイコン
+                  IconButton(
+                    icon: Icon(
+                      store['isBookmarked']
+                          ? Icons.bookmark
+                          : Icons.bookmark_border,
+                      color: store['isBookmarked'] ? const Color.fromARGB(255, 255, 209, 2) : Colors.grey,
+                    ),
+                    onPressed: () {
+                      setState(() {
+                        //押した時の動作
+                        store['isBookmarked'] = !store['isBookmarked'];
+                      });
+                    },
+                  ),
+                ],
+              ),
               subtitle: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
                 children: <Widget>[
                   // 店舗の画像
                   Image.asset(
-                    store['image']!,
+                    store['image'].first,
                     width: double.infinity,
-                    height: 100,
+                    height: 200,
                     fit: BoxFit.cover,
                   ),
+                  const SizedBox(height: 10),
                   // 店の説明
-                  Text(store['description']!),
+                  store['description'] == null || store['description']!.isEmpty
+                  ? const SizedBox.shrink() // 高さ0の空のウィジェット
+                  : Text(store['description']!),
+                  SizedBox(height: 10),
+
+                  //店の星評価
+                  Row(
+                    children: [
+                      RatingBar.builder(
+                        initialRating: store['star'],
+                        itemSize: 25,
+                        allowHalfRating: true,
+                        ignoreGestures: true,
+                        itemBuilder: (context, index) => const Icon(
+                          Icons.star,
+                          color: Color.fromARGB(255, 255, 188, 2),
+                        ),
+                        onRatingUpdate: (rating) {
+                          //評価が更新されたときの処理を書く
+                        },
+                        
+                      ),
+                      SizedBox(width: 5),
+                      Text(store['star'].toString(),style: const TextStyle(fontWeight: FontWeight.bold,fontSize: 23),)
+                    ],
+                  ),
+                  
+                  Row(
+                    children: [
+                      Icon(Icons.paid,color: Color.fromARGB(255, 232, 190, 1)),
+                      Text(store['price']),
+                      SizedBox(width: 11),
+                      Icon(Icons.schedule,color: const Color.fromARGB(255, 229, 198, 57)),
+                      Text(store['hours']),
+                    ],
+                  ),
+
                 ],
               ),
               onTap: () {
@@ -114,7 +184,10 @@ class _MyHomePageState extends State<MyHomePage> {
                   MaterialPageRoute(
                     builder: (context) => Store_ScreensPage(
                       store: store,
+
                   )),
+                    ),
+                  ),
                 );
               },
             ),
