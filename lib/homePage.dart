@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'Store_Screens.dart';
+import 'package:hive_flutter/hive_flutter.dart';
+import 'models/store_data.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 
 class MyHomePage extends StatefulWidget {
@@ -11,51 +13,42 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-  final List<Map<String, dynamic>> stores = [
-    {
-      'name': 'しんぱち食堂',
-      'image': [
-        'assets/images/IMG_8718.jpg',
-        'assets/images/IMG_0823.jpg',
-        'assets/images/IMG_8731.jpg',
-      ],
-      'description': '渋谷駅徒歩6~7分の定食屋。朝食・モーニングあり。',
-      'details': '定食なら大盛りでも1200円以内!!!',
-      'isBookmarked': false, // 初期状態
-      'star': 3.5, //星評価の平均値を代入します
-      'price': '¥700〜¥1500',
-      'hours': '7:00 ~ 23:00 / 年中無休',
-      'address': '東京都新宿区西新宿1-15-9  KCビル1階',
-    },
-    {
-      'name': 'そこら辺食堂',
-      'image': [
-        'assets/images/IMG_8718.jpg',
-        'assets/images/IMG_0823.jpg',
-        'assets/images/IMG_8731.jpg',
-      ],
-      'description': '恵比寿駅徒歩4分の定食屋。朝食・モーニングあり。',
-      'details': '定食なら大盛りでも\n2000円以内!!!',
-      'isBookmarked': false, // 初期状態
-      'star': 3.0,
-      'price': '¥1000〜¥2000',
-      'hours': '9:30 ~ 22:30 / 年中無休',
-    },
-    {
-      'name': '辺境の地食堂',
-      'image': [
-        'assets/images/IMG_8718.jpg',
-        'assets/images/IMG_0823.jpg',
-        'assets/images/IMG_8731.jpg',
-      ],
-      'description': '澁谷駅徒歩560分の定食屋。辺鄙な地にあるため暖かな食事をご用意しております',
-      'details': '定食なら大盛りでも\n4000円以内!!!',
-      'isBookmarked': false, // 初期状態
-      'star': 1.3,
-      'price': '¥1000〜¥4000',
-      'hours': '11:00 ~ 20:00 / 土日祝日休み',
-    },
-  ];
+
+
+  @override
+  void initState() {
+    super.initState();
+    _getAllData(); // データを初期化時に取得
+  }
+
+  late Box box;
+  List<Map<String, String>> stores = [];
+
+  Future<void> _getAllData() async {
+  try {
+    final box = Hive.box<StoreData>('storeDataBox'); // ボックスを開く
+    final hiveStores = box.values.toList(); // 全データをリストで取得
+    final List<Map<String, String>> storeList = [];
+    print('Store List Length: ${storeList.length}');
+    for (var store in hiveStores) {
+      storeList.add({
+        'name': store?.storeName ?? '',
+        'image': store?.storeImages[0] ?? '',
+        'description': store?.featureText ?? '',
+        'details': store?.commitment ?? '',
+      });
+    }
+
+    setState(() {
+        stores = storeList; // データをState変数に設定
+      });
+
+  } catch (e) {
+    print('エラーが発生しました: $e');
+  }
+}
+
+  final List<Map<String, dynamic>> stores = [];
 
   @override
   Widget build(BuildContext context) {
@@ -99,6 +92,8 @@ class _MyHomePageState extends State<MyHomePage> {
         ),
       ),
       body: ListView.builder(
+        shrinkWrap: true, // 子要素に合わせてサイズを調整
+        // physics: NeverScrollableScrollPhysics(), // スクロールを無効化
         itemCount: stores.length,
         itemBuilder: (context, index) {
           final store = stores[index]; // 各店舗データを取得
@@ -189,6 +184,8 @@ class _MyHomePageState extends State<MyHomePage> {
                   MaterialPageRoute(
                     builder: (context) => Store_ScreensPage(
                       store: store,
+
+                  )),
                     ),
                   ),
                 );
@@ -199,4 +196,5 @@ class _MyHomePageState extends State<MyHomePage> {
       ),
     );
   }
+  
 }

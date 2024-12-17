@@ -3,6 +3,8 @@ import 'package:sample/homePage.dart';
 import 'myPage.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'lists.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
+import 'login.dart';
 
 class ProfilePage extends StatefulWidget {
   const ProfilePage({super.key});
@@ -12,6 +14,7 @@ class ProfilePage extends StatefulWidget {
 }
 
 class _ProfilePageState extends State<ProfilePage> {
+  final SupabaseClient supabase = Supabase.instance.client;
   String? _selectedPrefecture;
   String? _selectedgender;
   String? _P_selection = '非公開';
@@ -317,7 +320,22 @@ class _ProfilePageState extends State<ProfilePage> {
                       ),
                     ),
                   ],
-                )
+                ),
+                Container(
+                  child: ElevatedButton(
+                      onPressed: () async {
+                        signOut(context);
+                      },
+                      child: Row(
+                        mainAxisSize: MainAxisSize.min, // ボタンのサイズをテキストに合わせる
+                        children: [
+                          Text('ログアウト'),
+                          SizedBox(width: 8), // テキストとアイコンの間にスペースを追加
+                          Icon(Icons.logout),
+                        ],
+                      ),
+                    ),
+            ),
               ],
             )
           )
@@ -353,4 +371,13 @@ class _ProfilePageState extends State<ProfilePage> {
       }
     }
   }
+
+  
+
+  Future<void> signOut(BuildContext context) async {
+    await supabase.auth.signOut();
+    Navigator.of(context)
+          .pushReplacement(MaterialPageRoute(builder: (context) => LoginPage()));
+  }
 }
+

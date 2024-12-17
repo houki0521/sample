@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:sample/homePage.dart';
 import 'myPage.dart';
-import 'map.dart';
-import 'package:firebase_auth/firebase_auth.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
+
 
 class NavigationPage extends StatefulWidget {
 
@@ -11,6 +11,7 @@ class NavigationPage extends StatefulWidget {
 }
 
 class _NavigationPageState extends State<NavigationPage> {
+  final supabase = Supabase.instance.client;
   int _loginCount = 0;
   int _currentIndex = 0;
   bool _isLoggedIn = false; // ログイン状態を追跡
@@ -30,7 +31,7 @@ class _NavigationPageState extends State<NavigationPage> {
 
   // ログイン状態を確認するメソッド
   void _checkLoginStatus() async {
-    final user = FirebaseAuth.instance.currentUser;
+    final user = supabase.auth.currentUser;
     if (user != null) {
 
       setState(() {

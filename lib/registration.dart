@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
 import 'lists.dart';
 import 'registration_detailed.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
 
 class RegistrationPage extends StatefulWidget {
   const RegistrationPage({super.key});
+
 
   @override
   State<RegistrationPage> createState() => _RegistrationPageState();
@@ -27,448 +29,17 @@ class _RegistrationPageState extends State<RegistrationPage> {
   String? _selectedDish;
   final Map<String, TextEditingController> _startTimeControllers = {};
   final Map<String, TextEditingController> _endTimeControllers = {};
-  final Map<String, Map<String, Map<String, List<String>>>> menuData = {
-    'レストラン': {
-      '和食': {
-        '日本料理': [
-          '日本料理'
-        ],
-        '寿司': [
-          '寿司'
-        '回転寿司'
-        '立ち食い寿司'
-        'いなり寿司'
-        '棒寿司'
-        ],
-        '海鮮': [
-          '海鮮'
-          'ふぐ'
-          'かに'
-          'すっぽん'
-          'あんこう'
-          'かき'
-        ],
-        'うなぎ・あなご': [
-          'うなぎ'
-          'あなご'
-          'どじょう'
-        ],
-        '天ぷら': [
-          '天ぷら'
-        ],
-        'とんかつ・揚げ物': [
-          'とんかつ'
-          '牛カツ'
-          '串揚げ'
-          'からあげ'
-          '揚げ物'
-        ],
-        '焼き鳥・串焼き・鶏料理': [
-          '焼き鳥'
-          '串焼き'
-          'もつ焼き'
-          '鳥料理'
-          '手羽先'
-        ],
-        'すき焼き': [
-          'すき焼き'
-        ],
-        'しゃぶしゃぶ': [
-          'しゃぶしゃぶ'
-          '豚しゃぶ'
-        ],
-        'そば': [
-          'そば'
-          '立ち食いそば'
-        ],
-        'うどん': [
-          'うどん'
-          'カレーうどん'
-        ],
-        '麺類': [
-          '麺類'
-          '焼きそば'
-          '沖縄そば'
-          'ほうとう'
-          'ちゃんぽん'
-        ],
-        'お好み焼き・たこ焼き': [
-          'お好み焼き'
-          'もんじゃ焼き'
-          'たこ焼き'
-          '明石焼き'
-        ],
-        '丼': [
-          '丼'
-          '牛丼'
-          '親子丼'
-          '天丼'
-          'かつ丼'
-          '海鮮丼'
-          '豚丼'
-        ],
-        'おでん': [
-          'おでん'
-        ],
-        'その他': [
-          '郷土料理'
-          '沖縄料理'
-          '牛タン'
-          '麦とろ'
-          '釜飯'
-          'お茶漬け'
-          '豆腐料理'
-          'ろばた焼き'
-          'きりたんぽ'
-          'くじら料理'
-        ],
-    },
-      '洋食・西洋料理': {
-        '洋食': [
-          '洋食'
-        'ハンバーグ'
-        'オムライス'
-        'コロッケ'
-        'スープ'
-        ],
-        'ステーキ・鉄板焼き': [
-          'ステーキ'
-          '鉄板焼き'
-        ],
-        'フレンチ': [
-          'フレンチ'
-          'ビストロ'
-        ],
-        'イタリアン': [
-          'イタリアン'
-          'パスタ'
-          'ピザ'
-        ],
-        'スペイン料理': [
-          'スペイン料理'
-        ],
-        'ヨーロッパ料理': [
-          'ヨーロッパ料理'
-          'ポルトガル料理'
-          'ドイツ料理'
-          'ロシア料理'
-          'ギリシャ料理'
-        ],
-        'アメリカ料理': [
-          'アメリカ料理'
-          'カルフォニア料理'
-          'ハワイ料理'
-          'ハンバーガー'
-          'ホットドッグ'
-        ]
-    },
-      '中華料理': {
-        '中華料理': [
-          '中華料理'
-        ],
-        '四川料理': [
-          '四川料理'
-        ],
-        '台湾料理': [
-          '台湾料理'
-        ],
-        '飲茶・点心': [
-          '飲茶・点心'
-        ],
-        '餃子': [
-          '餃子'
-        ],
-        '肉まん': [
-          '肉まん'
-        ],
-        '小籠包': [
-          '小籠包'
-        ],
-        '中華粥': [
-          '中華粥'
-        ],
-      },
-        
-      'アジア・エスニック': {
-        'アジア・エスニック': [
-          'アジア・エスニック'
-        ],
-        '韓国料理': [
-          '韓国料理'
-          '冷麺'
-        ],
-        '東南アジア料理': [
-          '東南アジア料理'
-          'タイ料理'
-          'ベトナム料理'
-          'バインミー'
-          'インドネシア料理'
-          'シンガポール料理'
-        ],
-        '南アジア料理': [
-          '南アジア料理'
-          'インド料理'
-          'ネパール料理'
-          'パキスタン料理'
-          'スリランカ料理'
-        ],
-        '中東料理': [
-          '中東料理'
-          'トルコ料理'
-          'ケバブ'
-          'モロッコ料理'
-          'ファラフェル'
-        ],
-        '中南米料理': [
-          '中南米料理'
-          'メキシコ料理'
-          'タコス'
-          'ブラジル料理'
-          'シュラスコ'
-          'ペルー料理'
-        ],
-        'アフリカ料理': [
-          'アフリカ料理'
-        ],
-      },
-      'カレー': {
-        'カレー': [
-          'カレー'
-        ],
-        'インドカレー': [
-          'インドカレー'
-        ],
-        'スープカレー': [
-          'スープカレー'
-        ],
-      },
-      '焼肉・ホルモン': {
-        '焼肉': [
-          '焼肉'
-        ],
-        'ホルモン': [
-          'ホルモン'
-        ],
-        'ジンギスカン': [
-          'ジンギスカン'
-        ],
-      },
-      '鍋': {
-        '鍋': [
-          '鍋'
-        ],
-        'もつ鍋': [
-          'もつ鍋'
-      
-        ],
-        '水炊き': [
-          '水炊き'
-        ],
-        'ちゃんこ鍋': [
-          'ちゃんこ鍋'
-        ],
-        '火鍋': [
-          '火鍋'
-        ],
-        'うどんすき': [
-          'うどんすき'
-        ],
-      },
-      '居酒屋': {
-        '居酒屋': [
-          '居酒屋'
-        ],
-        'ダイニングバー': [
-          'ダイニングバー'
-        ],
-        '立ち飲み': [
-          '立ち飲み'
-        ],
-        'バル': [
-          'バル'
-          '肉バル'
-        ],
-        'ビアガーデン・ビアホール': [
-          'ビアガーデン'
-          'ビアホール'
-        ],
-    },
-    'その他レストラン': {
-      'レストラン・食堂': [
-        'レストラン'
-        'ファミレス'
-        '食堂'
-        '学生食堂'
-        '社員食堂'
-      ],
-      '創作料理・イノベーティブ': [
-        '創作料理'
-        'イノベーティブ'
-      ],
-      'オーガニック・薬膳': [
-        'オーガニック'
-        '薬膳'
-      ],
-      '弁当・おにぎり・惣菜': [
-        '弁当'
-        'おにぎり'
-        '惣菜・デリ'
-      ],
-      '肉料理': [
-        '肉料理'
-        '牛料理'
-        '豚料理'
-        '馬肉料理'
-        'ジビエ料理'
-      ],
-      'シーフード': [
-        'シーフード'
-        'オイスターバー'
-      ],
-        'サラダ・野菜料理': [
-          'サラダ'
-          '野菜料理'
-        ],
-        'チーズ料理': [
-          'チーズ料理'
-        ],
-        'にんにく料理': [
-          'にんにく料理'
-        ],
-        'ビュッフェ': [
-          'ビュッフェ'
-        ],
-        'バーベキュー': [
-          'バーベキュー'
-        ],
-        '屋台船・クリージング': [
-          '屋形船・クルージング'
-        ],
-    },
-
-    },
-    'ラーメン': {
-      'ラーメン・つけ麺': {
-        'ラーメン': [
-          'ラーメン'
-        ],
-      'つけ麺': [
-        'つけ麺'
-      ],
-      '油そば・まぜそば': [
-        '油そば・まぜそば'
-      ],
-      '台湾まぜそば': [
-        '台湾まぜそば'
-      ],
-      '担々麺': [
-        '台湾まぜそば'
-      ],
-      '汁なし担々麺': [
-        '台湾まぜそば'
-      ],
-      '刀削麺': [
-        '刀削麺'
-      ],
-      },
-    },
-    'カフェ・パン・スイーツ': {
-      'カフェ・喫茶店': {
-        'カフェ・喫茶店': [
-          'カフェ'
-          '喫茶店'
-          '甘味処'
-          'フルーツパーラー'
-          'パンケーキ'
-          'コーヒースタンド'
-          'ティースタンド'
-          'ジューススタンド'
-          'タピオカ'
-        ],
-        'スイーツ': [
-          'スイーツ'
-          '洋菓子'
-          'ケーキ'
-          'シュークリーム'
-          'チョコレート'
-          'ドーナツ'
-          'マカロン'
-          'バームクーヘン'
-          'プリン'
-          'クレープ・ガレット'
-          '和菓子'
-          '大福'
-          'たい焼き・大判焼き'
-          'どら焼き'
-          'カステラ'
-          '焼き芋・大学芋'
-          'せんべい'
-          '中華菓子'
-          'ジェラート・アイスクリーム'
-          'ソフトクリーム'
-          'かき氷'
-        ],
-        'パン・サンドイッチ': [
-          'パン'
-          'サンドイッチ'
-          'ベーグル'
-        ],
-      },
-    },
-    'バー・お酒': {
-      'バー' :{
-        'バー': [
-          'バー'
-        ],
-        'パブ': [
-          'パブ'
-        ],
-        'ワインバー': [
-          'ワインバー'
-        ],
-        'ビアバー': [
-          'ビアバー'
-        ],
-        'スポーツバー': [
-          'スポーツバー'
-        ],
-        '日本酒バー': [
-          '日本酒バー'
-        ],
-        '焼酎バー': [
-          '焼酎バー'
-        ],
-      },
-    },
-    '料理旅館・オーベルジュ': {
-      '料理旅館・オーベルジュ' : {
-        '料理旅館': [
-          '料理旅館'
-        ],
-        'オーベルジュ': [
-          '料理旅館'
-        ],
-      }
-    },
-    'その他': {
-      'その他' : {
-        'その他': [
-          'カラオケ'
-          'ダーツ'
-          'ホテル'
-          '旅館・民宿'
-          '結婚式場'
-          '道の駅'
-          'コンビニ・スーパー'
-          '売店'
-        ],
-      },
-    }
-  };
-
+  final TextEditingController _storeNamecontroller = TextEditingController();
+  final TextEditingController _furiganaController = TextEditingController();
+  final TextEditingController _phoneNumberController = TextEditingController();
+  final TextEditingController _municipalities_Controller = TextEditingController();
+  final TextEditingController _buildingNameFloorNumberController = TextEditingController();
+  final TextEditingController _ageController = TextEditingController();
+  final TextEditingController _homePageURLController = TextEditingController();
   
-   @override
-
+  
+  
+  @override
   void initState() {
   super.initState();
   weekdays.forEach((day) {
@@ -482,6 +53,11 @@ class _RegistrationPageState extends State<RegistrationPage> {
 void dispose() {
   _startTimeControllers.values.forEach((controller) => controller.dispose());
   _endTimeControllers.values.forEach((controller) => controller.dispose());
+  _storeNamecontroller.dispose();
+  _furiganaController.dispose();
+  _municipalities_Controller.dispose();
+  _buildingNameFloorNumberController.dispose();
+  _homePageURLController.dispose();
   super.dispose();
 }
 
@@ -526,22 +102,82 @@ void dispose() {
                           ],
                         ),
                         SizedBox(height: _screenSize.height * 0.008),
-                        const Text('店名'),
+                        Row(
+                          children: [
+                            const Text(
+                              '店名',
+                              style: TextStyle(
+                                fontWeight: FontWeight.bold
+                              ),
+                            ),
+                            SizedBox(
+                              width: 5,
+                            ),
+                            Container(
+                              decoration: BoxDecoration(
+                              color: Colors.red,
+                              borderRadius: BorderRadius.circular(3),
+                              border: Border.all(color: Colors.red),
+                            ),
+                            child: Text(
+                              "必須",
+                              style: TextStyle(
+                                fontSize: 12,
+                                color: Colors.white
+                              ),
+                            ),
+                            ),
+                          ],
+                        ),
                         SizedBox(height: _screenSize.height * 0.008),
                         TextFormField(
+                          controller: _storeNamecontroller,
                           decoration: const InputDecoration(
                             border: OutlineInputBorder(),
                             hintText: '例 レストラン タベログ',
                           ),
+                          onChanged: (value) {
+                            // print(value); // 入力が変更されるたびに現在の値を出力
+                          },
                         ),
                         SizedBox(height: _screenSize.height * 0.008),
-                        Text('フリガナ'),
+                        Row(
+                          children: [
+                            Text(
+                            'フリガナ',
+                            style: TextStyle(
+                                fontWeight: FontWeight.bold
+                              ),
+                            ),
+                            SizedBox(
+                              width: 5,
+                            ),
+                            Container(
+                              decoration: BoxDecoration(
+                              color: Colors.red,
+                              borderRadius: BorderRadius.circular(3),
+                              border: Border.all(color: Colors.red),
+                            ),
+                            child: Text(
+                              "必須",
+                              style: TextStyle(
+                                fontSize: 12,
+                                color: Colors.white
+                              ),
+                            ),
+                            ),
+                          ],
+                        ),
                         SizedBox(height: _screenSize.height * 0.008),
                         TextFormField(
+                          controller: _furiganaController,
                           decoration: const InputDecoration(
                             border: OutlineInputBorder(),
                             hintText: '例 レストランタベログエビステン',
                           ),
+                          onChanged: (value) {
+                            // print(value);
+                          },
                         ),
                         SizedBox(height: _screenSize.height * 0.050,),
                         Row(
@@ -551,15 +187,36 @@ void dispose() {
                             height: 20,
                             color: Colors.orange,
                             ),
-                            Container(
-                              padding: EdgeInsets.only(left: _screenSize.width * 0.008),
-                              child: const Text(
-                                '電話番号',
-                                style: TextStyle(
-                                  fontWeight: FontWeight.bold,
-                                  fontSize: 16,
+                            Row(
+                              children: [
+                                    Container(
+                                  padding: EdgeInsets.only(left: _screenSize.width * 0.008),
+                                  child: const Text(
+                                    '電話番号',
+                                    style: TextStyle(
+                                      fontWeight: FontWeight.bold,
+                                      fontSize: 16,
+                                    ),
+                                  ),
                                 ),
-                              ),
+                                SizedBox(
+                                  width: 5,
+                                ),
+                                Container(
+                                  decoration: BoxDecoration(
+                                  color: Colors.red,
+                                  borderRadius: BorderRadius.circular(3),
+                                  border: Border.all(color: Colors.red),
+                                ),
+                                child: Text(
+                                  "必須",
+                                  style: TextStyle(
+                                    fontSize: 12,
+                                    color: Colors.white
+                                  ),
+                                ),
+                                ),
+                              ],
                             ),
                           ],
                         ),
@@ -583,7 +240,6 @@ void dispose() {
                               onChanged: (String? value) {
                                 setState(() {
                                   _selectedValue = '有';
-                                  print(_selectedValue);
                                 });
                               },
                             ),
@@ -594,6 +250,7 @@ void dispose() {
                                 height: 45,
                                 padding: EdgeInsets.only(left: 10),
                                 child: TextFormField(
+                                  controller: _phoneNumberController,
                                   decoration: const InputDecoration(
                                     border: OutlineInputBorder(),
                                     hintText: '例 01-2345-6789',
@@ -646,7 +303,33 @@ void dispose() {
                           ],
                         ),
                         SizedBox(height: _screenSize.height * 0.008,),
-                        const Text('都道府県'),
+                        Row(
+                          children: [
+                            const Text(
+                            '都道府県',
+                            style: TextStyle(
+                                fontWeight: FontWeight.bold
+                              ),
+                            ),
+                            SizedBox(
+                              width: 5,
+                            ),
+                            Container(
+                              decoration: BoxDecoration(
+                              color: Colors.red,
+                              borderRadius: BorderRadius.circular(3),
+                              border: Border.all(color: Colors.red),
+                            ),
+                            child: Text(
+                              "必須",
+                              style: TextStyle(
+                                fontSize: 12,
+                                color: Colors.white
+                              ),
+                            ),
+                            ),
+                          ],
+                        ),
                         SizedBox(height: _screenSize.height * 0.008,),
                         SingleChildScrollView(
                           child: DropdownButtonFormField(
@@ -664,31 +347,69 @@ void dispose() {
                               onChanged: (String? value) {
                                 setState(() {
                                   _selectedPrefecture = value;
-                                  print('Selected: $_selectedPrefecture');
+                                  // print('Selected: $_selectedPrefecture');
                                 });
                               }
                             ),
                         ),
                         SizedBox(height: _screenSize.height * 0.008,),
-                        Text('市区町村・番地'),
+                        Row(
+                          children: [
+                            Text(
+                            '市区町村・番地',
+                            style: TextStyle(
+                                fontWeight: FontWeight.bold
+                              ),
+                            ),
+                            SizedBox(
+                              width: 5,
+                            ),
+                            Container(
+                              decoration: BoxDecoration(
+                              color: Colors.red,
+                              borderRadius: BorderRadius.circular(3),
+                              border: Border.all(color: Colors.red),
+                            ),
+                            child: Text(
+                              "必須",
+                              style: TextStyle(
+                                fontSize: 12,
+                                color: Colors.white
+                              ),
+                            ),
+                            ),
+                          ],
+                        ),
                         SizedBox(height: _screenSize.height * 0.008,),
                         Container(
                           child: TextFormField(
+                            controller: _municipalities_Controller,
                             decoration: const InputDecoration(
                               border: OutlineInputBorder(),
                               hintText: '例 恵比寿区恵比寿南3-5-7',
                             ),
+                            onChanged: (value) {
+                            },
                           ),
                         ),
                         SizedBox(height: _screenSize.height * 0.008,),
-                        Text('ビル名・階数'),
+                        Text(
+                          'ビル名・階数',
+                          style: TextStyle(
+                              fontWeight: FontWeight.bold
+                            ),
+                          ),
                         SizedBox(height: _screenSize.height * 0.008,),
                         Container(
                           child: TextFormField(
+                            controller: _buildingNameFloorNumberController,
                             decoration: const InputDecoration(
                               border: OutlineInputBorder(),
                               hintText: '例 デジタルゲートビル 6F',
                             ),
+                            onChanged: (value) {
+
+                            },
                           ),
                         ),
                         SizedBox(height: _screenSize.height * 0.008,),
@@ -720,6 +441,7 @@ void dispose() {
                             Container(
                               width: _screenSize.width * 0.17,
                               child: TextFormField(
+                                controller: _ageController,
                                 decoration: const InputDecoration(
                                   border: OutlineInputBorder(),
                                   hintText: '1992',
@@ -747,7 +469,6 @@ void dispose() {
                                   onChanged: (int? value) {
                                     setState(() {
                                       _selectedMonth = value;
-                                      print('Selected month: $_selectedMonth');
                                     });
                                   },
                                 ),
@@ -774,7 +495,6 @@ void dispose() {
                                   onChanged: (int? value) {
                                     setState(() {
                                       _selectedDay = value;
-                                      print('Selected month: $_selectedDay');
                                     });
                                   },
                                 ),
@@ -794,16 +514,37 @@ void dispose() {
                               height: 20,
                               color: Colors.orange,
                             ),
-                            Container(
-                                padding: EdgeInsets.only(left: _screenSize.width * 0.010),
-                                child: const Text(
-                                  'ジャンル',
-                                  style: TextStyle(
-                                    fontWeight: FontWeight.bold,
-                                    fontSize: 16,
+                            Row(
+                              children: [
+                                Container(
+                                  padding: EdgeInsets.only(left: _screenSize.width * 0.010),
+                                  child: const Text(
+                                    'ジャンル',
+                                    style: TextStyle(
+                                      fontWeight: FontWeight.bold,
+                                      fontSize: 16,
+                                    ),
                                   ),
                                 ),
-                              ),
+                                SizedBox(
+                                  width: 5,
+                                ),
+                                Container(
+                                  decoration: BoxDecoration(
+                                  color: Colors.red,
+                                  borderRadius: BorderRadius.circular(3),
+                                  border: Border.all(color: Colors.red),
+                                ),
+                                child: Text(
+                                  "必須",
+                                  style: TextStyle(
+                                    fontSize: 12,
+                                    color: Colors.white
+                                  ),
+                                ),
+                                ),
+                              ],
+                            ),
                             SizedBox(height: _screenSize.height * 0.008,),
                           ],
                         ),
@@ -892,10 +633,13 @@ void dispose() {
                         SizedBox(height: _screenSize.height * 0.008,),
                         Container(
                           child: TextFormField(
+                            controller: _homePageURLController,
                             decoration: InputDecoration(
                               hintText: '例 https//',
                               border: OutlineInputBorder()
                               ),
+                              onChanged: (value) {
+                              },
                             ),
                         ),
                         SizedBox(height: _screenSize.height * 0.050,),
@@ -905,7 +649,6 @@ void dispose() {
                               width: 5,
                               height: 20,
                               color: Colors.orange,
-                              
                             ),
                             SizedBox(width: _screenSize.width * 0.010,),
                             Text(
@@ -923,9 +666,6 @@ void dispose() {
                           padding: EdgeInsets.symmetric(vertical: _screenSize.height * 0.01),
                           decoration: BoxDecoration(
                             border: Border(
-                              // top: BorderSide(color: const Color.fromARGB(255, 0, 0, 0)),
-                              // left: BorderSide(color: const Color.fromARGB(255, 0, 0, 0)),
-                              // right: BorderSide(color: const Color.fromARGB(255, 0, 0, 0)),
                               bottom: BorderSide(color: const Color.fromARGB(255, 0, 0, 0)),
                             )
                           ),
@@ -955,27 +695,25 @@ void dispose() {
                                 subtitle: _selectedTimes[day] == '時間を指定'
                                   ? Text('${_startTimeControllers[day]?.text ?? ''} ～ ${_endTimeControllers[day]?.text ?? ''}')
                                   : Text(_selectedTimes[day] ?? '未選択'),
+                                  
                                 onTap: () {
+                                  // print('_selectedTimes: $_selectedTimes');
                                   _showTimeDialog(context, day);
                                 },
                               ),
                             );
                           },
                         )
-
                       ],
                     ),
                   ),
                 ),
-                
                 Container(
                   padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
                   child: ElevatedButton(
                       onPressed: () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(builder: (context) => RegistrationDetailedPage()),
-                        );
+                        _saveData(context);
+
                       },
                       style: ElevatedButton.styleFrom(
                         backgroundColor: Colors.green,  // 背景色
@@ -995,9 +733,6 @@ void dispose() {
     );
   }
   Future<void> _showTimeDialog(BuildContext context, String day) async {
-
-
-
   await showModalBottomSheet(
     context: context,
     builder: (context) {
@@ -1090,10 +825,9 @@ void dispose() {
                           ),
                           value: value,
                           groupValue: _selectedTimes[day],
-                          onChanged: (String? selectedValue) {
+                          onChanged: (String? value) {
                             setState(() {
-                              _selectedTimes[day] = selectedValue; // 選択を更新
-                              print('選択された値: $_selectedTimes[day]');
+                              _selectedTimes[day] = value; // 選択を更新
                             });
                           },
                         );
@@ -1106,8 +840,9 @@ void dispose() {
                 padding: EdgeInsets.only(top: 10, bottom: 30),
                 child: ElevatedButton(
                 onPressed: (){
-                  _saveData(context);
                   Navigator.of(context).pop();
+                  setState((){});
+                  _saveDataTime(context);
                 },
                 child: Text('決定')
                 ),
@@ -1131,12 +866,63 @@ Future<void> _selectTime(BuildContext context, TextEditingController controller)
   }
 }
 Future<void> _saveData(BuildContext context) async {
-  setState(() {
-     for (var day in weekdays) {
-        String startTime = _startTimeControllers[day]!.text;
-        String endTime = _endTimeControllers[day]!.text;
-    print('$day - 開始時間: $startTime - 終了時間: $endTime');
+  String storeNamecontroller = _storeNamecontroller.text;
+  String furiganaController = _furiganaController.text;
+  String? selectedValue = _selectedValue;
+  String phoneNumberController = _phoneNumberController.text;
+  String? selectedPrefecture = _selectedPrefecture;
+  String municipalities_Controller = _municipalities_Controller.text;
+  String buildingNameFloorNumberController = _buildingNameFloorNumberController.text;
+  String ageController = _ageController.text;
+  int? selectedMonth = _selectedMonth;
+  int? selectedDay = _selectedDay;
+  String? selectedCategory = _selectedCategory;
+  String? selectedSubCategory = _selectedSubCategory;
+  String? selectedDish = _selectedDish;
+  String homePageURLController = _homePageURLController.text;
+
+  // オープン日の文字列を作成
+  String openDate = '$ageController年${selectedMonth ?? ''}月${selectedDay ?? ''}日';
+
+  // 営業時間データを収集
+  Map<String, String> times = {};
+  for (var day in weekdays) {
+    String startTime = _startTimeControllers[day]!.text;
+    String endTime = _endTimeControllers[day]!.text;
+    if (startTime.isNotEmpty && endTime.isNotEmpty) {
+      times[day] = '$day $startTime ～ $endTime';
+    } else {
+      times[day] = '未選択';
+    }
   }
+
+  // データを次の画面に渡して遷移
+  Navigator.push(
+    context,
+    MaterialPageRoute(
+      builder: (context) => RegistrationDetailedPage(),
+    ),
+  );
+}
+
+Future<void> _saveDataTime(BuildContext context) async {
+  // Map<String, String?> _selectedTimes = {};
+  setState(() {
+    for (var day in weekdays) {
+      String startTime = _startTimeControllers[day]!.text;
+      String endTime = _endTimeControllers[day]!.text;
+      
+      // 時間が入力されている場合はその時間を保存、それ以外は_selectedTimesを保存
+      if (startTime.isNotEmpty && endTime.isNotEmpty) {
+        // 時間が入力されている場合
+        _selectedTimes[day] = '$startTime ～ $endTime';
+      } else {
+        // 時間が入力されていない場合、_selectedTimesの値を保存
+        _selectedTimes[day] = _selectedTimes[day] ?? '未選択';
+      }
+      // print('$day - ${_selectedTimes[day]}');
+    }
   });
+   
 }
 }

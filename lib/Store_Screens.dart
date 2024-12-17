@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:hive_flutter/hive_flutter.dart';
+import 'models/store_data.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 //import 'package:carousel_slider/carousel_slider.dart';
+
 
 class Store_ScreensPage extends StatefulWidget {
   const Store_ScreensPage({super.key, required this.store});
@@ -11,6 +14,7 @@ class Store_ScreensPage extends StatefulWidget {
 }
 
 class _Store_ScreensPage extends State<Store_ScreensPage> {
+  List<Map<String, String>> stores = [];
   int activeIndex = 0;
 
   @override
@@ -107,6 +111,14 @@ class _Store_ScreensPage extends State<Store_ScreensPage> {
               ],
             ),
           ),
+
+          Text(widget.store['details'] ?? '説明がありません'),
+        ],
+      ),
+    );
+  }
+
+}
         ],
       ),
     );
