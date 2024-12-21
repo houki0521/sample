@@ -26,6 +26,7 @@ class _EditStoreInformationState extends State<EditStoreInformation> {
   var _fastidiousnessText = '';
   final ImagePicker _picker = ImagePicker();
   List<File> _storesImages = [];
+  List<List<File>> _storesImagesList = [];
   List<List<File>> _courseImagesList = [];
   List<List<File>> _sheetImagesList = [];
   List<List<File>> _menuImagesList = [];
@@ -969,10 +970,23 @@ void _initializeSeatControllers() {
     );
   }
   Future<void> uploadFile(File file) async {
-  await supabase.storage.from('images').upload('file_path', file);
+    // File file;
+
+    // await supabase.storage.from('storesImages').upload('file_path', file);
  }
  Future<void> _saveData(BuildContext context) async {
   try {
+    // 店の画像とフィールドの設定
+    List<Map<String, dynamic>> storesDataList = [];
+    for (int i = 0; i < _storesImages.length; i++) {
+      List<String> storesImagesList = _storesImages.map((file) => file.path).toList();
+        storesDataList.add({
+        'images': storesImagesList,
+
+      });
+      
+    }
+    // print(storesDataList);
     // 必須フィールドの確認
     String storeName = _storeName.text;
     if (storeName.isEmpty) {
@@ -982,7 +996,7 @@ void _initializeSeatControllers() {
     // シート画像とテキストをリストで構築
     List<Map<String, dynamic>> seatDataList = [];
     for (int i = 0; i < _sheetImagesList.length; i++) {
-      List<String> seatImagesList = _sheetImagesList[i].map((file) => file.path).toList();
+      List<String> seatImagesList = _sheetImagesList[i].map((file) => file.path.toString()).toList();
       String seatText = _seatControllers[i].text;
       seatDataList.add({
         'images': seatImagesList,
@@ -990,16 +1004,22 @@ void _initializeSeatControllers() {
       });
     }
 
+
     // コース画像とテキストをリストで構築
     List<Map<String, dynamic>> courseDataList = [];
     for (int i = 0; i < _courseImagesList.length; i++) {
-      List<String> courseImagesList = _courseImagesList[i].map((file) => file.path).toList();
+      // ファイルのパスリストを作成
+      List<String> courseImagesList = _courseImagesList[i].map((file) => file.path.toString()).toList();
+      // コースのテキストを取得
       String courseText = _courseControllers[i].text;
+      // データをリストに追加
       courseDataList.add({
-        'images': courseImagesList,
+        'images': courseImagesList, // リスト形式で格納
         'text': courseText,
       });
     }
+
+
 
     // メニュー画像とテキストをリストで構築
     List<Map<String, dynamic>> menuDataList = [];
@@ -1024,26 +1044,26 @@ void _initializeSeatControllers() {
     }
 
     // StoreDataモデルにデータをマッピング
-    StoreData storeData = StoreData(
-      storeImages: _storesImages.map((file) => file.path).toList(),
-      storeName: storeName,
-      prText: _prTextController.text,
-      featureText: _featureTextController.text,
-      commitment: _commitmentToTheStoreController.text,
-      seatImages: seatDataList.map((seat) => seat['images'] as List<String>).expand((x) => x).toList(),
-      seatText: seatDataList.map((seat) => seat['text'] as String).join(', '),
-      coursImages: courseDataList.map((course) => course['images'] as List<String>).expand((x) => x).toList(),
-      coursText: courseDataList.map((course) => course['text'] as String).join(', '),
-      menuImages: menuDataList.map((menu) => menu['images'] as List<String>).expand((x) => x).toList(),
-      menuText: menuDataList.map((menu) => menu['text'] as String).join(', '),
-      drinkImages: drinkDataList.map((drink) => drink['images'] as List<String>).expand((x) => x).toList(),
-      drinkText: drinkDataList.map((drink) => drink['text'] as String).join(', '),
-    );
+    Map<String, dynamic> storeData = {
+      'storeImages': storesDataList.map((store) => store['images'] as List<String>).expand((x) => x).toList(),
+      'storeName': storeName,
+      'prText': _prTextController.text,
+      'featureText': _featureTextController.text,
+      'commitment': _commitmentToTheStoreController.text,
+      'seatImages': seatDataList.map((seat) => seat['images'] as List<String>).expand((x) => x).toList(),
+      'seatText': seatDataList.map((seat) => seat['text'] as String).join(', '),
+      'coursImages': courseDataList.map((course) => course['images'] as List<String>).expand((x) => x).toList(),
+      'coursText': courseDataList.map((course) => course['text'] as String).join(', '),
+      'menuImages': menuDataList.map((menu) => menu['images'] as List<String>).expand((x) => x).toList(),
+      'menuText': menuDataList.map((menu) => menu['text'] as String).join(', '),
+      'drinkImages': drinkDataList.map((drink) => drink['images'] as List<String>).expand((x) => x).toList(),
+      'drinkText': drinkDataList.map((drink) => drink['text'] as String).join(', '),
+    };
 
     // データ保存
-    // var box = Hive.box<StoreData>('storeDataBox');
-    await box.add(storeData);
-
+    await supabase
+    .from('stores')
+    .insert(storeData);
     // 保存成功時のメッセージ
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(content: Text('データが正常に保存されました。')),

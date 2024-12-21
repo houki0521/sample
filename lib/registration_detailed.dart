@@ -28,12 +28,11 @@ class _RegistrationDetailedPageState extends State<RegistrationDetailedPage> {
   List<String?> _parkingLotOption = ['有', '無', '未確認'];
   List<Map<String, dynamic>> _spaceFacilitiesCheckbox = [
     {'value': 'オシャレな空間', 'checked': false},
-    {'value': '落ち着いた空間', 'checked': false},
     {'value': '席が広い', 'checked': false},
     {'value': 'カップルシートあり', 'checked': false},
     {'value': 'カウンター席あり', 'checked': false},
     {'value': 'ソファー席あり', 'checked': false},
-    {'value': '座席あり', 'checked': false},
+    {'value': '座席なし', 'checked': false},
     {'value': '掘りごたつあり', 'checked': false},
     {'value': 'オープンテラスあり', 'checked': false},
     {'value': 'カラオケあり', 'checked': false},
@@ -48,17 +47,8 @@ class _RegistrationDetailedPageState extends State<RegistrationDetailedPage> {
     {'value': '有料Wi-Fiあり', 'checked': false},
     {'value': '車椅子で入店可', 'checked': false},    
   ];
-  List<Map<String, dynamic>> _cellularTelephoneCheckbox = [
-    {'value': 'docomo', 'checked': false},
-    {'value': 'au', 'checked': false},
-    {'value': 'SoftBnk', 'checked': false},
-    {'value': 'Y!mobile', 'checked': false},
-  ];
+
   List<Map<String, dynamic>> _beverageCheckBox = [
-    {'value': '日本酒あり', 'checked': false},
-    {'value': '焼酎あり', 'checked': false},
-    {'value': 'ワインあり', 'checked': false},
-    {'value': 'カクテルあり', 'checked': false},
     {'value': '日本酒にこだわる', 'checked': false},
     {'value': '焼酎にこだわる', 'checked': false},
     {'value': 'ワインにこだわる', 'checked': false},
@@ -78,7 +68,6 @@ class _RegistrationDetailedPageState extends State<RegistrationDetailedPage> {
   List<Map<String, dynamic>> _locationCheckBox = [
     {'value': '景色がきれい', 'checked': false},
     {'value': '夜景が見える', 'checked': false},
-    {'value': '海が見える', 'checked': false},
     {'value': 'ホテルのレストラン', 'checked': false},
     {'value': '隠れ家レストラン', 'checked': false},
     {'value': '一軒家レストラン', 'checked': false},
@@ -753,41 +742,7 @@ void dispose() {
                   );
                 }).toList(),
               ),
-              SizedBox(height: _screenSize.height * 0.008),
-              const Text(
-                '携帯電話（つながる）',
-                style: TextStyle(
-                  fontWeight: FontWeight.bold
-                ),
-              ),
-              Wrap(
-                spacing: 10.0, // 要素間の水平スペース
-                runSpacing: 10.0, // 要素間の垂直スペース（折り返し時）
-                children: _cellularTelephoneCheckbox.map((e) {
-                  return SizedBox(
-                    width: _screenSize.width * 0.4, // 各要素の固定幅
-                    child: Row(
-                      mainAxisSize: MainAxisSize.min, // 子要素の幅を必要最小限にする
-                      children: [
-                        Checkbox(
-                          value: e['checked'],
-                          onChanged: (bool? checkedValue) {
-                            setState(() {
-                              e['checked'] = checkedValue;
-                            });
-                          },
-                        ),
-                        Expanded(
-                          child: Text(
-                            e['value'],
-                            overflow: TextOverflow.ellipsis, // 長いテキストは省略表示
-                          ),
-                        ),
-                      ],
-                    ),
-                  );
-                }).toList(),
-              ),
+              
               Row(
                 children: <Widget>[
                   Container(
@@ -1194,11 +1149,6 @@ void dispose() {
       bool? isChecked = e['checked'];
       // チェックされている施設の名前と状態を保存する例
       print('$facility: $isChecked');
-      }
-      for (var e in _cellularTelephoneCheckbox) {
-        String facility = e['value'];
-        bool? isChecked = e['checked'];
-        print('$facility: $isChecked');
       }
       for (var e in _beverageCheckBox) {
         String facility = e['value'];

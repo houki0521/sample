@@ -66,3 +66,43 @@ class StoreData extends HiveObject {
            'menuImages: $menuImages, menuText: $menuText,drinkImges: $drinkImages ,drinkText: $drinkText)';
   }
 }
+@HiveType(typeId: 1)
+  class StoreDataMoreInformation extends HiveObject {
+    @HiveField(0)
+    String? storeNamecontroller;
+
+    @HiveField(1)
+    String? furiganaController;
+    @HiveField(2)
+    String? selectedValue;
+    @HiveField(3)
+    String? phoneNumberController;
+    @HiveField(4)
+    String? selectedPrefecture;
+    @HiveField(5)
+    String? municipalities_Controller;
+    @HiveField(6)
+    String? buildingNameFloorNumberController;
+    @HiveField(7)
+    String? ageController;
+    @HiveField(8)
+    int? selectedMonth;
+    @HiveField(9)
+    int? selectedDay;
+    @HiveField(10)
+    String? selectedCategory;
+    @HiveField(11)
+    String? selectedSubCategory;
+    @HiveField(12)
+    String? selectedDish;
+    @HiveField(13)
+    String? homePageURLController;
+    @HiveField(14)
+    String? openDate;
+    @HiveField(15)
+    Map<String, String> times = {};
+
+    // StoreDataMoreInformation({
+
+    // });
+  }

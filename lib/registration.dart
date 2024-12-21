@@ -862,7 +862,6 @@ Future<void> _selectTime(BuildContext context, TextEditingController controller)
 
   if (picked != null) {
     controller.text = picked.format(context);
-    // print("選択した時間: ${controller.text}"); // コンソールに出力
   }
 }
 Future<void> _saveData(BuildContext context) async {
@@ -923,6 +922,5 @@ Future<void> _saveDataTime(BuildContext context) async {
       // print('$day - ${_selectedTimes[day]}');
     }
   });
-   
 }
 }

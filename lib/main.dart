@@ -13,7 +13,6 @@ void main() async {
     url: 'https://xzqcljxnjhpfuwbfdrwz.supabase.co', // 正しいURL
     anonKey: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inh6cWNsanhuamhwZnV3YmZkcnd6Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3MzM0NTk2OTgsImV4cCI6MjA0OTAzNTY5OH0.Z-6ASa-kSo2dN_2jGmQ31ja3J9RAMuoAGnTSybbvwyU', // 正しいanonKey
   );
-  Hive.registerAdapter(StoreDataAdapter());
 
    // Hive初期化
   await Hive.initFlutter();
