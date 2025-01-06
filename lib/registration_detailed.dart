@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'editStoreInformation.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
 
 class RegistrationDetailedPage extends StatefulWidget {
 
@@ -13,6 +14,7 @@ class RegistrationDetailedPage extends StatefulWidget {
 }
 
 class _RegistrationDetailedPageState extends State<RegistrationDetailedPage> {
+  final SupabaseClient supabase = Supabase.instance.client;
   var _appointmentsText = '';
   var _transportationText = '';
   var _privateRoomText = '';
@@ -1081,10 +1083,7 @@ void dispose() {
                   child: ElevatedButton(
                     onPressed: () {
                       _saveData(context);
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(builder: (context) => EditStoreInformation()),
-                      );
+                      
                     },
                     style: ElevatedButton.styleFrom(
                       backgroundColor: Colors.green,  // 背景色
@@ -1104,77 +1103,115 @@ void dispose() {
     );
   }
   Future<void> _saveData(BuildContext context) async {
-    String? selectedReservation = _selectedReservation;
-    print('予約：$selectedReservation');
-    String contractController = _contractController.text;
-    print('予約時の注意事項：$contractController');
-    String transportationController = _transportationController.text;
-    print('交通手段：$transportationController');
-    String? selectedValueNoon = _selectedValueNoon;
-    print('昼 予算:$selectedValueNoon');
-    String? selectedValueNight = _selectedValueNight;
-    print('夜 予算:$selectedValueNight');
-    String? selectedcardItem = _selectedcardItem;
-    print('支払い方法：$selectedcardItem');
-    String serviceChargeAndFeeController = _serviceChargeAndFeeController.text;
-    print('サービス料・チャージ：$serviceChargeAndFeeController');
-    String numberOfseatsController = _numberOfseatsController.text;
-    print('座席：$numberOfseatsController');
-    String seatingDetailsController = _seatingDetailsController.text;
-    print(seatingDetailsController);
-    String whenSeatedController = _whenSeatedController.text;
-    print('着席時：$whenSeatedController');
-    String functionController = _functionController.text;
-    print('立食事：$functionController');
-    String? selectedPrivateRoomItem = _selectedPrivateRoomItem;
-    print('個室：$selectedPrivateRoomItem');
-    String privateRoomController = _privateRoomController.text;
-    print(privateRoomController);
-    String? selectedcharteringOptionItem = _selectedcharteringOptionItem;
-    print('貸切：$selectedcharteringOptionItem');
-    String? selectedParkingLotOptionItem = _selectedParkingLotOptionItem;
-    print('駐車場：$_selectedParkingLotOptionItem');
-    String parkingLotController = _parkingLotController.text;
-    print(parkingLotController);
-    String supplementaryInformationController = _supplementaryInformationController.text;
-    print('補足情報：$supplementaryInformationController');
-    String dressCodeController = _dressCodeController.text;
-    print('ドレスコード：$dressCodeController');
-    String remarksController = _remarksController.text;
-    print('備考：$remarksController');
-
-    setState(() {
+      List<Map<String, dynamic>> spaceFacilitiesCheckbox = [];
       for (var e in _spaceFacilitiesCheckbox) {
       String facility = e['value'];
       bool? isChecked = e['checked'];
       // チェックされている施設の名前と状態を保存する例
-      print('$facility: $isChecked');
+      if (isChecked == true) {
+        spaceFacilitiesCheckbox.add({
+          'facility': facility,
+          'isChecked': isChecked,
+        });
       }
-      for (var e in _beverageCheckBox) {
-        String facility = e['value'];
-        bool? isChecked = e['checked'];
-        print('$facility: $isChecked');
+    }
+    List<Map<String, dynamic>> beverageCheckBox = [];
+    for (var e in _beverageCheckBox) {
+      String facility = e['value'];
+      bool? isChecked = e['checked'];
+      if (isChecked == true) {
+        beverageCheckBox.add({
+          'facility': facility,
+          'isChecked': isChecked,
+        });
       }
-      for (var e in _cookingCheckBox) {
-        String facility = e['value'];
-        bool? isChecked = e['checked'];
-        print('$facility: $isChecked');
+    }
+    List<Map<String, dynamic>> cookingCheckBox = [];
+    for (var e in _cookingCheckBox) {
+      String facility = e['value'];
+      bool? isChecked = e['checked'];
+      if (isChecked == true) {
+        cookingCheckBox.add({
+          'facility': facility,
+          'isChecked': isChecked,
+        });
       }
-      for (var e in _locationCheckBox) {
-        String facility = e['value'];
-        bool? isChecked = e['checked'];
-        print('$facility: $isChecked');
+    }
+    List<Map<String, dynamic>> locationCheckBox = [];
+    for (var e in _locationCheckBox) {
+      String facility = e['value'];
+      bool? isChecked = e['checked'];
+      if (isChecked == true) {
+        locationCheckBox.add({
+          'facility': facility,
+          'isChecked': isChecked,
+        });
       }
-      for (var e in _serviceCheckBox) {
-        String facility = e['value'];
-        bool? isChecked = e['checked'];
-        print('$facility: $isChecked');
+    }
+    List<Map<String, dynamic>> serviceCheckBox = [];
+    for (var e in _serviceCheckBox) {
+      String facility = e['value'];
+      bool? isChecked = e['checked'];
+      if (isChecked == true) {
+        serviceCheckBox.add({
+          'facility': facility,
+          'isChecked': isChecked,
+        });
       }
-      for (var e in _childCheckbox) {
-        String facility = e['value'];
-        bool? isChecked = e['checked'];
-        print('$facility: $isChecked');
+    }
+    List<Map<String, dynamic>> childCheckbox = [];
+    for (var e in _childCheckbox) {
+      String facility = e['value'];
+      bool? isChecked = e['checked'];
+      if (isChecked == true) {
+        childCheckbox.add({
+          'facility': facility,
+          'isChecked': isChecked,
+        });
       }
-    });
+    }
+    Map<String, dynamic> storeDetailsData = {
+      'reservation': _selectedReservation,
+      'contract': _contractController.text,
+      'transportation': _transportationController.text,
+      'lunchBudget': _selectedValueNoon,
+      'nightBudget': _selectedValueNight,
+      'paymentMethod': _selectedcardItem,
+      'serviceChargeAndFee': _serviceChargeAndFeeController.text,
+      'numberOfseats': _numberOfseatsController.text,
+      'seatingDetails': _seatingDetailsController.text,
+      'whenSeated': _whenSeatedController.text,
+      'function': _functionController.text,
+      'selectedPrivateRoom': _selectedPrivateRoomItem,
+      'privateRoom': _privateRoomController.text,
+      'selectedcharteringOption': _selectedcharteringOptionItem ?? '',
+      'selectedParkingLotOption': _selectedParkingLotOptionItem ?? '',
+      'parkingLot': _parkingLotController.text,
+      'spaceFacilitiesCheckbox': spaceFacilitiesCheckbox,
+      'beverageCheckBox': beverageCheckBox,
+      'cookingCheckBox': cookingCheckBox,
+      'locationCheckBox': locationCheckBox,
+      'serviceCheckBox': serviceCheckBox,
+      'childCheckbox': childCheckbox,
+      'supplementaryInformation': _supplementaryInformationController.text,
+      'dressCode': _dressCodeController.text,
+      'remarks': _remarksController.text,
+    };
+    print('送信データ: $storeDetailsData');
+    // データ保存
+    try {
+      final response = await supabase
+        .from('storeDetailsData') // テーブル名を指定
+        .insert(storeDetailsData); // データを挿入
+    Navigator.push(
+      context,
+      MaterialPageRoute(builder: (context) => EditStoreInformation()),
+    );
+    } catch (e) {
+      print(e);
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('データ保存に失敗しました: $e')),
+      );
+    }
   }
 }

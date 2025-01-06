@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'navigation.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
-import 'package:hive_flutter/hive_flutter.dart';
-import 'models/store_data.dart';
+// import 'package:hive_flutter/hive_flutter.dart';
 
-late Box box;
+
+// late Box box;
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -13,14 +13,8 @@ void main() async {
     url: 'https://xzqcljxnjhpfuwbfdrwz.supabase.co', // 正しいURL
     anonKey: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inh6cWNsanhuamhwZnV3YmZkcnd6Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3MzM0NTk2OTgsImV4cCI6MjA0OTAzNTY5OH0.Z-6ASa-kSo2dN_2jGmQ31ja3J9RAMuoAGnTSybbvwyU', // 正しいanonKey
   );
-
-   // Hive初期化
-  await Hive.initFlutter();
-  // Hive.registerAdapter(StoreDataAdapter()); // アダプタを登録
-  await Hive.openBox<StoreData>('storeDataBox');
   runApp(const MyApp());
 }
-
 
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
