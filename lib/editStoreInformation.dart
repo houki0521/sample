@@ -4,10 +4,7 @@ import 'package:dotted_border/dotted_border.dart';
 import 'dart:io';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:flutter/gestures.dart';
-import 'package:hive_flutter/hive_flutter.dart';
-import 'models/store_data.dart';
 import 'navigation.dart';
-import 'package:supabase_flutter/supabase_flutter.dart';
 
 class EditStoreInformation extends StatefulWidget {
   const EditStoreInformation({super.key});
@@ -17,16 +14,13 @@ class EditStoreInformation extends StatefulWidget {
 }
 
 class _EditStoreInformationState extends State<EditStoreInformation> {
-  late Box box;
   bool _isLoggedIn = false; // ログイン状態を追跡
   final SupabaseClient supabase = Supabase.instance.client;
-  final String bucketName = 'images'; // 作成したバケット名
   var _prEditingText = '';
   var _featureText = '';
   var _fastidiousnessText = '';
   final ImagePicker _picker = ImagePicker();
   List<File> _storesImages = [];
-  List<List<File>> _storesImagesList = [];
   List<List<File>> _courseImagesList = [];
   List<List<File>> _sheetImagesList = [];
   List<List<File>> _menuImagesList = [];
@@ -59,8 +53,7 @@ void initState() {
 }
 
 Future<void> initializeBox() async {
-    box = Hive.box<StoreData>('storedatabox');
-    setState(() {}); // 再描画
+
   }
 
 
@@ -184,6 +177,7 @@ void _initializeSeatControllers() {
                           setState(() {
                             _storesImages.add(File(pickedFile.path)); // XFileをFileに変換して状態を更新
                             // print(_storesImages);
+
                           });
                         }
                       } catch (e) {
@@ -949,8 +943,6 @@ void _initializeSeatControllers() {
                         context,
                         MaterialPageRoute(builder: (context) => NavigationPage()),
                       );
-                      
-                      
                     },
                     style: ElevatedButton.styleFrom(
                       backgroundColor: Colors.green,  // 背景色
@@ -969,80 +961,157 @@ void _initializeSeatControllers() {
       ),
     );
   }
-  Future<void> uploadFile(File file) async {
-    // File file;
-
-    // await supabase.storage.from('storesImages').upload('file_path', file);
- }
+Future<String> uploadFile(File file, String path) async {
+  try {
+    // ファイルをアップロード
+    final response = await supabase.storage.from('storeData').upload(
+      path,
+      file,
+      fileOptions: const FileOptions(cacheControl: '3600', upsert: false),
+    );
+    return response; // アップロードされたファイルのパス    
+  } catch (e) {
+    print('Error uploading file: $e');
+    throw Exception('Failed to upload file: $e');
+  }
+}
  Future<void> _saveData(BuildContext context) async {
+  final session = supabase.auth.currentSession; // 現在のセッション
+  final user = session?.user; // ユーザー情報
   try {
     // 店の画像とフィールドの設定
     List<Map<String, dynamic>> storesDataList = [];
     for (int i = 0; i < _storesImages.length; i++) {
-      List<String> storesImagesList = _storesImages.map((file) => file.path).toList();
-        storesDataList.add({
-        'images': storesImagesList,
+      if (_storesImages.isEmpty) {
+        continue; // 空のリストはスキップする
+      }
+      // ファイルを指定
+      final file = _storesImages[i];
+      // ファイル名を指定
+      final fileName = 'store_image_${DateTime.now().millisecondsSinceEpoch}_$i.jpg';
+      // pathを指定
+      final String path = 'private/${user?.id}/$fileName';
+       // ファイルをアップロード
+      final String uploadedPath = await uploadFile(file, path);
+      // 公開URLを取得
+      final String publicUrl = supabase
+        .storage
+        .from('storeData')
+        .getPublicUrl(fileName);
 
+      storesDataList.add({
+        'images': [publicUrl]
       });
-      
     }
-    // print(storesDataList);
     // 必須フィールドの確認
     String storeName = _storeName.text;
     if (storeName.isEmpty) {
       throw Exception('store_name is required.');
     }
-
     // シート画像とテキストをリストで構築
     List<Map<String, dynamic>> seatDataList = [];
+    final flatSheetImages = _sheetImagesList.expand((images) => images).toList(); // フラット化
     for (int i = 0; i < _sheetImagesList.length; i++) {
-      List<String> seatImagesList = _sheetImagesList[i].map((file) => file.path.toString()).toList();
-      String seatText = _seatControllers[i].text;
+      // ファイルを指定
+      final file = flatSheetImages[i];
+      // ファイル名を指定
+      final fileName = 'seeat_image_${DateTime.now().microsecondsSinceEpoch}_${i}.jpg';
+      // pathを指定
+      final String path = 'private/${user?.id}/$fileName';
+      // ファイルをアップロード
+      final String uploadedPath = await uploadFile(file, path);
+      // 公開URLを取得
+      final String publicUrl = supabase
+        .storage
+        .from('storeData')
+        .getPublicUrl(fileName);
+      // 座席のテキストを取得
+      List<String> seatText = [_seatControllers[i].text];
       seatDataList.add({
-        'images': seatImagesList,
+        'images': [publicUrl],
         'text': seatText,
       });
     }
-
-
     // コース画像とテキストをリストで構築
     List<Map<String, dynamic>> courseDataList = [];
+    final flatcourseImages = _courseImagesList.expand((images) => images).toList(); // フラット化
     for (int i = 0; i < _courseImagesList.length; i++) {
-      // ファイルのパスリストを作成
-      List<String> courseImagesList = _courseImagesList[i].map((file) => file.path.toString()).toList();
+      if (_courseImagesList[i].isEmpty) {
+        continue; // 空のリストはスキップする
+      }
+      // ファイルを指定
+      final file = flatcourseImages[i];
+      // ファイル名を指定
+      final fileName = 'course_image_${DateTime.now().microsecondsSinceEpoch}_$i.jpg';
+      // pathを指定
+      final String path = 'private/${user?.id}/$fileName';
+      // ファイルをアップロード
+      final String uploadedPath = await uploadFile(file, path);
+      // 公開URLを取得
+      final String publicUrl = supabase
+        .storage
+        .from('storeData')
+        .getPublicUrl(fileName);
       // コースのテキストを取得
-      String courseText = _courseControllers[i].text;
+      List<String> courseText = [_courseControllers[i].text];
       // データをリストに追加
       courseDataList.add({
-        'images': courseImagesList, // リスト形式で格納
+        'images': [publicUrl],
         'text': courseText,
       });
     }
-
-
-
     // メニュー画像とテキストをリストで構築
     List<Map<String, dynamic>> menuDataList = [];
+    final flatmenuImages = _menuImagesList.expand((images) => images).toList(); // フラット化
     for (int i = 0; i < _menuImagesList.length; i++) {
-      List<String> menuImagesList = _menuImagesList[i].map((file) => file.path).toList();
-      String menuText = _cookingControllers[i].text;
+      if (_menuImagesList[i].isEmpty) {
+        continue; // 空のリストはスキップする
+      }
+      // ファイルを指定
+      final file = flatmenuImages[i];
+      // ファイル名を指定
+      final fileName = 'menu_images_${DateTime.now().microsecondsSinceEpoch}_$i.jpg';
+      // pathを指定
+      final String path = 'private/${user?.id}/$fileName';
+      // ファイルをアップロード
+      final String uploadedPath = await uploadFile(file, path);
+      // 公開URLを取得
+      final String publicUrl = supabase
+        .storage
+        .from('storeData')
+        .getPublicUrl(fileName);
+      List<String> menuText = [_cookingControllers[i].text];
       menuDataList.add({
-        'images': menuImagesList,
+        'images': [publicUrl],
         'text': menuText,
       });
     }
-
     // ドリンク画像とテキストをリストで構築
     List<Map<String, dynamic>> drinkDataList = [];
+    final flatdrinkImages = _drinkImagesList.expand((images) => images).toList(); // フラット化
     for (int i = 0; i < _drinkImagesList.length; i++) {
-      List<String> drinkImagesList = _drinkImagesList[i].map((file) => file.path).toList();
-      String drinkText = _drinkControllers[i].text;
+      if (_drinkImagesList[i].isEmpty) {
+        continue; // 空のリストはスキップする
+      }
+      // ファイルを指定
+      final file = flatdrinkImages[i];
+      // ファイル名を指定
+      final fileName = 'drink_images_${DateTime.now().microsecondsSinceEpoch}_$i.jpg';
+      // pahtを指定
+      final String path = 'private/${user?.id}/$fileName';
+      // ファイルをアップロード
+      final String uploadedPath = await uploadFile(file, path);
+      // 公開URLを取得
+      final String publicUrl = supabase
+        .storage
+        .from('storeData')
+        .getPublicUrl(fileName);
+      List<String> drinkText = [_drinkControllers[i].text];
       drinkDataList.add({
-        'images': drinkImagesList,
+        'images': [publicUrl],
         'text': drinkText,
       });
     }
-
     // StoreDataモデルにデータをマッピング
     Map<String, dynamic> storeData = {
       'storeImages': storesDataList.map((store) => store['images'] as List<String>).expand((x) => x).toList(),
@@ -1051,25 +1120,22 @@ void _initializeSeatControllers() {
       'featureText': _featureTextController.text,
       'commitment': _commitmentToTheStoreController.text,
       'seatImages': seatDataList.map((seat) => seat['images'] as List<String>).expand((x) => x).toList(),
-      'seatText': seatDataList.map((seat) => seat['text'] as String).join(', '),
+      'seatText': seatDataList.map((seat) => seat['text'] as List<String>).expand((x) => x).toList(),
       'coursImages': courseDataList.map((course) => course['images'] as List<String>).expand((x) => x).toList(),
-      'coursText': courseDataList.map((course) => course['text'] as String).join(', '),
+      'coursText': courseDataList.map((course) => course['text'] as List<String>).expand((x) => x).toList(),
       'menuImages': menuDataList.map((menu) => menu['images'] as List<String>).expand((x) => x).toList(),
-      'menuText': menuDataList.map((menu) => menu['text'] as String).join(', '),
+      'menuText': menuDataList.map((menu) => menu['text'] as List<String>).expand((x) => x).toList(),
       'drinkImages': drinkDataList.map((drink) => drink['images'] as List<String>).expand((x) => x).toList(),
-      'drinkText': drinkDataList.map((drink) => drink['text'] as String).join(', '),
+      'drinkText': drinkDataList.map((drink) => drink['text'] as List<String>).expand((x) => x).toList(),
     };
-
     // データ保存
-    await supabase
-    .from('stores')
-    .insert(storeData);
+    final response = await supabase
+      .from('stores') // テーブル名を指定
+      .insert(storeData); // データを挿入
     // 保存成功時のメッセージ
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(content: Text('データが正常に保存されました。')),
     );
-
-    print('データ保存成功');
   } catch (e) {
     print(e);
     // エラー時の処理
@@ -1078,5 +1144,4 @@ void _initializeSeatControllers() {
     );
   }
 }
-
 }

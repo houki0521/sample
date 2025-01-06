@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'Store_Screens.dart';
-import 'package:hive_flutter/hive_flutter.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
 import 'models/store_data.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'dart:io';
@@ -14,60 +14,41 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
+  final supabase = Supabase.instance.client;
+  List<StoreData>? stores;
+
 
   @override
   void initState() {
     super.initState();
     _getAllData(); // データを初期化時に取得
   }
-
-  late Box box;
-  List<Map<String, dynamic>> stores = [];
   
-
-
-  Future<void> _getAllData() async {
+ Future<void> _getAllData() async {
+  final session = supabase.auth.currentSession; // 現在のセッション
+  final user = session?.user; // ユーザー情報
   try {
-    final box = Hive.box<StoreData>('storeDataBox'); // ボックスを開く
-    final hiveStores = box.values.toList(); // 全データをリストで取得
-    final List<Map<String, dynamic>> storeList = []; // dynamic に変更してリストを保持
-    print('Store List Length: ${storeList.length}');
-    if (hiveStores.isNotEmpty) {
-    hiveStores.forEach((store) {
-      // print('取得したデータ: ${store.toString()}');
-      storeList.add({
-        'storeName': store.storeName ?? '',
-        'storeImage': store.storeImages ?? [],
-        'prText': store.prText ?? '',
-        'featureText': store.featureText ?? '',
-        'commitment': store.commitment ?? '',
-        'seatImages': store.seatImages ?? [],
-        'seatText': store.seatText ?? '',
-        'coursImages': store.coursImages ?? [],
-        'coursText': store.coursText ?? '',
-        'menuImages': store.menuImages ?? [],
-        'menuText': store.menuText ?? '',
-        'drinkImages': store.drinkImages ?? [],
-        'drinkText': store.drinkText ?? '',
-      });
+    // データベース取得
+    final response = await supabase
+      .from('stores')
+      .select();
+    print('取得したデータ: $response');
+    // 取得したデータを StoreData クラスに変換
+    final storesList = (response as List<dynamic>)
+        .map((storeJson) => StoreData.fromJson(storeJson)).toList()
+        .toList();
+    setState(() {
+      // リストをセット状態で更新
+      stores = storesList;
     });
-  } else {
-    print('Hiveからデータが取得できませんでした');
-  }
-  setState(() {
-      stores = storeList.isNotEmpty ? storeList : [];
-    });
-
   } catch (e) {
     print('エラーが発生しました: ${e.toString()}');
   }
 }
 
- 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      // backgroundColor: const Color.fromARGB(255, 244, 220, 183),
       appBar: AppBar(
         title: const TextField(
           style: TextStyle(
@@ -106,94 +87,34 @@ class _MyHomePageState extends State<MyHomePage> {
         ),
       ),
       body: ListView.builder(
-        shrinkWrap: true, // 子要素に合わせてサイズを調整
-        // physics: NeverScrollableScrollPhysics(), // スクロールを無効化
-        itemCount: stores.length,
-        itemBuilder: (context, index) {
-          final store = stores[index]; // 各店舗データを取得
-          final storeImage = store['storeImage'] as List<String>;
-
+        itemCount: stores?.length ?? 0,
+        itemBuilder: ((context, index) {
+          final store = stores![index];
           return Card(
             child: ListTile(
-              title: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  // 店舗名
-                  Text(
-                    store['storeName'] ?? '店舗名がありません',
-                    style: const TextStyle(fontWeight: FontWeight.bold),
-                  ),
-                  const SizedBox(width: 8), // テキストとアイコンの間に余白を入れる
-                  // ブックマークアイコン
-                //   IconButton(
-                //     icon: Icon(
-                //       store['isBookmarked']
-                //           ? Icons.bookmark
-                //           : Icons.bookmark_border,
-                //       color: store['isBookmarked'] ? const Color.fromARGB(255, 255, 209, 2) : Colors.grey,
-                //     ),
-                //     onPressed: () {
-                //       setState(() {
-                //         //押した時の動作
-                //         store['isBookmarked'] = !store['isBookmarked'];
-                //       });
-                //     },
-                //   ),
-                ],
-              ),
+              title: Text(store.storeName),
               subtitle: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 mainAxisSize: MainAxisSize.min,
                 children: <Widget>[
-                  // 店舗の画像
-                    GridView.builder(
-                      shrinkWrap: true,
-                      physics: NeverScrollableScrollPhysics(),
-                      gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                        crossAxisCount: 4, // カラム数
-                        crossAxisSpacing: 8, // カラム間のスペース
-                        mainAxisSpacing: 8, // 行間のスペース
-                      ),
-                      itemCount: storeImage.toSet().length,
-                      itemBuilder: (context, index) {
-                        return Wrap(
-                          spacing: 10,
-                          runSpacing: 10,
-                          children: [
-                            Row(
-                              children: [
-                                Expanded(
-                                  child: Container(
-                                    // width: 20,
-                                    height: 90,
-                                    child: Image.file(
-                                      File(storeImage[index]),
-                                      fit: BoxFit.cover,
-                                      errorBuilder: (context, error, stackTrace) {
-                                        return Container(
-                                          color: Colors.grey,
-                                          child: Center(
-                                          child: Text(
-                                            '画像を読み込めませんでした',
-                                            style: TextStyle(color: Colors.white),
-                                            ),
-                                          ),
-                                        );
-                                      },
-                                    ),
-                                  ),
-                                ),
-                              ],
-                            )
-                          ],
-                        );
-                      }
+                  GridView.builder(
+                    shrinkWrap: true,
+                    physics: NeverScrollableScrollPhysics(),
+                    gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                      crossAxisCount: 1, // カラム数
+                      crossAxisSpacing: 0, // カラム間のスペース
+                      mainAxisSpacing: 0, // 行間のスペース
                     ),
-                  const SizedBox(height: 10),
-                  // 店の説明
-                  Text(store['prText'] ?? ''),
-                  SizedBox(height: 10),
-                  //店の星評価
+                    itemCount: store.storeImages.length,
+                    itemBuilder: ((context, index) {
+                      return AspectRatio(
+                        aspectRatio: 20/16,
+                        child: Image.file(File(store.storeImages[index]))
+                      );
+                    })
+                  ),
+                  Text(store.prText),
+                   //店の星評価
                   Row(
                     children: [
                       RatingBar.builder(
@@ -210,44 +131,23 @@ class _MyHomePageState extends State<MyHomePage> {
                         },
                       ),
                       SizedBox(width: 5),
-                      Text(store['star'].toString(),style: const TextStyle(fontWeight: FontWeight.bold,fontSize: 23),)
+                      // Text(store['star'].toString(),style: const TextStyle(fontWeight: FontWeight.bold,fontSize: 23),)
                     ],
                   ),
-                  Row(
-                    children: [
-                      Icon(Icons.paid,color: Color.fromARGB(255, 232, 190, 1)),
-                      Text(store['price'].toString()),
-                      SizedBox(width: 11),
-                      Icon(Icons.schedule,color: const Color.fromARGB(255, 229, 198, 57)),
-                      Text(store['hours'].toString()),
-                    ],
-                  ),
-                  // ElevatedButton(
-                  //   onPressed: () {
-                  //     clearAllData();
-                  //   },
-                  //   child: Text('削除')
-                  // )
+                  const SizedBox(height: 10),
                 ],
               ),
               onTap: () {
                 Navigator.push(
                   context,
                   MaterialPageRoute(
-                    builder: (context) => Store_ScreensPage(
-                      store: store
-                    )),
-                  );
-                }
-              ),
-            );
-          },
-        ),
-      );
-    }
-    Future<void> clearAllData() async {
-    final box = await Hive.openBox<StoreData>('storeDataBox'); // ボックスを開く
-    await box.clear();
-    print('すべてのデータを削除しました');
+                    builder: (context) => Store_ScreensPage(store: store)),
+                );
+              },
+            ),
+          );
+        })
+      ),
+    );
   }
 }

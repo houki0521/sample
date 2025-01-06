@@ -12,8 +12,7 @@ class RegistrationPage extends StatefulWidget {
 }
 
 class _RegistrationPageState extends State<RegistrationPage> {
-  
-
+  final SupabaseClient supabase = Supabase.instance.client;
   List<String> weekdays = ['月曜日', '火曜日', '水曜日', '木曜日', '金曜日', '土曜日', '日曜日'];
   List<String> weekday = ['月', '火', '水', '木', '金', '土', '日'];
   List<String> selectedTime = ['時間を指定','24時間営業', '定休日'];
@@ -36,6 +35,7 @@ class _RegistrationPageState extends State<RegistrationPage> {
   final TextEditingController _buildingNameFloorNumberController = TextEditingController();
   final TextEditingController _ageController = TextEditingController();
   final TextEditingController _homePageURLController = TextEditingController();
+  
   
   
   
@@ -274,7 +274,6 @@ void dispose() {
                               onChanged: (String? value) {
                                 setState(() {
                                   _selectedValue = '無（不明または非公開）';
-                                  print(_selectedValue);
                                 });
                               },
                             ),
@@ -713,7 +712,6 @@ void dispose() {
                   child: ElevatedButton(
                       onPressed: () {
                         _saveData(context);
-
                       },
                       style: ElevatedButton.styleFrom(
                         backgroundColor: Colors.green,  // 背景色
@@ -738,7 +736,6 @@ void dispose() {
     builder: (context) {
       return Container(
           width: MediaQuery.of(context).size.width, // 画面幅いっぱい
-          // height: MediaQuery.of(context).size.height,
           child: Column(
             mainAxisSize: MainAxisSize.min, // Columnのサイズを最小限に設定
             children: <Widget>[
@@ -827,7 +824,8 @@ void dispose() {
                           groupValue: _selectedTimes[day],
                           onChanged: (String? value) {
                             setState(() {
-                              _selectedTimes[day] = value; // 選択を更新
+                              String? selectedValue = value;
+                              _selectedTimes[day] = selectedValue; // 選択を更新
                             });
                           },
                         );
@@ -865,43 +863,82 @@ Future<void> _selectTime(BuildContext context, TextEditingController controller)
   }
 }
 Future<void> _saveData(BuildContext context) async {
-  String storeNamecontroller = _storeNamecontroller.text;
-  String furiganaController = _furiganaController.text;
-  String? selectedValue = _selectedValue;
-  String phoneNumberController = _phoneNumberController.text;
-  String? selectedPrefecture = _selectedPrefecture;
-  String municipalities_Controller = _municipalities_Controller.text;
-  String buildingNameFloorNumberController = _buildingNameFloorNumberController.text;
+  List<String> phoneNumber = [];
+  if ((_selectedValue ?? '').isNotEmpty) {
+    phoneNumber.add(_selectedValue!);
+  }
+  if ((_phoneNumberController.text ?? '').isNotEmpty) {
+    phoneNumber.add(_phoneNumberController.text);
+}
   String ageController = _ageController.text;
   int? selectedMonth = _selectedMonth;
   int? selectedDay = _selectedDay;
   String? selectedCategory = _selectedCategory;
   String? selectedSubCategory = _selectedSubCategory;
   String? selectedDish = _selectedDish;
-  String homePageURLController = _homePageURLController.text;
-
   // オープン日の文字列を作成
   String openDate = '$ageController年${selectedMonth ?? ''}月${selectedDay ?? ''}日';
-
-  // 営業時間データを収集
+  // ジャンルの文字列を作成
+  String genre = [
+    selectedCategory,
+    selectedSubCategory,
+    selectedDish
+  ].where((element) => element != null && element.isNotEmpty).join(' > ');
+    // 営業時間データを収集
+  List<Map<String, dynamic>> businessHours = [];
   Map<String, String> times = {};
+  List<String> value = ['時間を指定','24時間営業', '定休日'];
   for (var day in weekdays) {
     String startTime = _startTimeControllers[day]!.text;
     String endTime = _endTimeControllers[day]!.text;
     if (startTime.isNotEmpty && endTime.isNotEmpty) {
-      times[day] = '$day $startTime ～ $endTime';
-    } else {
-      times[day] = '未選択';
+      times[day] = '$startTime ～ $endTime';
+      businessHours.add({
+        'day': day,
+        'time': times[day],
+      });
+    } else{
+      businessHours.add({
+        'day': day,
+        'time': _selectedTimes[day],
+      });
     }
   }
+  // StoreDataモデルにデータをマッピング
+  Map<String, dynamic> storeDetailsData = {
+    'storeName': _storeNamecontroller.text,
+    'furigana': _furiganaController.text,
+    'phoneNumberSelected': _selectedValue,
+    'phoneNumber': _phoneNumberController.text,
+    'prefecture': _selectedPrefecture,
+    'municipalities': _municipalities_Controller.text,
+    'buildingNameFloorNumber': _buildingNameFloorNumberController.text,
+    'openDate': openDate,
+    'genre': genre.isNotEmpty ? genre : '未設定',
+    'homePageURL': _homePageURLController.text,
+    'businessHours': businessHours
+  };
 
-  // データを次の画面に渡して遷移
-  Navigator.push(
-    context,
+  // データ保存
+  print('送信データ: $storeDetailsData');
+
+  try {
+    final response = await supabase
+      .from('storeDetailsData') // テーブル名を指定
+      .insert(storeDetailsData); // データを挿入
+    // データを次の画面に渡して遷移
+    Navigator.push(
+      context,
     MaterialPageRoute(
       builder: (context) => RegistrationDetailedPage(),
     ),
   );
+  } catch (e) {
+    print(e);
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(content: Text('データ保存に失敗しました: $e')),
+    );
+  }
 }
 
 Future<void> _saveDataTime(BuildContext context) async {
