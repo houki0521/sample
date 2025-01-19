@@ -4,6 +4,7 @@ import 'package:supabase_flutter/supabase_flutter.dart';
 import 'models/store_data.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'dart:io';
+import 'package:auto_route/auto_route.dart';
 
 class MyHomePage extends StatefulWidget {
   const MyHomePage({super.key, required this.title});
@@ -13,6 +14,7 @@ class MyHomePage extends StatefulWidget {
   State<MyHomePage> createState() => _MyHomePageState();
 }
 
+@RoutePage()
 class _MyHomePageState extends State<MyHomePage> {
   final supabase = Supabase.instance.client;
   List<StoreData>? stores;
@@ -32,7 +34,7 @@ class _MyHomePageState extends State<MyHomePage> {
     final response = await supabase
       .from('stores')
       .select();
-    print('取得したデータ: $response');
+    // print('取得したデータ: $response');
     // 取得したデータを StoreData クラスに変換
     final storesList = (response as List<dynamic>)
         .map((storeJson) => StoreData.fromJson(storeJson)).toList()

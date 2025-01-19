@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_vector_icons/flutter_vector_icons.dart';
 import 'registration.dart';
+import 'add_photo.dart';
 
 class PostingPage extends StatefulWidget {
   const PostingPage({super.key});
@@ -31,16 +32,12 @@ class _PostingPageState extends State<PostingPage> {
                     Column(
                       children: <Widget>[
                         IconButton.outlined(
-                          onPressed: () {},
-                          icon: Icon(Icons.camera_enhance),
-                          ),
-                          Text('写真を追加'),
-                      ],
-                    ),
-                    Column(
-                      children: <Widget>[
-                        IconButton.outlined(
-                          onPressed: () {},
+                          onPressed: () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(builder: (context) => AddPhoto()),
+                            );
+                          },
                           icon: Icon(Icons.mode_edit_outline_outlined),
                           ),
                           Text('口コミを書く'),

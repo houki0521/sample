@@ -14,6 +14,7 @@ class RegistrationDetailedPage extends StatefulWidget {
 }
 
 class _RegistrationDetailedPageState extends State<RegistrationDetailedPage> {
+
   final SupabaseClient supabase = Supabase.instance.client;
   var _appointmentsText = '';
   var _transportationText = '';
@@ -1083,7 +1084,6 @@ void dispose() {
                   child: ElevatedButton(
                     onPressed: () {
                       _saveData(context);
-                      
                     },
                     style: ElevatedButton.styleFrom(
                       backgroundColor: Colors.green,  // 背景色
@@ -1201,8 +1201,8 @@ void dispose() {
     // データ保存
     try {
       final response = await supabase
-        .from('storeDetailsData') // テーブル名を指定
-        .insert(storeDetailsData); // データを挿入
+      .from('storeDetailsData') // テーブル名を指定
+      .insert(storeDetailsData); // データを挿入
     Navigator.push(
       context,
       MaterialPageRoute(builder: (context) => EditStoreInformation()),

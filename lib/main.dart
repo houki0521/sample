@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 import 'navigation.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
-// import 'package:hive_flutter/hive_flutter.dart';
+import 'myPage.dart';
+import 'homePage.dart';
 
 
 // late Box box;
@@ -24,6 +25,13 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       title: 'Flutter Demo',
       debugShowCheckedModeBanner: false,
+      initialRoute: '/navigation', // ここで最初に表示するルートを設定
+      routes: <String, WidgetBuilder> {
+        '/navigation': (context) => NavigationPage(),
+        '/home': (context) => MyHomePage(title: 'ホーム画面'),
+        '/saveList': (context) => Center(child: Text('保存リスト')),
+        'navigation/myPage': (context) => Mypage(title: 'マイページ'),
+      },
       theme: ThemeData(
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
         useMaterial3: true,
