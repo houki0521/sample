@@ -136,11 +136,7 @@ class _LoginPageState extends State<LoginPage> {
 
     // ログイン成功後に次のページへ遷移
     if (session != null && user != null) {
-      await Navigator.of(context).pushReplacement(
-        MaterialPageRoute(builder: (context) {
-          return NavigationPage(); // ログイン後のページ
-        }),
-      );
+      Navigator.popUntil(context, (route) => route.isFirst);
     } else {
       setState(() {
         infoText = 'ログイン失敗: セッションまたはユーザー情報がありません。';

@@ -4,7 +4,6 @@ import 'package:dotted_border/dotted_border.dart';
 import 'dart:io';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:flutter/gestures.dart';
-import 'navigation.dart';
 
 class EditStoreInformation extends StatefulWidget {
   const EditStoreInformation({super.key});
@@ -177,7 +176,6 @@ void _initializeSeatControllers() {
                           setState(() {
                             _storesImages.add(File(pickedFile.path)); // XFileをFileに変換して状態を更新
                             // print(_storesImages);
-
                           });
                         }
                       } catch (e) {
@@ -939,10 +937,7 @@ void _initializeSeatControllers() {
                 child: ElevatedButton(
                     onPressed: () async {
                       _saveData(context);
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(builder: (context) => NavigationPage()),
-                      );
+                      Navigator.popUntil(context, (route) => route.isFirst);
                     },
                     style: ElevatedButton.styleFrom(
                       backgroundColor: Colors.green,  // 背景色
@@ -991,7 +986,7 @@ Future<String> uploadFile(File file, String path) async {
       final fileName = 'store_image_${DateTime.now().millisecondsSinceEpoch}_$i.jpg';
       // pathを指定
       final String path = 'private/${user?.id}/$fileName';
-       // ファイルをアップロード
+      // ファイルをアップロード
       final String uploadedPath = await uploadFile(file, path);
       // 公開URLを取得
       final String publicUrl = supabase

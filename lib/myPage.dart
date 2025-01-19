@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'login.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
-import 'navigation.dart';
+import 'add_photo.dart';
 import 'profile.dart';
 import 'posting.dart';
-import 'calendar.dart';
+import 'package:auto_route/auto_route.dart';
 
 class Mypage extends StatefulWidget {
   const Mypage({super.key, required this.title});
@@ -14,6 +14,7 @@ class Mypage extends StatefulWidget {
   State<Mypage> createState() => _MypageState();
 }
 
+@RoutePage()
 class _MypageState extends State<Mypage> {
   final SupabaseClient supabase = Supabase.instance.client;
   bool _isLoggedIn = false; // ログイン状態を追跡
@@ -80,7 +81,7 @@ void _incrementwentCounter() {
   Widget build(BuildContext context) {
     var _screenSize = MediaQuery.of(context).size;
     return DefaultTabController(
-      length: 4,
+      length: 2,
       child: Scaffold(
         appBar: AppBar(
           elevation: 5,
@@ -216,8 +217,6 @@ void _incrementwentCounter() {
           tabs: <Widget>[
             Tab(icon: Icon(Icons.grid_view),),
             Tab(icon: Icon(Icons.list_sharp)),
-            Tab(icon: Icon(Icons.calendar_month)),
-            Tab(icon: Icon(Icons.access_alarm),)
           ],
         ),
         Expanded(
@@ -239,15 +238,20 @@ void _incrementwentCounter() {
                         fontSize: 13,
                       ),
                       ),
-                      ElevatedButton(
-                        onPressed: () {},
-                        child: Text('さっそく投稿する'),
-                        style: ElevatedButton.styleFrom(
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(5),
-                          ),
+                    ElevatedButton(
+                      onPressed: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(builder: (context) => AddPhoto()),
+                        );
+                      },
+                      child: Text('さっそく投稿する'),
+                      style: ElevatedButton.styleFrom(
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(5),
                         ),
                       ),
+                    ),
                   ],
                 ),
               ),
@@ -268,7 +272,12 @@ void _incrementwentCounter() {
                       ),
                       ),
                       ElevatedButton(
-                        onPressed: () {},
+                        onPressed: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(builder: (context) => AddPhoto()),
+                          );
+                        },
                         child: Text('さっそく投稿する'),
                         style: ElevatedButton.styleFrom(
                           shape: RoundedRectangleBorder(
@@ -279,27 +288,24 @@ void _incrementwentCounter() {
                   ],
                 ),
               ),
-              Center(child: CalendarScreen()),
-              Center(child: Text('日本地図'),)
-
             ],
           ),
         ),
         Container(
-          child: ElevatedButton(onPressed: () {
-            Navigator.push(
-              context,
-              MaterialPageRoute(builder: (context) => PostingPage()),
-            );
-          },
-          child: Row(
-            mainAxisSize: MainAxisSize.min,
-
-            children: <Widget>[
-              Icon(Icons.mode_edit_outline_outlined),
-              Text('投稿'),
-            ],
-          ),
+          child: ElevatedButton(
+            onPressed: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => PostingPage()),
+              );
+            },
+            child: Row(
+              mainAxisSize: MainAxisSize.min,
+              children: <Widget>[
+                Icon(Icons.mode_edit_outline_outlined),
+                Text('投稿'),
+              ],
+            ),
           ),
         ),
       ],

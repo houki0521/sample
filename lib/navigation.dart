@@ -15,16 +15,16 @@ class _NavigationPageState extends State<NavigationPage> {
   int _loginCount = 0;
   int _currentIndex = 0;
   bool _isLoggedIn = false; // ログイン状態を追跡
-  
 
+  // ページの数
   final List<Widget> _pages = [
     const Center(child: MyHomePage(title: 'ホーム画面')),
     const Center(child: Text('保存リスト')),
-
     const Center(child: Mypage(title: 'マイページ',),)
   ];
 
-    void initState() {
+
+  void initState() {
     super.initState();
     _checkLoginStatus(); // ログイン状態を確認
   }
@@ -70,7 +70,6 @@ class _NavigationPageState extends State<NavigationPage> {
             icon: Icon(Icons.settings),
             label: '保存リスト',
           ),
-
           BottomNavigationBarItem(
             icon: Icon(Icons.account_circle),
             label: 'マイページ',

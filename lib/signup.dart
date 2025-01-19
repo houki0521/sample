@@ -140,11 +140,7 @@ class _SignupPageState extends State<SignupPage> {
       });
 
       // マイページへ遷移
-      await Navigator.of(context).pushReplacement(
-        MaterialPageRoute(builder: (context) {
-          return NavigationPage();
-        }),
-      );
+      Navigator.popUntil(context, (route) => route.isFirst);
     } else {
       // ユーザー情報が取得できない場合
       setState(() {
