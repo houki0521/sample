@@ -35,8 +35,17 @@ class _ProfilePageState extends State<ProfilePage> {
   int? _selectedMonth;
   int? _selectedDay;
   String? _g_selection = '非公開';
-  TextEditingController _controller = TextEditingController();
+  TextEditingController Title_controller = TextEditingController();
+  TextEditingController SubTitle_controller = TextEditingController();
+  TextEditingController SelfIntroduction_controller = TextEditingController();
   String _result = "";
+  //final TextEditingController _controller = TextEditingController();
+
+  @override
+  void dispose() {
+    Title_controller.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -57,32 +66,29 @@ class _ProfilePageState extends State<ProfilePage> {
                     children: [
                       Text(
                         'ニックネーム',
-                        style: TextStyle(
-                          fontWeight: FontWeight.bold
-                        ),
+                        style: TextStyle(fontWeight: FontWeight.bold),
                       ),
                       SizedBox(
                         width: 5,
                       ),
                       Container(
                         decoration: BoxDecoration(
-                        color: Colors.red,
-                        borderRadius: BorderRadius.circular(3),
-                        border: Border.all(color: Colors.red),
-                      ),
-                      child: Text(
-                        "必須",
-                        style: TextStyle(
-                          color: Colors.white
+                          color: const Color.fromARGB(255, 215, 65, 55),
+                          borderRadius: BorderRadius.circular(3),
+                          border: Border.all(
+                              color: const Color.fromARGB(255, 215, 65, 55)),
                         ),
-                      ),
+                        child: Text(
+                          "必須",
+                          style: TextStyle(color: Colors.white),
+                        ),
                       ),
                     ],
                   ),
                   SizedBox(height: 10),
                   TextFormField(
                     decoration: const InputDecoration(
-                      hintText: '入力フォーム',
+                      hintText: '入力',
                       border: OutlineInputBorder(),
                     ),
                   ),
@@ -94,10 +100,9 @@ class _ProfilePageState extends State<ProfilePage> {
                     children: <Widget>[
                       Text(
                         '現住所',
-                        style: TextStyle(
-                          fontWeight: FontWeight.bold
-                        ),
+                        style: TextStyle(fontWeight: FontWeight.bold),
                       ),
+                      SizedBox(height: 10),
                       PopupMenuButton(
                         child: Row(
                           children: <Widget>[
@@ -157,9 +162,7 @@ class _ProfilePageState extends State<ProfilePage> {
                     children: <Widget>[
                       Text(
                         '性別',
-                        style: TextStyle(
-                          fontWeight: FontWeight.bold
-                        ),
+                        style: TextStyle(fontWeight: FontWeight.bold),
                       ),
                       PopupMenuButton(
                         child: Row(
@@ -217,9 +220,7 @@ class _ProfilePageState extends State<ProfilePage> {
                   ),
                   Text(
                     '生年月日',
-                    style: TextStyle(
-                      fontWeight: FontWeight.bold
-                    ),
+                    style: TextStyle(fontWeight: FontWeight.bold),
                   ),
                   Row(
                     children: <Widget>[
@@ -299,53 +300,82 @@ class _ProfilePageState extends State<ProfilePage> {
                     children: [
                       Text(
                         'タイトル',
-                        style: TextStyle(
-                          fontWeight: FontWeight.bold
-                        ),
+                        style: TextStyle(fontWeight: FontWeight.bold),
                       ),
                       SizedBox(
                         width: 5,
                       ),
                       Container(
                         decoration: BoxDecoration(
-                        color: Colors.red,
-                        borderRadius: BorderRadius.circular(3),
-                        border: Border.all(color: Colors.red),
-                      ),
-                      child: Text(
-                        "必須",
-                        style: TextStyle(
-                          color: Colors.white
+                          color: const Color.fromARGB(255, 215, 65, 55),
+                          borderRadius: BorderRadius.circular(3),
+                          border: Border.all(
+                              color: const Color.fromARGB(255, 215, 65, 55)),
+                        ),
+                        child: Text(
+                          "必須",
+                          style: TextStyle(color: Colors.white),
                         ),
                       ),
+                    ],
+                  ),
+                  TextField(
+                    controller: Title_controller,
+                    decoration: InputDecoration(
+                      border: OutlineInputBorder(),
                     ),
-                  ],
-                ),
-                Container(
-                  child: ElevatedButton(
-                      onPressed: () async {
-                        signOut(context);
-                      },
-                      child: Row(
-                        mainAxisSize: MainAxisSize.min, // ボタンのサイズをテキストに合わせる
-                        children: [
-                          Text('ログアウト'),
-                          SizedBox(width: 8), // テキストとアイコンの間にスペースを追加
-                          Icon(Icons.logout),
-                        ],
-                      ),
+                  ),
+                  const SizedBox(
+                    height: 30,
+                  ),
+                  Text(
+                    'サブタイトル',
+                    style: TextStyle(fontWeight: FontWeight.bold),
+                  ),
+                  TextField(
+                    controller: SubTitle_controller,
+                    decoration: InputDecoration(
+                      border: OutlineInputBorder(),
                     ),
-            ),
-              ],
-            )
-          )
+                  ),
+                  SizedBox(
+                    height: 30,
+                  ),
+                  Text(
+                    '自己紹介文',
+                    style: TextStyle(fontWeight: FontWeight.bold),
+                  ),
+                  TextField(
+                    controller: SelfIntroduction_controller,
+                    decoration: InputDecoration(
+                      border: OutlineInputBorder(),
+                    ),
+                  ),
+                ],
+              )),
+          Center(
+            child: ElevatedButton(
+                onPressed: () {
+                  await_saveProfileData();
+                },
+                style: ElevatedButton.styleFrom(
+                    backgroundColor: Colors.green,
+                    minimumSize: Size(410, 40),
+                    shape: BeveledRectangleBorder(
+                      borderRadius: BorderRadius.circular(0),
+                    )),
+                child: Text(
+                  '決定',
+                  style: TextStyle(color: Color.fromARGB(255, 255, 255, 255)),
+                )),
+          ),
         ],
       ),
     );
   }
 
   Future<void> _calculation(BuildContext context) async {
-    int? age = int.tryParse(_controller.text);
+    int? age = int.tryParse(Title_controller.text);
 
     if (age == null) {
       setState(() {
@@ -372,12 +402,50 @@ class _ProfilePageState extends State<ProfilePage> {
     }
   }
 
-  
-
   Future<void> signOut(BuildContext context) async {
     await supabase.auth.signOut();
     Navigator.of(context)
-          .pushReplacement(MaterialPageRoute(builder: (context) => LoginPage()));
+        .pushReplacement(MaterialPageRoute(builder: (context) => LoginPage()));
+  }
+
+  void await_saveProfileData() async {
+    try {
+      final response = await supabase
+        ..from('ProfileData').insert([
+          {
+            'nickname': Title_controller.text,
+            'prefecture': _selectedPrefecture,
+            'gender': _selectedgender,
+            'birth_date': _selectedYear != null &&
+                    _selectedMonth != null &&
+                    _selectedDay != null
+                ? DateTime(_selectedYear!, _selectedMonth!, _selectedDay!)
+                    .toIso8601String()
+                : null,
+            'title': Title_controller.text,
+            'subtitle': SubTitle_controller.text,
+            'self_introduction': SelfIntroduction_controller.text,
+          }
+        ]);
+
+      if (response == null) {
+        // 成功時の処理
+        print('データを保存しました: ${response}');
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('データを保存しました')),
+        );
+      } else {
+        // エラー時の処理
+        print('エラー: ${response}');
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('データ保存に失敗しました: ${response}')),
+        );
+      }
+    } catch (e) {
+      print('エラー: $e');
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('エラーが発生しました: $e')),
+      );
+    }
   }
 }
-

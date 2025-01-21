@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'Store_Screens.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
+import 'Store_Screens.dart';
 import 'models/store_data.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'dart:io';
