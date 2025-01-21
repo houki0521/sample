@@ -1,4 +1,8 @@
 import 'package:flutter/material.dart';
+<<<<<<< HEAD
+=======
+// import 'package:hive_flutter/hive_flutter.dart';
+>>>>>>> 68976b8 (Save changes before pull)
 import 'models/store_data.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:latlong2/latlong.dart';
@@ -144,4 +148,23 @@ class _Store_ScreensPageState extends State<Store_ScreensPage> {
       )
     );
   }
+<<<<<<< HEAD
 }
+=======
+
+}
+  //       ],
+  //     ),
+  //   );
+  // }
+
+  // 画像表示用のウィジェット
+  Widget buildImage(String path) => Container(
+    margin: const EdgeInsets.symmetric(horizontal: 5),
+    child: Image.asset(
+      path,
+      fit: BoxFit.cover,
+    ),
+  );
+// }
+>>>>>>> 68976b8 (Save changes before pull)

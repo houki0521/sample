@@ -25,6 +25,7 @@ class _MyHomePageState extends State<MyHomePage> {
     super.initState();
     _getAllData(); // データを初期化時に取得
   }
+<<<<<<< HEAD
   
  Future<void> _getAllData() async {
   final session = supabase.auth.currentSession; // 現在のセッション
@@ -39,6 +40,27 @@ class _MyHomePageState extends State<MyHomePage> {
     final storesList = (response as List<dynamic>)
         .map((storeJson) => StoreData.fromJson(storeJson)).toList()
         .toList();
+=======
+
+  // late Box box;
+  List<Map<String, String>> stores = [];
+
+  Future<void> _getAllData() async {
+  try {
+    // final box = Hive.box<StoreData>('storeDataBox'); // ボックスを開く
+    // final hiveStores = box.values.toList(); // 全データをリストで取得
+    // final List<Map<String, String>> storeList = [];
+    // print('Store List Length: ${storeList.length}');
+    // for (var store in hiveStores) {
+    //   storeList.add({
+    //     'name': store?.storeName ?? '',
+    //     'image': store?.storeImages[0] ?? '',
+    //     'description': store?.featureText ?? '',
+    //     'details': store?.commitment ?? '',
+      });
+    }
+
+>>>>>>> 68976b8 (Save changes before pull)
     setState(() {
       // リストをセット状態で更新
       stores = storesList;
