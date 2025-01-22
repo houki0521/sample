@@ -937,7 +937,7 @@ void _initializeSeatControllers() {
                 child: ElevatedButton(
                     onPressed: () async {
                       _saveData(context);
-                      Navigator.popUntil(context, (route) => route.isFirst);
+                      
                     },
                     style: ElevatedButton.styleFrom(
                       backgroundColor: Colors.green,  // 背景色
@@ -987,12 +987,12 @@ Future<String> uploadFile(File file, String path) async {
       // pathを指定
       final String path = 'private/${user?.id}/$fileName';
       // ファイルをアップロード
-      final String uploadedPath = await uploadFile(file, path);
+      await uploadFile(file, path);
       // 公開URLを取得
-      final String publicUrl = supabase
+      final String publicUrl = await supabase
         .storage
         .from('storeData')
-        .getPublicUrl(fileName);
+        .getPublicUrl(path);
 
       storesDataList.add({
         'images': [publicUrl]
@@ -1014,12 +1014,12 @@ Future<String> uploadFile(File file, String path) async {
       // pathを指定
       final String path = 'private/${user?.id}/$fileName';
       // ファイルをアップロード
-      final String uploadedPath = await uploadFile(file, path);
+      await uploadFile(file, path);
       // 公開URLを取得
-      final String publicUrl = supabase
+      final String publicUrl = await supabase
         .storage
         .from('storeData')
-        .getPublicUrl(fileName);
+        .getPublicUrl(path);
       // 座席のテキストを取得
       List<String> seatText = [_seatControllers[i].text];
       seatDataList.add({
@@ -1041,12 +1041,12 @@ Future<String> uploadFile(File file, String path) async {
       // pathを指定
       final String path = 'private/${user?.id}/$fileName';
       // ファイルをアップロード
-      final String uploadedPath = await uploadFile(file, path);
+      await uploadFile(file, path);
       // 公開URLを取得
-      final String publicUrl = supabase
+      final String publicUrl = await supabase
         .storage
         .from('storeData')
-        .getPublicUrl(fileName);
+        .getPublicUrl(path);
       // コースのテキストを取得
       List<String> courseText = [_courseControllers[i].text];
       // データをリストに追加
@@ -1069,12 +1069,12 @@ Future<String> uploadFile(File file, String path) async {
       // pathを指定
       final String path = 'private/${user?.id}/$fileName';
       // ファイルをアップロード
-      final String uploadedPath = await uploadFile(file, path);
+      await uploadFile(file, path);
       // 公開URLを取得
-      final String publicUrl = supabase
+      final String publicUrl = await supabase
         .storage
         .from('storeData')
-        .getPublicUrl(fileName);
+        .getPublicUrl(path);
       List<String> menuText = [_cookingControllers[i].text];
       menuDataList.add({
         'images': [publicUrl],
@@ -1095,12 +1095,12 @@ Future<String> uploadFile(File file, String path) async {
       // pahtを指定
       final String path = 'private/${user?.id}/$fileName';
       // ファイルをアップロード
-      final String uploadedPath = await uploadFile(file, path);
+      await uploadFile(file, path);
       // 公開URLを取得
-      final String publicUrl = supabase
+      final String publicUrl = await supabase
         .storage
         .from('storeData')
-        .getPublicUrl(fileName);
+        .getPublicUrl(path);
       List<String> drinkText = [_drinkControllers[i].text];
       drinkDataList.add({
         'images': [publicUrl],
@@ -1131,6 +1131,7 @@ Future<String> uploadFile(File file, String path) async {
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(content: Text('データが正常に保存されました。')),
     );
+    Navigator.popUntil(context, (route) => route.isFirst);
   } catch (e) {
     print(e);
     // エラー時の処理

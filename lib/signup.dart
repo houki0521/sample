@@ -1,6 +1,5 @@
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:flutter/material.dart';
-import 'navigation.dart';
 import 'package:flutter/gestures.dart';
 import 'login.dart';
 

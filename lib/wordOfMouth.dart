@@ -562,7 +562,7 @@ void _showPicker() {
       final response = await supabase
         .from('wordOfMouthData') // テーブル名を指定
         .insert(wordOfMouthData); // データを挿入
-       ScaffoldMessenger.of(context).showSnackBar(
+      ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text('データが正常に保存されました。')),
       );
       Navigator.popUntil(context, (route) => route.isFirst);

@@ -109,33 +109,10 @@ class _MyHomePageState extends State<MyHomePage> {
                     ),
                     itemCount: store.storeImages.length,
                     itemBuilder: ((context, index) {
-                      return AspectRatio(
-                        aspectRatio: 20/16,
-                        child: Image.file(File(store.storeImages[index]))
-                      );
+                      return Image.network(store.storeImages[index]);
                     })
                   ),
                   Text(store.prText),
-                   //店の星評価
-                  Row(
-                    children: [
-                      RatingBar.builder(
-                        // initialRating: !store['star'],
-                        itemSize: 25,
-                        allowHalfRating: true,
-                        ignoreGestures: true,
-                        itemBuilder: (context, index) => const Icon(
-                          Icons.star,
-                          color: Color.fromARGB(255, 255, 188, 2),
-                        ),
-                        onRatingUpdate: (rating) {
-                          //評価が更新されたときの処理を書く
-                        },
-                      ),
-                      SizedBox(width: 5),
-                      // Text(store['star'].toString(),style: const TextStyle(fontWeight: FontWeight.bold,fontSize: 23),)
-                    ],
-                  ),
                   const SizedBox(height: 10),
                 ],
               ),

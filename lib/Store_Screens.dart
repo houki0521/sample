@@ -15,8 +15,6 @@ class _Store_ScreensPageState extends State<Store_ScreensPage> {
     super.initState();
   }
 
-  
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -24,19 +22,21 @@ class _Store_ScreensPageState extends State<Store_ScreensPage> {
         title: Text(widget.store.storeName ?? '店舗名がありません'), // storeから店名を表示
       ),
       body: Column(
+        mainAxisSize: MainAxisSize.min,
         children: [
-          // 店舗の画像
-          widget.store.storeImages != null
-          ? Image.network(
-            widget.store.storeImages.toString(),
-            width: double.infinity,
-            height: 200,
-            fit: BoxFit.cover,
-          )
-          : SizedBox(
-              height: 200,
-              child: Center(child: Text('画像がありません')), // 画像がない場合のフォールバック
-          ),
+          // Expanded(
+          //   child: GridView.builder(
+          //     gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+          //       crossAxisCount: 1,
+          //       crossAxisSpacing: 10.0,
+          //       mainAxisSpacing: 10.0,
+          //     ),
+          //     itemCount: widget.store.storeImages.length,
+          //     itemBuilder: (context, index) {
+          //       return Image.network(widget.store.storeImages[index]);
+          //     },
+          //   ),
+          // ),
           // 店舗の説明
           Container(
             padding: EdgeInsets.only(top: 10, bottom: 10),
@@ -62,45 +62,6 @@ class _Store_ScreensPageState extends State<Store_ScreensPage> {
               );
             }),
           ),
-          const SizedBox(height: 10),
-          Column(
-            children: List.generate(widget.store.coursImages.length, (index) {
-              final image = widget.store.coursImages[index];
-              final text = widget.store.coursText[index]?? 'テキストがありません';
-              return Column(
-                children: [
-                  Text(image),
-                  Text(text)
-                ],
-              );
-            }),
-          ),
-          const SizedBox(height: 10),
-          Column(
-            children: List.generate(widget.store.menuImages.length, (index) {
-              final image = widget.store.menuImages[index];
-              final text = widget.store.menuText[index]?? 'テキストがありません';
-              return Column(
-                children: [
-                  Text(image),
-                  Text(text)
-                ],
-              );
-            }),
-          ),
-          const SizedBox(height: 10),
-          Column(
-            children: List.generate(widget.store.drinkImages.length, (index) {
-              final image = widget.store.drinkImages[index];
-              final text = widget.store.drinkText.length > index ? widget.store.drinkText[index] : 'No Text'; // 安全にアクセス
-              return Column(
-                children: [
-                  Text(image), // 対応する画像
-                  Text(text),  // 対応するテキスト
-                ],
-              );
-            }),
-          )
         ],
       ),
     );
