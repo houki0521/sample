@@ -35,12 +35,15 @@ class _ProfilePageState extends State<ProfilePage> {
   int? _selectedMonth;
   int? _selectedDay;
   String? _g_selection = '非公開';
+  TextEditingController user_name = TextEditingController();
+  TextEditingController prefecture = TextEditingController();
+  TextEditingController select_public_Publish = TextEditingController();
+  TextEditingController gender = TextEditingController();
   TextEditingController Title_controller = TextEditingController();
   TextEditingController SubTitle_controller = TextEditingController();
   TextEditingController SelfIntroduction_controller = TextEditingController();
   String _result = "";
-  
-  get user_name => null;
+
   //final TextEditingController _controller = TextEditingController();
 
   @override
@@ -412,26 +415,26 @@ class _ProfilePageState extends State<ProfilePage> {
 
   Future<void> await_saveProfileData() async {
     try {
-      final response =  await supabase
-        ..from('ProfileData').insert(
-          {
-            'user_name': user_name.text,
-            'prefecture': _selectedPrefecture,
-            'select_public_Publish':f_selection,
-            'gender': _selectedgender,
-            'date_of_birth': _selectedYear != null &&
-                    _selectedMonth != null &&
-                    _selectedDay != null
-                ? DateTime(_selectedYear!, _selectedMonth!, _selectedDay!)
-                    .toIso8601String()
-                : null,
-            'title': Title_controller.text,
-            'subtitle': SubTitle_controller.text,
-            'self_introduction': SelfIntroduction_controller.text,
-          }
-        );
+      final response = await supabase;
+      final data = {
+        'user_name': user_name.text,
+        'prefecture': _selectedPrefecture,
+        'select_public_Publish': f_selection,
+        'gender': _selectedgender,
+        'date_of_birth': _selectedYear != null &&
+                _selectedMonth != null &&
+                _selectedDay != null
+            ? DateTime(_selectedYear!, _selectedMonth!, _selectedDay!)
+                .toIso8601String()
+            : null,
+        'title': Title_controller.text,
+        'subtitle': SubTitle_controller.text,
+        'self_introduction': SelfIntroduction_controller.text,
+      };
+
+      print('Data to be inserted: $data');
       print(response);
-        // responseの中身を表示
+      // responseの中身を表示
       print('データを保存しました: ${response}');
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text('データを保存しました')),
