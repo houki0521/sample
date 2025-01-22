@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'lists.dart';
 import 'registration_detailed.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
+import 'package:geocoding/geocoding.dart';
 
 class RegistrationPage extends StatefulWidget {
   const RegistrationPage({super.key});
@@ -884,6 +885,8 @@ Future<void> _saveData(BuildContext context) async {
     selectedSubCategory,
     selectedDish
   ].where((element) => element != null && element.isNotEmpty).join(' > ');
+  //住所を作成
+  String fullAddress = '${_municipalities_Controller.text} ${_buildingNameFloorNumberController.text}';
     // 営業時間データを収集
   List<Map<String, dynamic>> businessHours = [];
   Map<String, String> times = {};
@@ -904,35 +907,43 @@ Future<void> _saveData(BuildContext context) async {
       });
     }
   }
-  // StoreDataモデルにデータをマッピング
-  Map<String, dynamic> storeDetailsData = {
-    'storeName': _storeNamecontroller.text,
-    'furigana': _furiganaController.text,
-    'phoneNumberSelected': _selectedValue,
-    'phoneNumber': _phoneNumberController.text,
-    'prefecture': _selectedPrefecture,
-    'municipalities': _municipalities_Controller.text,
-    'buildingNameFloorNumber': _buildingNameFloorNumberController.text,
-    'openDate': openDate,
-    'genre': genre.isNotEmpty ? genre : '未設定',
-    'homePageURL': _homePageURLController.text,
-    'businessHours': businessHours
-  };
-
-  // データ保存
-  print('送信データ: $storeDetailsData');
 
   try {
-    final response = await supabase
-      .from('storeDetailsData') // テーブル名を指定
-      .insert(storeDetailsData); // データを挿入
-    // データを次の画面に渡して遷移
-    Navigator.push(
-      context,
-    MaterialPageRoute(
-      builder: (context) => RegistrationDetailedPage(),
-    ),
-  );
+    // ジオコーディングで緯度・経度を取得
+    List<Location> locations = await locationFromAddress(fullAddress);
+    if (locations.isNotEmpty) {
+      double latitude = locations.first.latitude;
+      double longitude = locations.first.longitude;
+      // StoreDataモデルにデータをマッピング
+      Map<String, dynamic> storeDetailsData = {
+        'storeName': _storeNamecontroller.text,
+        'furigana': _furiganaController.text,
+        'phoneNumberSelected': _selectedValue,
+        'phoneNumber': _phoneNumberController.text,
+        'prefecture': _selectedPrefecture,
+        'municipalities': _municipalities_Controller.text,
+        'buildingNameFloorNumber': _buildingNameFloorNumberController.text,
+        'openDate': openDate,
+        'genre': genre.isNotEmpty ? genre : '未設定',
+        'homePageURL': _homePageURLController.text,
+        'businessHours': businessHours,
+        'latitude': latitude,
+        'longitude':longitude,
+      };
+
+      // データ保存
+      print('送信データ: $storeDetailsData');
+      final response = await supabase
+        .from('storeDetailsData') // テーブル名を指定
+        .insert(storeDetailsData); // データを挿入
+      // データを次の画面に渡して遷移
+      Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (context) => RegistrationDetailedPage(),
+        ),
+      );
+    }
   } catch (e) {
     print(e);
     ScaffoldMessenger.of(context).showSnackBar(
