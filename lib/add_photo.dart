@@ -88,10 +88,7 @@ class _AddPhotoState extends State<AddPhoto> {
                                 ),
                                 itemCount: store.storeImages.length,
                                 itemBuilder: ((context, index) {
-                                  return AspectRatio(
-                                    aspectRatio: 20/16,
-                                    child: Image.file(File(store.storeImages[index]))
-                                  );
+                                  return Image.network(store.storeImages[index],);
                                 })
                               ),
                             ],

@@ -40,18 +40,18 @@ class _Store_ScreensPageState extends State<Store_ScreensPage> {
       ),
       body: SingleChildScrollView(
         child:  Column(
+          mainAxisAlignment: MainAxisAlignment.start,
           children: [
-            // 店舗の画像
-            widget.store.storeImages != null
-            ? Image.network(
-              widget.store.storeImages.toString(),
-              width: double.infinity,
-              height: 200,
-              fit: BoxFit.cover,
-            )
-            : SizedBox(
-                height: 200,
-                child: Center(child: Text('画像がありません')), // 画像がない場合のフォールバック
+            // 店舗の画像 
+            Column(
+              children: List.generate(widget.store.storeImages.length, (index) {
+                final image = widget.store.storeImages[index];
+                return Column(
+                  children: [
+                    Image.network(image)
+                  ],
+                );
+              }),
             ),
             // 店舗の説明
             Container(
@@ -72,7 +72,7 @@ class _Store_ScreensPageState extends State<Store_ScreensPage> {
                 final text = widget.store.seatText[index]?? 'テキストがありません';
                 return Column(
                   children: [
-                    Text(image),
+                    Image.network(image),
                     Text(text)
                   ],
                 );
@@ -85,7 +85,7 @@ class _Store_ScreensPageState extends State<Store_ScreensPage> {
                 final text = widget.store.coursText[index]?? 'テキストがありません';
                 return Column(
                   children: [
-                    Text(image),
+                    Image.network(image),
                     Text(text)
                   ],
                 );
@@ -98,7 +98,7 @@ class _Store_ScreensPageState extends State<Store_ScreensPage> {
                 final text = widget.store.menuText[index]?? 'テキストがありません';
                 return Column(
                   children: [
-                    Text(image),
+                    Image.network(image),
                     Text(text)
                   ],
                 );
@@ -111,12 +111,13 @@ class _Store_ScreensPageState extends State<Store_ScreensPage> {
                 final text = widget.store.drinkText.length > index ? widget.store.drinkText[index] : 'No Text'; // 安全にアクセス
                 return Column(
                   children: [
-                    Text(image), // 対応する画像
+                    Image.network(image), // 対応する画像
                     Text(text),  // 対応するテキスト
                   ],
                 );
               }),
             ),
+            Text('口コミ'),
             Padding(
               padding: const EdgeInsets.all(10),
               child: SizedBox(
