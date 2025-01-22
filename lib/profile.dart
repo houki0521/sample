@@ -38,7 +38,7 @@ class _ProfilePageState extends State<ProfilePage> {
   TextEditingController user_name = TextEditingController();
   TextEditingController prefecture = TextEditingController();
   TextEditingController select_public_Publish = TextEditingController();
-  TextEditingController gender = TextEditingController();
+  TextEditingController _gender = TextEditingController();
   TextEditingController Title_controller = TextEditingController();
   TextEditingController SubTitle_controller = TextEditingController();
   TextEditingController SelfIntroduction_controller = TextEditingController();
