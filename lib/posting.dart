@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_vector_icons/flutter_vector_icons.dart';
 import 'registration.dart';
 import 'add_photo.dart';
+import 'draft.dart';
 
 class PostingPage extends StatefulWidget {
   const PostingPage({super.key});
@@ -46,7 +47,12 @@ class _PostingPageState extends State<PostingPage> {
                     Column(
                       children: <Widget>[
                         IconButton.outlined(
-                          onPressed: () {},
+                          onPressed: () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(builder: (context) => DraftPage()),
+                            );
+                          },
                           icon: Icon(Ionicons.create_outline)
                           ),
                           Text('下書き一覧'),
