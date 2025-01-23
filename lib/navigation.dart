@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:sample/homePage.dart';
 import 'myPage.dart';
+import 'hysteresis.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 
@@ -19,7 +20,7 @@ class _NavigationPageState extends State<NavigationPage> {
   // ページの数
   final List<Widget> _pages = [
     const Center(child: MyHomePage(title: 'ホーム画面')),
-    const Center(child: Text('保存リスト')),
+    const Center(child: Hysteresis(title: '保存ページ')),
     const Center(child: Mypage(title: 'マイページ',),)
   ];
 
