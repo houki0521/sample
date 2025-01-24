@@ -58,6 +58,7 @@ class _Store_ScreensPageState extends State<Store_ScreensPage> {
               padding: EdgeInsets.only(top: 10, bottom: 10),
               child: Text(widget.store.prText),
             ),
+            
             Container(
               padding: EdgeInsets.only(top: 10, bottom: 10),
               child: Text(widget.store.featureText),
@@ -105,6 +106,7 @@ class _Store_ScreensPageState extends State<Store_ScreensPage> {
               }),
             ),
             const SizedBox(height: 10),
+            Text('ドリンク'),
             Column(
               children: List.generate(widget.store.drinkImages.length, (index) {
                 final image = widget.store.drinkImages[index];
