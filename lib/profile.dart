@@ -23,7 +23,7 @@ class _ProfilePageState extends State<ProfilePage> {
     '男性',
     '女性',
   ];
-  final List<String> selection = [
+  final List<String> f_selection = [
     '非公開',
     '公開',
   ];
@@ -39,6 +39,8 @@ class _ProfilePageState extends State<ProfilePage> {
   TextEditingController SubTitle_controller = TextEditingController();
   TextEditingController SelfIntroduction_controller = TextEditingController();
   String _result = "";
+  
+  get user_name => null;
   //final TextEditingController _controller = TextEditingController();
 
   @override
@@ -113,7 +115,7 @@ class _ProfilePageState extends State<ProfilePage> {
                           ],
                         ),
                         itemBuilder: (BuildContext context) {
-                          return selection.map((String value) {
+                          return f_selection.map((String value) {
                             return PopupMenuItem(
                                 value: value,
                                 child: RadioListTile(
@@ -408,15 +410,16 @@ class _ProfilePageState extends State<ProfilePage> {
         .pushReplacement(MaterialPageRoute(builder: (context) => LoginPage()));
   }
 
-  void await_saveProfileData() async {
+  Future<void> await_saveProfileData() async {
     try {
-      final response = await supabase
-        ..from('ProfileData').insert([
+      final response =  await supabase
+        ..from('ProfileData').insert(
           {
-            'nickname': Title_controller.text,
+            'user_name': user_name.text,
             'prefecture': _selectedPrefecture,
+            'select_public_Publish':f_selection,
             'gender': _selectedgender,
-            'birth_date': _selectedYear != null &&
+            'date_of_birth': _selectedYear != null &&
                     _selectedMonth != null &&
                     _selectedDay != null
                 ? DateTime(_selectedYear!, _selectedMonth!, _selectedDay!)
@@ -426,21 +429,13 @@ class _ProfilePageState extends State<ProfilePage> {
             'subtitle': SubTitle_controller.text,
             'self_introduction': SelfIntroduction_controller.text,
           }
-        ]);
-
-      if (response == null) {
-        // 成功時の処理
-        print('データを保存しました: ${response}');
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('データを保存しました')),
         );
-      } else {
-        // エラー時の処理
-        print('エラー: ${response}');
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('データ保存に失敗しました: ${response}')),
-        );
-      }
+      print(response);
+        // responseの中身を表示
+      print('データを保存しました: ${response}');
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('データを保存しました')),
+      );
     } catch (e) {
       print('エラー: $e');
       ScaffoldMessenger.of(context).showSnackBar(
