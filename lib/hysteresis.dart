@@ -3,6 +3,8 @@ import 'Store_Screens.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'models/store_data.dart';
 import 'package:auto_route/auto_route.dart';
+import 'menu_Reviewer.dart';
+import 'menu_abouttheapp.dart';
 
 class Hysteresis extends StatefulWidget {
   const Hysteresis({super.key, required this.title});
@@ -63,25 +65,39 @@ class _HysteresPageState extends State<Hysteresis> {
       endDrawer: Drawer(
         child: ListView(
           padding: EdgeInsets.fromLTRB(2, 4, 2, 4),
-          children: const [
-            DrawerHeader(
+          children: [
+            const DrawerHeader(
               child: Text('メニュー'),
             ),
             ListTile(
+              onTap: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => MenuReviewer(),)
+                );
+              },
               title: Text('レビュアーを探す'),
-              trailing: Icon(Icons.arrow_forward_ios),
+              trailing: const Icon(Icons.arrow_forward_ios),
             ),
             ListTile(
+              onTap: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => MenuAbouttheapp(),)
+                );
+              },
               title: Text('このアプリについて'),
-              trailing: Icon(Icons.arrow_forward_ios),
+              trailing: const Icon(Icons.arrow_forward_ios),
             ),
             ListTile(
+              onTap: () {},
               title: Text('ヘルプ・お問い合わせ'),
-              trailing: Icon(Icons.arrow_forward_ios),
+              trailing: const Icon(Icons.arrow_forward_ios),
             ),
             ListTile(
+              onTap: () {},
               title: Text('利用規約'),
-              trailing: Icon(Icons.arrow_forward_ios),
+              trailing: const Icon(Icons.arrow_forward_ios),
             ),
           ],
         ),

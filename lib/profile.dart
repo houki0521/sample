@@ -387,7 +387,7 @@ class _ProfilePageState extends State<ProfilePage> {
       Map<String, dynamic> ProfileData = {
         'user_name': user_name.text,
         'Prefecture': _selectedPrefecture,
-        'gender_public_Publish': g_selection,
+        'gender_public_Publish': G_selection,
         'gender': _selectedgender,
         'date_of_birth': data,
         'title': Title_controller.text,

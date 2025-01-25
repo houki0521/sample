@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
-import 'package:sample/lists.dart';
-import 'package:supabase_flutter/supabase_flutter.dart';
 import 'Store_Screens.dart';
-import 'menu_Reviewer.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
 import 'models/store_data.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'dart:io';
 import 'package:auto_route/auto_route.dart';
+import 'menu_Reviewer.dart';
+import 'menu_abouttheapp.dart';
 
 class MyHomePage extends StatefulWidget {
   const MyHomePage({super.key, required this.title});
@@ -20,6 +20,7 @@ class MyHomePage extends StatefulWidget {
 class _MyHomePageState extends State<MyHomePage> {
   final supabase = Supabase.instance.client;
   List<StoreData>? stores;
+
 
   @override
   void initState() {
@@ -47,6 +48,7 @@ class _MyHomePageState extends State<MyHomePage> {
   } catch (e) {
     print('エラーが発生しました: ${e.toString()}');
   }
+}
 
   @override
   Widget build(BuildContext context) {
@@ -130,8 +132,17 @@ class _MyHomePageState extends State<MyHomePage> {
                   const SizedBox(height: 10),
                 ],
               ),
-            );
-          })),
+              onTap: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => Store_ScreensPage(store: store)),
+                );
+              },
+            ),
+          );
+        })
+      ),
     );
   }
 }
