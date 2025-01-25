@@ -17,32 +17,28 @@ class _ProfilePageState extends State<ProfilePage> {
   final SupabaseClient supabase = Supabase.instance.client;
   String? _selectedPrefecture;
   String? _selectedgender;
-  String? _P_selection = '非公開';
+  String? P_selection = '非公開';
   List<String> gender = [
     '未設定',
     '男性',
     '女性',
   ];
-  final List<String> f_selection = [
+  final List<String> p_selection = [
     '非公開',
     '公開',
   ];
-  final List<String> s_selection = [
+  final List<String> g_selection = [
     '非公開',
     '公開',
   ];
   int? _selectedYear;
   int? _selectedMonth;
   int? _selectedDay;
-  String? _g_selection = '非公開';
+  String? G_selection = '非公開';
   TextEditingController user_name = TextEditingController();
-  TextEditingController prefecture = TextEditingController();
-  TextEditingController select_public_Publish = TextEditingController();
-  TextEditingController _gender = TextEditingController();
   TextEditingController Title_controller = TextEditingController();
   TextEditingController SubTitle_controller = TextEditingController();
   TextEditingController SelfIntroduction_controller = TextEditingController();
-  String _result = "";
 
   //final TextEditingController _controller = TextEditingController();
 
@@ -54,7 +50,6 @@ class _ProfilePageState extends State<ProfilePage> {
 
   @override
   Widget build(BuildContext context) {
-    var _screenSize = MediaQuery.of(context).size;
     return Scaffold(
       appBar: AppBar(
         title: const Text('マイページ設定'),
@@ -92,6 +87,7 @@ class _ProfilePageState extends State<ProfilePage> {
                   ),
                   SizedBox(height: 10),
                   TextFormField(
+                    controller: user_name,
                     decoration: const InputDecoration(
                       hintText: '入力',
                       border: OutlineInputBorder(),
@@ -112,33 +108,33 @@ class _ProfilePageState extends State<ProfilePage> {
                         child: Row(
                           children: <Widget>[
                             Text(
-                              '$_P_selection',
+                              '$P_selection',
                             ),
                             Icon(Icons.arrow_drop_down),
                           ],
                         ),
                         itemBuilder: (BuildContext context) {
-                          return f_selection.map((String value) {
+                          return p_selection.map((String value) {
                             return PopupMenuItem(
                                 value: value,
                                 child: RadioListTile(
                                     title: Text(value),
                                     value: value,
-                                    groupValue: _P_selection,
+                                    groupValue: P_selection,
                                     onChanged: (String? value) {
                                       setState(() {
-                                        _P_selection = value;
-                                        print('$_P_selection');
+                                        P_selection = value;
+                                        print('$P_selection');
                                         Navigator.of(context).pop();
                                       });
                                     }));
                           }).toList();
                         },
-                        initialValue: _P_selection,
+                        initialValue: P_selection,
                         onSelected: (String? value) {
                           setState(() {
-                            _P_selection = value;
-                            print('$_P_selection');
+                            P_selection = value;
+                            print('$P_selection');
                           });
                         },
                       ),
@@ -173,33 +169,33 @@ class _ProfilePageState extends State<ProfilePage> {
                         child: Row(
                           children: <Widget>[
                             Text(
-                              '$_g_selection',
+                              '$G_selection',
                             ),
                             Icon(Icons.arrow_drop_down),
                           ],
                         ),
                         itemBuilder: (BuildContext context) {
-                          return s_selection.map((String value) {
+                          return g_selection.map((String value) {
                             return PopupMenuItem(
                                 value: value,
                                 child: RadioListTile(
                                     title: Text(value),
                                     value: value,
-                                    groupValue: _g_selection,
+                                    groupValue: G_selection,
                                     onChanged: (String? value) {
                                       setState(() {
-                                        _g_selection = value;
-                                        print('$_g_selection');
+                                        G_selection = value;
+                                        print('$G_selection');
                                         Navigator.of(context).pop();
                                       });
                                     }));
                           }).toList();
                         },
-                        initialValue: _g_selection,
+                        initialValue: G_selection,
                         onSelected: (String? value) {
                           setState(() {
-                            _g_selection = value;
-                            print('$_g_selection');
+                            G_selection = value;
+                            print('$G_selection');
                           });
                         },
                       ),
@@ -379,34 +375,6 @@ class _ProfilePageState extends State<ProfilePage> {
     );
   }
 
-  Future<void> _calculation(BuildContext context) async {
-    int? age = int.tryParse(Title_controller.text);
-
-    if (age == null) {
-      setState(() {
-        _result = "-";
-      });
-      return;
-    }
-
-    if (age < 20) {
-      setState(() {
-        _result = "10代以下";
-      });
-    } else {
-      int remainder = age % 10;
-      if (remainder < 5) {
-        setState(() {
-          _result = "${age ~/ 10 * 10}代前半";
-        });
-      } else {
-        setState(() {
-          _result = "${age ~/ 10 * 10}代後半";
-        });
-      }
-    }
-  }
-
   Future<void> signOut(BuildContext context) async {
     await supabase.auth.signOut();
     Navigator.of(context)
@@ -415,30 +383,29 @@ class _ProfilePageState extends State<ProfilePage> {
 
   Future<void> await_saveProfileData() async {
     try {
-      final response = await supabase;
-      final data = {
+      final String data = '${_selectedYear}年${_selectedMonth}月${_selectedDay}日';
+      Map<String, dynamic> ProfileData = {
         'user_name': user_name.text,
-        'prefecture': _selectedPrefecture,
-        'select_public_Publish': f_selection,
+        'Prefecture': _selectedPrefecture,
+        'gender_public_Publish': g_selection,
         'gender': _selectedgender,
-        'date_of_birth': _selectedYear != null &&
-                _selectedMonth != null &&
-                _selectedDay != null
-            ? DateTime(_selectedYear!, _selectedMonth!, _selectedDay!)
-                .toIso8601String()
-            : null,
+        'date_of_birth': data,
         'title': Title_controller.text,
         'subtitle': SubTitle_controller.text,
         'self_introduction': SelfIntroduction_controller.text,
+        'prefecture_public_Publish': P_selection,
       };
-
-      print('Data to be inserted: $data');
-      print(response);
+      print(ProfileData);
+      // データ保存
+      final response = await supabase
+          .from('ProfileData') // テーブル名を指定
+          .insert(ProfileData); // データを挿
       // responseの中身を表示
       print('データを保存しました: ${response}');
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text('データを保存しました')),
       );
+      Navigator.popUntil(context, (route) => route.isFirst);
     } catch (e) {
       print('エラー: $e');
       ScaffoldMessenger.of(context).showSnackBar(

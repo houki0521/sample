@@ -5,7 +5,6 @@ import 'Store_Screens.dart';
 import 'models/store_data.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'dart:io';
-import 'package:auto_route/auto_route.dart';
 import 'menu_Reviewer.dart';
 import 'menu_abouttheapp.dart';
 
@@ -17,7 +16,6 @@ class MyHomePage extends StatefulWidget {
   State<MyHomePage> createState() => _MyHomePageState();
 }
 
-@RoutePage()
 class _MyHomePageState extends State<MyHomePage> {
   final supabase = Supabase.instance.client;
   List<StoreData>? stores;
