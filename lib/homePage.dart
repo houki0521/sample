@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
-import 'Store_Screens.dart';
+import 'package:sample/lists.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
+import 'Store_Screens.dart';
 import 'models/store_data.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'dart:io';
@@ -18,7 +19,6 @@ class MyHomePage extends StatefulWidget {
 class _MyHomePageState extends State<MyHomePage> {
   final supabase = Supabase.instance.client;
   List<StoreData>? stores;
-
 
   @override
   void initState() {
@@ -46,87 +46,5 @@ class _MyHomePageState extends State<MyHomePage> {
   } catch (e) {
     print('エラーが発生しました: ${e.toString()}');
   }
-}
 
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: const TextField(
-          style: TextStyle(
-            fontSize: 18,
-            color: Colors.black,
-          ),
-          decoration: InputDecoration(
-            hintText: 'お店を検索',
-          ),
-        ),
-      ),
-      endDrawer: Drawer(
-        child: ListView(
-          padding: EdgeInsets.fromLTRB(2, 4, 2, 4),
-          children: [
-            const DrawerHeader(
-              child: Text('メニュー'),
-            ),
-            ListTile(
-              title: Text('レビュアーを探す'),
-              trailing: const Icon(Icons.arrow_forward_ios),
-            ),
-            ListTile(
-              title: Text('このアプリについて'),
-              trailing: const Icon(Icons.arrow_forward_ios),
-            ),
-            ListTile(
-              title: Text('ヘルプ・お問い合わせ'),
-              trailing: const Icon(Icons.arrow_forward_ios),
-            ),
-            ListTile(
-              title: Text('利用規約'),
-              trailing: const Icon(Icons.arrow_forward_ios),
-            ),
-          ],
-        ),
-      ),
-      body: ListView.builder(
-        itemCount: stores?.length ?? 0,
-        itemBuilder: ((context, index) {
-          final store = stores![index];
-          return Card(
-            child: ListTile(
-              title: Text(store.storeName),
-              subtitle: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                mainAxisSize: MainAxisSize.min,
-                children: <Widget>[
-                  GridView.builder(
-                    shrinkWrap: true,
-                    physics: NeverScrollableScrollPhysics(),
-                    gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                      crossAxisCount: 1, // カラム数
-                      crossAxisSpacing: 0, // カラム間のスペース
-                      mainAxisSpacing: 0, // 行間のスペース
-                    ),
-                    itemCount: store.storeImages.length,
-                    itemBuilder: ((context, index) {
-                      return Image.network(store.storeImages[index]);
-                    })
-                  ),
-                  Text(store.prText),
-                  const SizedBox(height: 10),
-                ],
-              ),
-              onTap: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => Store_ScreensPage(store: store)),
-                );
-              },
-            ),
-          );
-        })
-      ),
-    );
-  }
-}
+  
