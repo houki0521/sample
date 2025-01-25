@@ -2,11 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:sample/lists.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'Store_Screens.dart';
+import 'menu_Reviewer.dart';
 import 'models/store_data.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'dart:io';
-import 'menu_Reviewer.dart';
-import 'menu_abouttheapp.dart';
+import 'package:auto_route/auto_route.dart';
 
 class MyHomePage extends StatefulWidget {
   const MyHomePage({super.key, required this.title});
@@ -16,6 +16,7 @@ class MyHomePage extends StatefulWidget {
   State<MyHomePage> createState() => _MyHomePageState();
 }
 
+@RoutePage()
 class _MyHomePageState extends State<MyHomePage> {
   final supabase = Supabase.instance.client;
   List<StoreData>? stores;
@@ -25,26 +26,26 @@ class _MyHomePageState extends State<MyHomePage> {
     super.initState();
     _getAllData(); // データを初期化時に取得
   }
-
-  Future<void> _getAllData() async {
-    final session = supabase.auth.currentSession; // 現在のセッション
-    final user = session?.user; // ユーザー情報
-    try {
-      // データベース取得
-      final response = await supabase.from('stores').select();
-      print('取得したデータ: $response');
-      // 取得したデータを StoreData クラスに変換
-      final storesList = (response as List<dynamic>)
-          .map((storeJson) => StoreData.fromJson(storeJson))
-          .toList()
-          .toList();
-      setState(() {
-        // リストをセット状態で更新
-        stores = storesList;
-      });
-    } catch (e) {
-      print('エラーが発生しました: ${e.toString()}');
-    }
+  
+ Future<void> _getAllData() async {
+  final session = supabase.auth.currentSession; // 現在のセッション
+  final user = session?.user; // ユーザー情報
+  try {
+    // データベース取得
+    final response = await supabase
+      .from('stores')
+      .select();
+    // print('取得したデータ: $response');
+    // 取得したデータを StoreData クラスに変換
+    final storesList = (response as List<dynamic>)
+        .map((storeJson) => StoreData.fromJson(storeJson)).toList()
+        .toList();
+    setState(() {
+      // リストをセット状態で更新
+      stores = storesList;
+    });
+  } catch (e) {
+    print('エラーが発生しました: ${e.toString()}');
   }
 
   @override
@@ -102,62 +103,32 @@ class _MyHomePageState extends State<MyHomePage> {
         ),
       ),
       body: ListView.builder(
-          itemCount: stores?.length ?? 0,
-          itemBuilder: ((context, index) {
-            final store = stores![index];
-            return Card(
-              child: ListTile(
-                title: Text(store.storeName),
-                subtitle: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  mainAxisSize: MainAxisSize.min,
-                  children: <Widget>[
-                    GridView.builder(
-                        shrinkWrap: true,
-                        physics: NeverScrollableScrollPhysics(),
-                        gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                          crossAxisCount: 1, // カラム数
-                          crossAxisSpacing: 0, // カラム間のスペース
-                          mainAxisSpacing: 0, // 行間のスペース
-                        ),
-                        itemCount: store.storeImages.length,
-                        itemBuilder: ((context, index) {
-                          return AspectRatio(
-                              aspectRatio: 20 / 16,
-                              child:
-                                  Image.file(File(store.storeImages[index])));
-                        })),
-                    Text(store.prText),
-                    //店の星評価
-                    Row(
-                      children: [
-                        RatingBar.builder(
-                          // initialRating: !store['star'],
-                          itemSize: 25,
-                          allowHalfRating: true,
-                          ignoreGestures: true,
-                          itemBuilder: (context, index) => const Icon(
-                            Icons.star,
-                            color: Color.fromARGB(255, 255, 188, 2),
-                          ),
-                          onRatingUpdate: (rating) {
-                            //評価が更新されたときの処理を書く
-                          },
-                        ),
-                        SizedBox(width: 5),
-                        // Text(store['star'].toString(),style: const TextStyle(fontWeight: FontWeight.bold,fontSize: 23),)
-                      ],
+        itemCount: stores?.length ?? 0,
+        itemBuilder: ((context, index) {
+          final store = stores![index];
+          return Card(
+            child: ListTile(
+              title: Text(store.storeName),
+              subtitle: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisSize: MainAxisSize.min,
+                children: <Widget>[
+                  GridView.builder(
+                    shrinkWrap: true,
+                    physics: NeverScrollableScrollPhysics(),
+                    gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                      crossAxisCount: 1, // カラム数
+                      crossAxisSpacing: 0, // カラム間のスペース
+                      mainAxisSpacing: 0, // 行間のスペース
                     ),
-                    const SizedBox(height: 10),
-                  ],
-                ),
-                onTap: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                        builder: (context) => Store_ScreensPage(store: store)),
-                  );
-                },
+                    itemCount: store.storeImages.length,
+                    itemBuilder: ((context, index) {
+                      return Image.network(store.storeImages[index]);
+                    })
+                  ),
+                  Text(store.prText),
+                  const SizedBox(height: 10),
+                ],
               ),
             );
           })),
