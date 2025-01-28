@@ -1,7 +1,13 @@
+import 'dart:io';
 import 'package:flutter/material.dart';
 import 'models/store_data.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:latlong2/latlong.dart';
+import 'package:dotted_border/dotted_border.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
+import 'add_phot_Image.dart';
+
+
 class Store_ScreensPage extends StatefulWidget {
   final StoreData store;
   const Store_ScreensPage({Key? key, required this.store}) : super(key: key);
@@ -12,6 +18,7 @@ class Store_ScreensPage extends StatefulWidget {
 
 class _Store_ScreensPageState extends State<Store_ScreensPage> {
   final List<Marker> markers = [];
+  final SupabaseClient supabase = Supabase.instance.client;
 
   @override
   void initState() {
@@ -39,83 +46,253 @@ class _Store_ScreensPageState extends State<Store_ScreensPage> {
         title: Text(widget.store.storeName ?? '店舗名がありません'), // storeから店名を表示
       ),
       body: SingleChildScrollView(
-        child:  Column(
-          children: [
+        child: Column(
+            children: [
             // 店舗の画像
-            widget.store.storeImages != null
-            ? Image.network(
-              widget.store.storeImages.toString(),
-              width: double.infinity,
-              height: 200,
-              fit: BoxFit.cover,
-            )
-            : SizedBox(
-                height: 200,
-                child: Center(child: Text('画像がありません')), // 画像がない場合のフォールバック
-            ),
+            ...List.generate(widget.store.storeImages.length, (index) {
+              return Image.network(widget.store.storeImages[index]);
+            }),
             // 店舗の説明
-            Container(
-              padding: EdgeInsets.only(top: 10, bottom: 10),
-              child: Text(widget.store.prText),
+            Align(
+              alignment: Alignment.topLeft, // Textの配置位置を調整
+              child: Text(
+                widget.store.prText,
+                style: TextStyle(
+                  fontWeight: FontWeight.bold
+                ),
+              ),
             ),
-            Container(
-              padding: EdgeInsets.only(top: 10, bottom: 10),
+            Align(
+              alignment: Alignment.topLeft, // Textの配置位置を調整
               child: Text(widget.store.featureText),
             ),
-            Container(
-              padding: EdgeInsets.only(top: 10, bottom: 10),
-              child: Text(widget.store.commitment),
+            Card(
+              shape: BeveledRectangleBorder(
+                borderRadius: BorderRadius.circular(0),
+              ),
+              color: Colors.white,
+              child: Column(
+                children: [
+                  SizedBox(height: 10),
+                  Container(
+                    padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                    child: Align(
+                      alignment: Alignment.topLeft, // Textの配置位置を調整
+                      child: Text(
+                        'お店のこだわり',
+                        style: TextStyle(
+                          fontWeight: FontWeight.bold
+                        ),
+                      ),
+                    ),
+                  ),
+                  SizedBox(height: 10),
+                  SizedBox(
+                    height: 150,
+                    child: ListView.builder(
+                      scrollDirection: Axis.horizontal,
+                      itemCount: widget.store.fastidiousnessImages.length,
+                      itemBuilder: (context, index) {
+                        final image = widget.store.fastidiousnessImages[index];
+                        final text = widget.store.fastidiousnessText[index];
+                        return Container(
+                          padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                          child: Column(
+                          children: [
+                            Image.network(
+                              image,
+                              width: 150, // 幅を100に指定
+                              height: 100, // 高さを100に指定
+                              fit: BoxFit.cover,
+                            ),
+                            SizedBox(height: 8),
+                            Text(text)
+                          ],
+                        ),
+                      );
+                    })
+                  )
+                ],
+              )
             ),
-            Column(
-              children: List.generate(widget.store.seatImages.length, (index) {
-                final image = widget.store.seatImages[index];
-                final text = widget.store.seatText[index]?? 'テキストがありません';
-                return Column(
-                  children: [
-                    Text(image),
-                    Text(text)
-                  ],
-                );
-              }),
+            Card(
+              shape: BeveledRectangleBorder(
+                borderRadius: BorderRadius.circular(0),
+              ),
+              color: Colors.white,
+              child: Column(
+                children: [
+                  SizedBox(height: 10),
+                  Container(
+                    padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                    child: Align(
+                      alignment: Alignment.topLeft, // Textの配置位置を調整
+                      child: Text(
+                        '座席',
+                        style: TextStyle(
+                          fontWeight: FontWeight.bold
+                        ),
+                      ),
+                    ),
+                  ),
+                  SizedBox(height: 10),
+                  SizedBox(
+                    height: 150,
+                    child: ListView.builder(
+                      scrollDirection: Axis.horizontal,
+                      itemCount: widget.store.seatImages.length,
+                      itemBuilder: ((context, index) {
+                        final image = widget.store.seatImages[index];
+                        final text = widget.store.seatText[index];
+                        return Container(
+                          padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                          child: Column(
+                            children: [
+                              Image.network(
+                                image,
+                                width: 150, // 幅を100に指定
+                                height: 100, // 高さを100に指定
+                                fit: BoxFit.cover,
+                              ),
+                              SizedBox(height: 8),
+                              Text(text)
+                            ],
+                          ),
+                        );
+                      })
+                    ),
+                  )
+                ],
+              ),
             ),
             const SizedBox(height: 10),
-            Column(
-              children: List.generate(widget.store.coursImages.length, (index) {
-                final image = widget.store.coursImages[index];
-                final text = widget.store.coursText[index]?? 'テキストがありません';
-                return Column(
+            Align(
+              alignment: Alignment.topLeft, // Textの配置位置を調整
+              child: Container(
+                width: double.infinity,
+                child: Card(
+                  shape: BeveledRectangleBorder(
+                  borderRadius: BorderRadius.circular(0),
+                ),
+                color: Colors.white,
+                child: Column(
                   children: [
-                    Text(image),
-                    Text(text)
-                  ],
-                );
-              }),
+                    SizedBox(height: 10),
+                    Container(
+                      padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                      child: Align(
+                      alignment: Alignment.topLeft, // Textの配置位置を調整
+                      child: Text(
+                        'コース',
+                        style: TextStyle(
+                          fontWeight: FontWeight.bold
+                        ),
+                      ),
+                    ),
+                    ),
+                    ...List.generate(widget.store.coursImages.length, (index) {
+                      final image = widget.store.coursImages[index];
+                      final text = widget.store.coursText[index]?? 'テキストがありません';
+                      return Column(
+                        children: [
+                          Align(
+                            alignment: Alignment.topLeft, // Textの配置位置を調整
+                            child: Row(
+                              children : [
+                                Container(
+                                  padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                                  margin: const EdgeInsets.only(top: 10),
+                                  child: Image.network(
+                                    image,
+                                    width: 150, // 幅を100に指定
+                                    height: 100, // 高さを100に指定
+                                    fit: BoxFit.cover,
+                                  ),
+                                ),
+                                SizedBox(height: 10),
+                                SizedBox(width: 10),
+                                Text(text,),
+                              ]
+                            ),
+                          ),
+                          const SizedBox(height: 10),
+                        ],
+                      );
+                    }),
+                  ]
+                ),
+              ),
+              ),
             ),
             const SizedBox(height: 10),
-            Column(
-              children: List.generate(widget.store.menuImages.length, (index) {
-                final image = widget.store.menuImages[index];
-                final text = widget.store.menuText[index]?? 'テキストがありません';
-                return Column(
-                  children: [
-                    Text(image),
-                    Text(text)
-                  ],
-                );
-              }),
-            ),
-            const SizedBox(height: 10),
-            Column(
-              children: List.generate(widget.store.drinkImages.length, (index) {
-                final image = widget.store.drinkImages[index];
-                final text = widget.store.drinkText.length > index ? widget.store.drinkText[index] : 'No Text'; // 安全にアクセス
-                return Column(
-                  children: [
-                    Text(image), // 対応する画像
-                    Text(text),  // 対応するテキスト
-                  ],
-                );
-              }),
+            Align(
+              alignment: Alignment.topLeft, // Textの配置位置を調整
+              child: Container(
+                width: double.infinity,
+                child: Card(
+                  shape: BeveledRectangleBorder(
+                    borderRadius: BorderRadius.circular(0),
+                  ),
+                  color: Colors.white,
+                  child: Column(
+                    children: [
+                      Align(
+                        alignment: Alignment.topLeft, // Textの配置位置を調整
+                        child: Text(
+                          '投稿写真',
+                          style: TextStyle(
+                            fontWeight: FontWeight.bold
+                          ),
+                        ),
+                      ),
+                      const SizedBox(height: 10),
+                      Align(
+                        alignment: Alignment.topLeft, // Textの配置位置を調整
+                        child: Wrap(
+                          spacing: 10,
+                          runSpacing: 10,
+                          children: [
+                            TextButton.icon(
+                              onPressed: () async {
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (context) => Add_photImage(),
+                                  ),
+                                );
+                              },
+                              label: DottedBorder(
+                                borderType: BorderType.RRect,
+                                radius: const Radius.circular(5),
+                                child: const SizedBox(
+                                  width: 100,
+                                  height: 100,
+                                  child: Column(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    children: [
+                                      Icon(
+                                        Icons.add_a_photo_outlined,
+                                        size: 30,
+                                        color: Colors.grey,
+                                        ), 
+                                      SizedBox(height: 20,),
+                                      Text('写真を追加'),
+                                    ],
+                                  ),
+                                ),
+                              ),
+                              style: TextButton.styleFrom(
+                                padding: EdgeInsets.zero, // ボタンの内側の余白を無くす
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                      SizedBox(height: 10),
+                    ],
+                  ),
+                ),
+              ),
             ),
             Padding(
               padding: const EdgeInsets.all(10),

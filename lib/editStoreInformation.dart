@@ -21,6 +21,7 @@ class _EditStoreInformationState extends State<EditStoreInformation> {
   final ImagePicker _picker = ImagePicker();
   List<File> _storesImages = [];
   List<List<File>> _courseImagesList = [];
+  List<List<File>> _fastidiousnessImagesList = [];
   List<List<File>> _sheetImagesList = [];
   List<List<File>> _menuImagesList = [];
   List<List<File>> _drinkImagesList = [];
@@ -28,6 +29,7 @@ class _EditStoreInformationState extends State<EditStoreInformation> {
  final TextEditingController _prTextController = TextEditingController();
  final TextEditingController _featureTextController = TextEditingController();
  final TextEditingController _commitmentToTheStoreController = TextEditingController();
+ final List<TextEditingController> _fastidiousnessTextControllers = [];
  final List<TextEditingController> _seatControllers = [];
  final List<TextEditingController> _courseControllers = [];
  final List<TextEditingController> _cookingControllers = [];
@@ -36,39 +38,36 @@ class _EditStoreInformationState extends State<EditStoreInformation> {
 @override
 void initState() {
   super.initState();
-  initializeBox();
   _initializeSeatControllers();
+  _fastidiousnessImagesList.add([]);
+  _fastidiousnessTextControllers.add(TextEditingController());
+
   _sheetImagesList.add([]);
   _seatControllers.add(TextEditingController());
 
   _courseImagesList.add([]);
   _courseControllers.add(TextEditingController());
 
-  _menuImagesList.add([]);
   _cookingControllers.add(TextEditingController());
 
-  _drinkImagesList.add([]);
   _drinkControllers.add(TextEditingController());
 }
 
-Future<void> initializeBox() async {
-
-  }
-
-
-
 
 void _initializeSeatControllers() {
+    for (int i = 0; i < _fastidiousnessImagesList.length; i++) {
+      _fastidiousnessTextControllers.add(TextEditingController());
+    }
     for (int i = 0; i < _sheetImagesList.length; i++) {
       _seatControllers.add(TextEditingController());
     }
     for (int i = 0; i < _courseImagesList.length; i++) {
       _courseControllers.add(TextEditingController());
     }
-    for (int i = 0; i < _courseImagesList.length; i++) {
+    for (int i = 0; i < _cookingControllers.length; i++) {
       _cookingControllers.add(TextEditingController());
     }
-    for (int i = 0; i < _drinkImagesList.length; i++) {
+    for (int i = 0; i < _drinkControllers.length; i++) {
       _drinkControllers.add(TextEditingController());
     }
   }
@@ -78,7 +77,9 @@ void _initializeSeatControllers() {
     _prTextController.dispose();
     _storeName.dispose();
     _featureTextController.dispose();
-    _commitmentToTheStoreController.dispose();
+    for (var controller in _fastidiousnessTextControllers) {
+        controller.dispose();
+      }
     for (var controller in _seatControllers) {
         controller.dispose();
       }
@@ -86,6 +87,9 @@ void _initializeSeatControllers() {
         controller.dispose();
       }
     for (var controller in _cookingControllers) {
+        controller.dispose();
+      }
+    for (var controller in _drinkControllers) {
         controller.dispose();
       }
     super.dispose();
@@ -366,53 +370,124 @@ void _initializeSeatControllers() {
                   ),
               ),
               SizedBox(height: _screenSize.height * 0.008),
-              const Text(
-                'お店のこだわり',
-                style: TextStyle(
-                  fontWeight: FontWeight.bold
-                ),
-              ),
-              Container(
-                child: TextFormField(
-                  controller: _commitmentToTheStoreController,
-                  maxLines: 3,
-                  minLines: 3,
-                  keyboardType: TextInputType.multiline,
-                  enabled: _fastidiousnessText.length <= 200,
-                  decoration: InputDecoration(
-                  hintText: '例 厳選食材を生かした創作フレンチとワインが楽しめる女子会におすすめ！',
-                  counterText: '${_fastidiousnessText.length} / 200',
-                  errorText: _fastidiousnessText.length > 200 ? 'これ以上記入できません' : null,
-                  errorStyle: TextStyle(
-                    color: Colors.red,
-                    fontSize: 14,
-                    fontWeight: FontWeight.bold,
-                  ),
-                  enabledBorder: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(0),
-                    borderSide: const BorderSide(
-                      width: 1,
-                      color: Colors.black,
-                    ),
-                  ),
-                  focusedBorder: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(0),
-                    borderSide: const BorderSide(
-                      width: 1,
-                      color: Colors.black,
+              Text('お店のこだわり', style: TextStyle(fontWeight: FontWeight.bold)),
+              ListView.builder(
+                shrinkWrap: true, // 子要素に合わせてサイズを調整
+                physics: NeverScrollableScrollPhysics(), // スクロールを無効化
+                itemCount: _fastidiousnessImagesList.length,
+                itemBuilder: ((context, index) {
+                  return Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      SizedBox(height: _screenSize.height * 0.02),
+                      Wrap(
+                        spacing: 10,
+                        runSpacing: 10,
+                        children: [
+                          ..._fastidiousnessImagesList[index].map((image) {
+                            return Stack(
+                              children: [
+                                Image.file(image, width: 100, height: 100, fit: BoxFit.cover),
+                                Positioned(
+                                  top: 0,
+                                  right: 0,
+                                  child: IconButton(
+                                    onPressed: () {
+                                      setState(() {
+                                        _fastidiousnessImagesList[index].remove(image);
+                                      });
+                                    },
+                                    icon: const Icon(Icons.close, color: Colors.white),
+                                  ),
+                                ),
+                              ],
+                            );
+                          }).toList(),
+                          TextButton.icon(
+                            onPressed: () async {
+                              final XFile? pickedFile = await _picker.pickImage(source: ImageSource.gallery);
+                              if (pickedFile != null) {
+                                setState(() {
+                                  _fastidiousnessImagesList[index].add(File(pickedFile.path));
+                                });
+                              }
+                            },
+                            label: DottedBorder(
+                              borderType: BorderType.RRect,
+                              radius: const Radius.circular(5),
+                              child: const SizedBox(
+                                width: 100,
+                                height: 100,
+                                child: Column(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [
+                                    Icon(
+                                      Icons.add_a_photo_outlined,
+                                      size: 30,
+                                      color: Colors.grey,
+                                      ),
+                                    SizedBox(height: 20,),
+                                    Text('写真を追加')
+                                  ],
+                                ),
+                              ),
+                            ),
+                            style: TextButton.styleFrom(
+                              padding: EdgeInsets.zero, // ボタンの内側の余白を無くす
+                            ),
+                          ),
+                          SizedBox(height: _screenSize.height * 0.008),
+                          Container(
+                            child: TextFormField(
+                              controller: _fastidiousnessTextControllers[index],
+                              // keyboardType: TextInputType.multiline,
+                              decoration: InputDecoration(
+                              hintText: '例 カウンター',
+                              enabledBorder: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(0),
+                                  borderSide: const BorderSide(
+                                    width: 1,
+                                    color: Colors.black,
+                                  ),
+                                ),
+                                focusedBorder: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(0),
+                                  borderSide: const BorderSide(
+                                    width: 1,
+                                    color: Colors.black,
+                                    ),
+                                  ),
+                                ),
+                                onChanged: (value) {
+                                  // print(_seatControllers[index].text);
+                                },
+                              ),
+                          ),
+                        ],
                       ),
+                    ],
+                  );
+                })
+              ),
+              RichText(
+                text: TextSpan(
+                  children: [
+                    TextSpan(
+                      text: '+こだわりを追加',
+                      style: TextStyle(color: Colors.blue),
+                      recognizer: TapGestureRecognizer()
+                        ..onTap = () {
+                          setState(() {
+                            _fastidiousnessImagesList.add([]); // 新しい画像リストを作成
+                            _fastidiousnessTextControllers.add(TextEditingController());
+                            // print("現在の座席画像リスト: $_sheetImagesList");
+                          });
+                        },
                     ),
-                    errorBorder: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(0),
-                      borderSide: BorderSide(width: 1, color: Colors.red), // エラー時の枠線
-                    ),
-                    focusedErrorBorder: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(0),
-                      borderSide: BorderSide(width: 1, color: Colors.red), // フォーカス時にエラーがある場合の枠線
-                    ),
-                  ),
+                  ],
                 ),
               ),
+              SizedBox(height: _screenSize.height * 0.03),
               Row(
                 children: [
                   Container(
@@ -431,6 +506,8 @@ void _initializeSeatControllers() {
                   ),
                 ],
               ),
+              SizedBox(height: _screenSize.height * 0.03),
+              Text('座席', style: TextStyle(fontWeight: FontWeight.bold)),
               Container(
                 child: ListView.builder(
                 shrinkWrap: true, // 子要素に合わせてサイズを調整
@@ -440,7 +517,7 @@ void _initializeSeatControllers() {
                   return Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Text('座席', style: TextStyle(fontWeight: FontWeight.bold)),
+                      SizedBox(height: _screenSize.height * 0.02),
                       Wrap(
                         spacing: 10,
                         runSpacing: 10,
@@ -570,6 +647,8 @@ void _initializeSeatControllers() {
                   ),
                 ],
               ),
+              SizedBox(height: _screenSize.height * 0.03),
+              Text('コース', style: TextStyle(fontWeight: FontWeight.bold)),
               Container(
                 child: ListView.builder(
                 shrinkWrap: true,
@@ -579,7 +658,7 @@ void _initializeSeatControllers() {
                   return Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Text('コース', style: TextStyle(fontWeight: FontWeight.bold)),
+                      SizedBox(height: _screenSize.height * 0.02),
                       Wrap(
                         spacing: 10,
                         runSpacing: 10,
@@ -691,72 +770,20 @@ void _initializeSeatControllers() {
                 ),
               ),
               SizedBox(height: _screenSize.height * 0.03),
+              Text('料理', style: TextStyle(fontWeight: FontWeight.bold)),
               Container(
                 child: ListView.builder(
                 shrinkWrap: true,
                 physics: NeverScrollableScrollPhysics(),
-                itemCount: _menuImagesList.length,
+                itemCount: _cookingControllers.length,
                 itemBuilder: (context, index) {
                   return Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Text('料理', style: TextStyle(fontWeight: FontWeight.bold)),
                       Wrap(
                         spacing: 10,
                         runSpacing: 10,
                         children: [
-                          ..._menuImagesList[index].map((image) {
-                            return Stack(
-                              children: [
-                                Image.file(image, width: 100, height: 100, fit: BoxFit.cover),
-                                Positioned(
-                                  top: 0,
-                                  right: 0,
-                                  child: IconButton(
-                                    onPressed: () {
-                                      setState(() {
-                                        _menuImagesList[index].remove(image);
-                                      });
-                                    },
-                                    icon: const Icon(Icons.close, color: Colors.white),
-                                  ),
-                                ),
-                              ],
-                            );
-                          }).toList(),
-                          TextButton.icon(
-                            onPressed: () async {
-                              final XFile? pickedFile = await _picker.pickImage(source: ImageSource.gallery);
-                              if (pickedFile != null) {
-                                setState(() {
-                                  _menuImagesList[index].add(File(pickedFile.path));
-                                });
-                              }
-                            },
-                            label: DottedBorder(
-                              borderType: BorderType.RRect,
-                              radius: const Radius.circular(5),
-                              child: const SizedBox(
-                                width: 100,
-                                height: 100,
-                                child: Column(
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  children: [
-                                    Icon(
-                                      Icons.add_a_photo_outlined,
-                                      size: 30,
-                                      color: Colors.grey,
-                                      ),
-                                    SizedBox(height: 20,),
-                                    Text('写真を追加')
-                                  ],
-                                ),
-                              ),
-                            ),
-                            style: TextButton.styleFrom(
-                              padding: EdgeInsets.zero, // ボタンの内側の余白を無くす
-                            ),
-                          ),
                           SizedBox(height: _screenSize.height * 0.008),
                           Container(
                             child: TextFormField(
@@ -802,9 +829,7 @@ void _initializeSeatControllers() {
                       recognizer: TapGestureRecognizer()
                         ..onTap = () {
                           setState(() {
-                            _menuImagesList.add([]); // 新しい画像リストを作成
                             _cookingControllers.add(TextEditingController());
-                            // print("現在の料理画像リスト: $_menuImagesList");
                           });
                         },
                     ),
@@ -812,73 +837,21 @@ void _initializeSeatControllers() {
                 ),
               ),
               SizedBox(height: _screenSize.height * 0.03),
+              Text('ドリンク', style: TextStyle(fontWeight: FontWeight.bold)),
               Container(
                 child: ListView.builder(
                 shrinkWrap: true,
                 physics: NeverScrollableScrollPhysics(),
-                itemCount: _drinkImagesList.length,
+                itemCount: _drinkControllers.length,
                 itemBuilder: (context, index) {
                   return Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Text('ドリンク', style: TextStyle(fontWeight: FontWeight.bold)),
+                      SizedBox(height: _screenSize.height * 0.02),
                       Wrap(
                         spacing: 10,
                         runSpacing: 10,
                         children: [
-                          ..._drinkImagesList[index].map((image) {
-                            return Stack(
-                              children: [
-                                Image.file(image, width: 100, height: 100, fit: BoxFit.cover),
-                                Positioned(
-                                  top: 0,
-                                  right: 0,
-                                  child: IconButton(
-                                    onPressed: () {
-                                      setState(() {
-                                        _drinkImagesList[index].remove(image);
-                                      });
-                                    },
-                                    icon: const Icon(Icons.close, color: Colors.white),
-                                  ),
-                                ),
-                              ],
-                            );
-                          }).toList(),
-                          TextButton.icon(
-                            onPressed: () async {
-                              final XFile? pickedFile = await _picker.pickImage(source: ImageSource.gallery);
-                              if (pickedFile != null) {
-                                setState(() {
-                                  _drinkImagesList[index].add(File(pickedFile.path));
-                                });
-                              }
-                            },
-                            label: DottedBorder(
-                              borderType: BorderType.RRect,
-                              radius: const Radius.circular(5),
-                              child: const SizedBox(
-                                width: 100,
-                                height: 100,
-                                child: Column(
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  children: [
-                                    Icon(
-                                      Icons.add_a_photo_outlined,
-                                      size: 30,
-                                      color: Colors.grey,
-                                      ),
-                                    SizedBox(height: 20,),
-                                    Text('写真を追加')
-                                  ],
-                                ),
-                              ),
-                            ),
-                            style: TextButton.styleFrom(
-                              padding: EdgeInsets.zero, // ボタンの内側の余白を無くす
-                            ),
-                          ),
-                          SizedBox(height: _screenSize.height * 0.08),
                           Container(
                             child: TextFormField(
                               controller: _drinkControllers[index],
@@ -923,7 +896,6 @@ void _initializeSeatControllers() {
                       recognizer: TapGestureRecognizer()
                         ..onTap = () {
                           setState(() {
-                            _drinkImagesList.add([]); // 新しい画像リストを作成
                             _drinkControllers.add(TextEditingController());
                           });
                         },
@@ -1003,6 +975,30 @@ Future<String> uploadFile(File file, String path) async {
     if (storeName.isEmpty) {
       throw Exception('store_name is required.');
     }
+    // こだわり画像とテキストをリストで構築
+    List<Map<String, dynamic>> fastidiousnessDataList = [];
+    final flatfastidiousnessImages = _fastidiousnessImagesList.expand((images) => images).toList();
+    for (int i = 0; i < _fastidiousnessImagesList.length; i ++) {
+      // ファイルを指定
+      final file = flatfastidiousnessImages[i];
+      // ファイル名を指定
+      final fileName = 'fastidiousness image ${DateTime.now().microsecondsSinceEpoch} ${i}.jpg';
+      // pahtを指定
+      final String path = 'private/${user?.id}/$fileName';
+      // ファイルをアップロード
+      await uploadFile(file, path);
+      // 公開URLを取得
+      final String publicUrl = await supabase
+        .storage
+        .from('storeData')
+        .getPublicUrl(path);
+      // こだわりのテキストを取得
+      List<String> fastidiousnessText = [_fastidiousnessTextControllers[i].text];
+      fastidiousnessDataList.add({
+        'images': [publicUrl],
+        'text' : fastidiousnessText
+      });
+    }
     // シート画像とテキストをリストで構築
     List<Map<String, dynamic>> seatDataList = [];
     final flatSheetImages = _sheetImagesList.expand((images) => images).toList(); // フラット化
@@ -1057,53 +1053,18 @@ Future<String> uploadFile(File file, String path) async {
     }
     // メニュー画像とテキストをリストで構築
     List<Map<String, dynamic>> menuDataList = [];
-    final flatmenuImages = _menuImagesList.expand((images) => images).toList(); // フラット化
-    for (int i = 0; i < _menuImagesList.length; i++) {
-      if (_menuImagesList[i].isEmpty) {
-        continue; // 空のリストはスキップする
-      }
-      // ファイルを指定
-      final file = flatmenuImages[i];
-      // ファイル名を指定
-      final fileName = 'menu_images_${DateTime.now().microsecondsSinceEpoch}_$i.jpg';
-      // pathを指定
-      final String path = 'private/${user?.id}/$fileName';
-      // ファイルをアップロード
-      await uploadFile(file, path);
-      // 公開URLを取得
-      final String publicUrl = await supabase
-        .storage
-        .from('storeData')
-        .getPublicUrl(path);
+    for (int i = 0; i < _cookingControllers.length; i++) {
+
       List<String> menuText = [_cookingControllers[i].text];
       menuDataList.add({
-        'images': [publicUrl],
         'text': menuText,
       });
     }
     // ドリンク画像とテキストをリストで構築
     List<Map<String, dynamic>> drinkDataList = [];
-    final flatdrinkImages = _drinkImagesList.expand((images) => images).toList(); // フラット化
-    for (int i = 0; i < _drinkImagesList.length; i++) {
-      if (_drinkImagesList[i].isEmpty) {
-        continue; // 空のリストはスキップする
-      }
-      // ファイルを指定
-      final file = flatdrinkImages[i];
-      // ファイル名を指定
-      final fileName = 'drink_images_${DateTime.now().microsecondsSinceEpoch}_$i.jpg';
-      // pahtを指定
-      final String path = 'private/${user?.id}/$fileName';
-      // ファイルをアップロード
-      await uploadFile(file, path);
-      // 公開URLを取得
-      final String publicUrl = await supabase
-        .storage
-        .from('storeData')
-        .getPublicUrl(path);
+    for (int i = 0; i < _drinkControllers.length; i++) {
       List<String> drinkText = [_drinkControllers[i].text];
       drinkDataList.add({
-        'images': [publicUrl],
         'text': drinkText,
       });
     }
@@ -1113,14 +1074,13 @@ Future<String> uploadFile(File file, String path) async {
       'storeName': storeName,
       'prText': _prTextController.text,
       'featureText': _featureTextController.text,
-      'commitment': _commitmentToTheStoreController.text,
+      'fastidiousnessImages': seatDataList.map((fastidiousness) => fastidiousness['images'] as List<String>).expand((x) => x).toList(),
+      'fastidiousnessText': fastidiousnessDataList.map((fastidiousness) => fastidiousness['text'] as List<String>).expand((x) => x).toList(),
       'seatImages': seatDataList.map((seat) => seat['images'] as List<String>).expand((x) => x).toList(),
       'seatText': seatDataList.map((seat) => seat['text'] as List<String>).expand((x) => x).toList(),
       'coursImages': courseDataList.map((course) => course['images'] as List<String>).expand((x) => x).toList(),
       'coursText': courseDataList.map((course) => course['text'] as List<String>).expand((x) => x).toList(),
-      'menuImages': menuDataList.map((menu) => menu['images'] as List<String>).expand((x) => x).toList(),
       'menuText': menuDataList.map((menu) => menu['text'] as List<String>).expand((x) => x).toList(),
-      'drinkImages': drinkDataList.map((drink) => drink['images'] as List<String>).expand((x) => x).toList(),
       'drinkText': drinkDataList.map((drink) => drink['text'] as List<String>).expand((x) => x).toList(),
     };
     // データ保存
