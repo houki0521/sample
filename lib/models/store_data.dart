@@ -9,14 +9,13 @@ class StoreData {
   String storeName;
   String prText;
   String featureText;
-  String commitment;
+  List<String> fastidiousnessImages;
+  List<String> fastidiousnessText;
   List<String> seatImages;
   List<String> seatText;
   List<String> coursImages;
   List<String> coursText;
-  List<String> menuImages;
   List<String> menuText;
-  List<String> drinkImages;
   List<String> drinkText;
 
   StoreData({
@@ -24,14 +23,13 @@ class StoreData {
     required this.storeName,
     required this.prText,
     required this.featureText,
-    required this.commitment,
+    required this.fastidiousnessImages,
+    required this.fastidiousnessText,
     required this.seatImages,
     required this.seatText,
     required this.coursImages,
     required this.coursText,
-    required this.menuImages,
     required this.menuText,
-    required this.drinkImages,
     required this.drinkText,
   });
 

@@ -23,8 +23,6 @@ class _DraftPageState extends State<DraftPage> {
       final response = await supabase
           .from('wordOfMouthData') // テーブル名を指定
           .select('');
-
-
       if (response is List<dynamic> && response.isNotEmpty) {
         setState(() {
           data = List<Map<String, dynamic>>.from(response);

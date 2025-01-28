@@ -530,6 +530,7 @@ void _showPicker() {
     final session = supabase.auth.currentSession; // 現在のセッション
     final user = session?.user; // ユーザー情報
     try {
+      String storesToPost = widget.store.storeName;
       List<String> wordOfMouthImagesURL = [];
       // 写真を取り出してアップロードする
       for (var i = 0; i < _wordOfMouthImage.length; i++) {
@@ -552,6 +553,7 @@ void _showPicker() {
         wordOfMouthImagesURL.add(publicUrl);
       }
       Map<String, dynamic> wordOfMouthData = {
+        'stores to post' : storesToPost,
         'selectedItem' : selectedItemButtons,
         'Number of ratings' : _star,
         'Amount spent' : selectedItem,

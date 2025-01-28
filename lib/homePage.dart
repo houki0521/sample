@@ -33,8 +33,8 @@ class _MyHomePageState extends State<MyHomePage> {
     // データベース取得
     final response = await supabase
       .from('stores')
-      .select();
-    // print('取得したデータ: $response');
+      .select('*');
+    print('取得したデータ: $response');
     // 取得したデータを StoreData クラスに変換
     final storesList = (response as List<dynamic>)
         .map((storeJson) => StoreData.fromJson(storeJson)).toList()
@@ -43,8 +43,9 @@ class _MyHomePageState extends State<MyHomePage> {
       // リストをセット状態で更新
       stores = storesList;
     });
+
   } catch (e) {
-    print('エラーが発生しました: ${e.toString()}');
+    print('取得時にエラーが発生しました: ${e.toString()}');
   }
 }
 
@@ -117,6 +118,7 @@ class _MyHomePageState extends State<MyHomePage> {
                 ],
               ),
               onTap: () {
+
                 Navigator.push(
                   context,
                   MaterialPageRoute(
