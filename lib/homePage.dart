@@ -7,7 +7,6 @@ import 'dart:io';
 import 'package:auto_route/auto_route.dart';
 import 'menu_Reviewer.dart';
 import 'menu_abouttheapp.dart';
-import 'package:http/http.dart' as http;
 
 class MyHomePage extends StatefulWidget {
   const MyHomePage({super.key, required this.title});
@@ -22,39 +21,38 @@ class _MyHomePageState extends State<MyHomePage> {
   final supabase = Supabase.instance.client;
   final TextEditingController searchController = TextEditingController();
   List<StoreData>? stores;
-  List<String> articles = []; // 検索結果を格納する変数
+
 
   @override
   void initState() {
     super.initState();
     _getAllData(); // データを初期化時に取得
   }
+  
+ Future<void> _getAllData() async {
+  final session = supabase.auth.currentSession; // 現在のセッション
+  final user = session?.user; // ユーザー情報
+  try {
+    // データベース取得
+    final response = await supabase
+      .from('stores')
+      .select('*');
+    print('取得したデータ: $response');
+    // 取得したデータを StoreData クラスに変換
+    final storesList = (response as List<dynamic>)
+        .map((storeJson) => StoreData.fromJson(storeJson)).toList()
+        .toList();
+    setState(() {
+      // リストをセット状態で更新
+      stores = storesList;
+    });
 
-  Future<void> _getAllData() async {
-    final session = supabase.auth.currentSession; // 現在のセッション
-    final user = session?.user; // ユーザー情報
-    try {
-      // データベース取得
-      final response = await supabase
-        .from('stores')
-        .select()
-        .ilike('storeName', '');
-      // print('取得したデータ: $response');
-      // 取得したデータを StoreData クラスに変換
-      final storesList = (response as List<dynamic>)
-          .map((storeJson) => StoreData.fromJson(storeJson))
-          .toList()
-          .toList();
-      setState(() {
-        // リストをセット状態で更新
-        stores = storesList;
-      });
-    } catch (e) {
-      print('エラーが発生しました: ${e.toString()}');
-    }
+  } catch (e) {
+    print('取得時にエラーが発生しました: ${e.toString()}');
   }
+}
 
-  Future<void> searchStores(String query) async {
+Future<void> searchStores(String query) async {
     try {
       final response = await supabase
           .from('stores')
@@ -80,13 +78,15 @@ class _MyHomePageState extends State<MyHomePage> {
         title: Row(
           children: [
             Icon(Icons.search, color: Colors.black),
-            const SizedBox(width: 8),
+            const SizedBox(width: 7),
             Expanded(
               child: TextField(
                 controller: searchController,
-                style: const TextStyle(fontSize: 18, color: Colors.black),
+                style: const TextStyle(fontSize: 16, color: Colors.black),
                 decoration: const InputDecoration(
                   hintText: 'お店を検索',
+                  filled: true,
+                  fillColor: Color.fromARGB(124, 176, 176, 176),
                   border: InputBorder.none,
                 ),
                 onSubmitted: (query) {
@@ -107,10 +107,9 @@ class _MyHomePageState extends State<MyHomePage> {
             ListTile(
               onTap: () {
                 Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => MenuReviewer(),
-                    ));
+                  context,
+                  MaterialPageRoute(builder: (context) => MenuReviewer(),)
+                );
               },
               title: Text('レビュアーを探す'),
               trailing: const Icon(Icons.arrow_forward_ios),
@@ -118,10 +117,9 @@ class _MyHomePageState extends State<MyHomePage> {
             ListTile(
               onTap: () {
                 Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => MenuAbouttheapp(),
-                    ));
+                  context,
+                  MaterialPageRoute(builder: (context) => MenuAbouttheapp(),)
+                );
               },
               title: Text('このアプリについて'),
               trailing: const Icon(Icons.arrow_forward_ios),
@@ -140,42 +138,45 @@ class _MyHomePageState extends State<MyHomePage> {
         ),
       ),
       body: ListView.builder(
-          itemCount: stores?.length ?? 0,
-          itemBuilder: ((context, index) {
-            final store = stores![index];
-            return Card(
-              child: ListTile(
-                title: Text(store.storeName),
-                subtitle: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  mainAxisSize: MainAxisSize.min,
-                  children: <Widget>[
-                    GridView.builder(
-                        shrinkWrap: true,
-                        physics: NeverScrollableScrollPhysics(),
-                        gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                          crossAxisCount: 1, // カラム数
-                          crossAxisSpacing: 0, // カラム間のスペース
-                          mainAxisSpacing: 0, // 行間のスペース
-                        ),
-                        itemCount: store.storeImages.length,
-                        itemBuilder: ((context, index) {
-                          return Image.network(store.storeImages[index]);
-                        })),
-                    Text(store.prText),
-                    const SizedBox(height: 10),
-                  ],
-                ),
-                onTap: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                        builder: (context) => Store_ScreensPage(store: store)),
-                  );
-                },
+        itemCount: stores?.length ?? 0,
+        itemBuilder: ((context, index) {
+          final store = stores![index];
+          return Card(
+            child: ListTile(
+              title: Text(store.storeName),
+              subtitle: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisSize: MainAxisSize.min,
+                children: <Widget>[
+                  GridView.builder(
+                    shrinkWrap: true,
+                    physics: NeverScrollableScrollPhysics(),
+                    gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                      crossAxisCount: 1, // カラム数
+                      crossAxisSpacing: 0, // カラム間のスペース
+                      mainAxisSpacing: 0, // 行間のスペース
+                    ),
+                    itemCount: store.storeImages.length,
+                    itemBuilder: ((context, index) {
+                      return Image.network(store.storeImages[index]);
+                    })
+                  ),
+                  Text(store.prText),
+                  const SizedBox(height: 10),
+                ],
               ),
-            );
-          })),
+              onTap: () {
+
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => Store_ScreensPage(store: store)),
+                );
+              },
+            ),
+          );
+        })
+      ),
     );
   }
 }
