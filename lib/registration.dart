@@ -412,8 +412,6 @@ void dispose() {
                             },
                           ),
                         ),
-                        SizedBox(height: _screenSize.height * 0.008,),
-                        const Text('地図'),
                         SizedBox(height: _screenSize.height * 0.050,),
                         Row(
                           children: <Widget>[

@@ -23,7 +23,7 @@ class _WordOfMouthState extends State<WordOfMouth> {
   final ImagePicker _picker = ImagePicker();
   double _star = 0.0;
   List<double> numberOfStarRatings = [0.0, 0.5, 1.0, 1.5, 2.0, 2.5, 3.0, 3.5, 4.0, 4.5, 5.0];
-  List<File> _wordOfMouthImage = [];
+  List<File> wordOfMouthImage = [];
   List<String> items = ["¥¥¥¥ ~ ¥¥¥¥", "~¥ 999", "¥1,000~¥1,999", "¥2,000~¥2,999", "¥3,000~¥3,999", "¥4,000~¥4,999", "¥5,000~"];
   int selectedIndex = 0;
   String selectedItem = "¥¥¥¥ ~ ¥¥¥¥";
@@ -300,15 +300,15 @@ Widget build(BuildContext context) {
               spacing: 10,
               runSpacing: 10,
               children: [
-                ..._wordOfMouthImage.map((image) {
-                  int index = _wordOfMouthImage.indexOf(image);
+                ...wordOfMouthImage.map((image) {
+                  int index = wordOfMouthImage.indexOf(image);
                   return Stack(
                     children: [
                       Image.file(image, width: 100, height: 100, fit: BoxFit.cover,),
                       IconButton(
                         onPressed: () {
                           setState(() {
-                            _wordOfMouthImage.removeAt(index);  // 指定されたインデックスの画像を削除
+                            wordOfMouthImage.removeAt(index);  // 指定されたインデックスの画像を削除
                           });
                         },
                         icon: const Icon(Icons.close, color: Colors.white),
@@ -318,7 +318,7 @@ Widget build(BuildContext context) {
                 }).toList(),
                 TextButton.icon(
                   onPressed: () async {
-                    getImageFromGallery(_wordOfMouthImage);
+                    getImageFromGallery(wordOfMouthImage);
                   },
                   label: DottedBorder(
                     borderType: BorderType.RRect,
@@ -530,38 +530,39 @@ void _showPicker() {
     final session = supabase.auth.currentSession; // 現在のセッション
     final user = session?.user; // ユーザー情報
     try {
-      String storesToPost = widget.store.storeName;
-      List<String> wordOfMouthImagesURL = [];
+      List<Map<String, dynamic>> wordOfMouthImagesURL = [];
       // 写真を取り出してアップロードする
-      for (var i = 0; i < _wordOfMouthImage.length; i++) {
-        if (_wordOfMouthImage.isEmpty) {
+      for (var i = 0; i < wordOfMouthImage.length; i++) {
+        if (wordOfMouthImage.isEmpty) {
           continue; // 空のリストはスキップする
         }
         // ファイルを指定
-        final file = _wordOfMouthImage[i];
+        final file = wordOfMouthImage[i];
         // ファイル名を指定
-        final fileName = 'word of mouth image${DateTime.now().millisecondsSinceEpoch}_$i.jpg';
+        final fileName = 'word_of_mouth_image${DateTime.now().millisecondsSinceEpoch}_$i.jpg';
         // パスを指定
         String path = 'private/${user?.id}/$fileName';
         // ファイルをアップロード
         await uploadFile(file, path);
         // 公開URLを取得
-        final String publicUrl = supabase
+        final String publicUrl = await supabase
           .storage
-          .from('wordOfMouthData')
-          .getPublicUrl(fileName);
-        wordOfMouthImagesURL.add(publicUrl);
+          .from('wordOfMouthPhotData')
+          .getPublicUrl(path);
+        wordOfMouthImagesURL.add({
+          'images': [publicUrl]
+        });
       }
       Map<String, dynamic> wordOfMouthData = {
-        'stores to post' : storesToPost,
+        'store_name' : widget.store.storeName,
         'selectedItem' : selectedItemButtons,
-        'Number of ratings' : _star,
-        'Amount spent' : selectedItem,
+        'number_of_ratings' : _star,
+        'amount_spent' : selectedItem,
         'wordOfMouthText' : _wordOfMouthStateController.text,
-        'wordOfMouthPhot' : wordOfMouthImagesURL,
-        'Date of visit' : _selectedDate
+        'wordOfMouthPhot' : wordOfMouthImagesURL.map((wordOfMout) => wordOfMout['images'] as List<String>).expand((x) => x,).toList(),
+        'date_of_visit' : _selectedDate
       };
-      final response = await supabase
+      await supabase
         .from('wordOfMouthData') // テーブル名を指定
         .insert(wordOfMouthData); // データを挿入
       ScaffoldMessenger.of(context).showSnackBar(

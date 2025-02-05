@@ -110,6 +110,33 @@ class _RegistrationDetailedPageState extends State<RegistrationDetailedPage> {
   final TextEditingController _supplementaryInformationController = TextEditingController();
   final TextEditingController _dressCodeController = TextEditingController();
   final TextEditingController _remarksController = TextEditingController();
+  List<String> storesDate = [];
+
+  @override
+  void initState() {
+    super.initState();
+    getAllData(); // データを初期化時に取得
+  }
+ Future<void> getAllData() async {
+  final session = supabase.auth.currentSession; // 現在のセッション
+  final user = session?.user; // ユーザー情報
+  try {
+    // データベース取得
+    final response = await supabase
+      .from('storeDetailsData')
+      .select('id');
+    print('取得したデータ: $response');
+    
+    final List<dynamic> ids = response;
+    for (var i = 0; i < ids.length; i++) {
+       final int idToUpdate = ids[i]['id'] as int; // idを取得してint型にキャスト
+      // 取得したidを使って何かの処理を行う
+      print('id: $idToUpdate');
+    }
+  } catch (e) {
+    print('取得時にエラーが発生しました: ${e.toString()}');
+  }
+}
 
 @override
 void dispose() {
@@ -1198,11 +1225,24 @@ void dispose() {
       'remarks': _remarksController.text,
     };
     print('送信データ: $storeDetailsData');
+    // データベース取得
+    final response = await supabase
+      .from('storeDetailsData')
+      .select('id');
+    print('取得したデータ: $response');
+    
+    final List<dynamic> ids = response;
+    for (var i = 0; i < ids.length; i++) {
+       final int idToUpdate = ids[i]['id'] as int; // idを取得してint型にキャスト
+      // 取得したidを使って何かの処理を行う
+      print('id: $idToUpdate');
     // データ保存
-    try {
+    try { 
       final response = await supabase
       .from('storeDetailsData') // テーブル名を指定
-      .insert(storeDetailsData); // データを挿入
+      .update(storeDetailsData)
+      .eq('id', idToUpdate);
+    
     Navigator.push(
       context,
       MaterialPageRoute(builder: (context) => EditStoreInformation()),
@@ -1213,5 +1253,6 @@ void dispose() {
         SnackBar(content: Text('データ保存に失敗しました: $e')),
       );
     }
+  }
   }
 }
