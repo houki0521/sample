@@ -5,6 +5,7 @@ part 'store_data.g.dart';
 
 @JsonSerializable()
 class StoreData {
+  int? id;
   List<String> storeImages;
   String storeName;
   String prText;
@@ -17,8 +18,10 @@ class StoreData {
   List<String> coursText;
   List<String> menuText;
   List<String> drinkText;
+  List<String> officialPhotoImage;
 
   StoreData({
+    required this.id,
     required this.storeImages,
     required this.storeName,
     required this.prText,
@@ -31,6 +34,7 @@ class StoreData {
     required this.coursText,
     required this.menuText,
     required this.drinkText,
+    required this.officialPhotoImage
   });
 
   // // JSON -> StoreData

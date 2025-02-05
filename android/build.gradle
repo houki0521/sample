@@ -1,3 +1,4 @@
+// repositories の設定
 allprojects {
     repositories {
         google()
@@ -5,14 +6,29 @@ allprojects {
     }
 }
 
+// buildscript の設定
+buildscript {
+    ext.kotlin_version = '1.9.0'
+    repositories {
+        google()
+        mavenCentral()
+    }
+    dependencies {
+        classpath "com.android.tools.build:gradle:8.0.0"
+        classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
+        classpath 'com.google.gms:google-services:4.3.10'
+    }
+}
+
 rootProject.buildDir = '../build'
+
+// サブプロジェクト設定
 subprojects {
     project.buildDir = "${rootProject.buildDir}/${project.name}"
-}
-subprojects {
     project.evaluationDependsOn(':app')
 }
 
+// Clean タスク
 tasks.register("clean", Delete) {
     delete rootProject.buildDir
 }

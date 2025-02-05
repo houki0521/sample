@@ -2,8 +2,6 @@ import 'package:flutter/material.dart';
 import 'Store_Screens.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'models/store_data.dart';
-import 'package:flutter_rating_bar/flutter_rating_bar.dart';
-import 'dart:io';
 import 'package:auto_route/auto_route.dart';
 import 'menu_Reviewer.dart';
 import 'menu_abouttheapp.dart';
@@ -25,10 +23,10 @@ class _MyHomePageState extends State<MyHomePage> {
   @override
   void initState() {
     super.initState();
-    _getAllData(); // データを初期化時に取得
+    getAllData(); // データを初期化時に取得
   }
   
- Future<void> _getAllData() async {
+ Future<void> getAllData() async {
   final session = supabase.auth.currentSession; // 現在のセッション
   final user = session?.user; // ユーザー情報
   try {
@@ -45,7 +43,6 @@ class _MyHomePageState extends State<MyHomePage> {
       // リストをセット状態で更新
       stores = storesList;
     });
-
   } catch (e) {
     print('取得時にエラーが発生しました: ${e.toString()}');
   }
@@ -134,7 +131,8 @@ class _MyHomePageState extends State<MyHomePage> {
                 ],
               ),
               onTap: () {
-
+                final selectedId = store.id.toString(); // 店舗IDを取得
+                print('取得した店舗データ: ID=${store.id}, 名前=${store.storeName}');
                 Navigator.push(
                   context,
                   MaterialPageRoute(

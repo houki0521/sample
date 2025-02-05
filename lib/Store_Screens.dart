@@ -6,6 +6,7 @@ import 'package:latlong2/latlong.dart';
 import 'package:dotted_border/dotted_border.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'add_phot_Image.dart';
+import 'models/wordOfMouthData.dart';
 
 
 class Store_ScreensPage extends StatefulWidget {
@@ -19,6 +20,8 @@ class Store_ScreensPage extends StatefulWidget {
 class _Store_ScreensPageState extends State<Store_ScreensPage> {
   final List<Marker> markers = [];
   final SupabaseClient supabase = Supabase.instance.client;
+  List<WordOfMouthData>? wordOfMouthDatas;
+  List<dynamic>? storeDetailsData;
 
   @override
   void initState() {
@@ -37,7 +40,31 @@ class _Store_ScreensPageState extends State<Store_ScreensPage> {
         ),
       ),
     );
+    getAllData();
   }
+
+  Future<void> getAllData() async {
+  final session = supabase.auth.currentSession; // 現在のセッション
+  final user = session?.user; // ユーザー情報
+  try {
+    // データベース取得
+    final response = await supabase
+      .from('storeDetailsData')
+      .select('*');
+    
+    // 取得したデータを Map に変換
+    final storesList = (response as List<dynamic>)
+        .map((storeJson) => storeJson as Map<String, dynamic>) // Mapに変換
+        .toList();
+
+    setState(() {
+      // リストをセット状態で更新
+      storeDetailsData = storesList;
+    });
+  } catch (e) {
+    print('取得時にエラーが発生しました: ${e.toString()}');
+  }
+}
 
   @override
   Widget build(BuildContext context) {
@@ -238,11 +265,17 @@ class _Store_ScreensPageState extends State<Store_ScreensPage> {
                     children: [
                       Align(
                         alignment: Alignment.topLeft, // Textの配置位置を調整
-                        child: Text(
-                          '投稿写真',
-                          style: TextStyle(
-                            fontWeight: FontWeight.bold
-                          ),
+                        child: Wrap(
+                          spacing: 10.0,
+                          runSpacing: 10.0,
+                          children: [
+                            Text(
+                              '投稿写真',
+                              style: TextStyle(
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                          ],
                         ),
                       ),
                       const SizedBox(height: 10),
@@ -252,12 +285,45 @@ class _Store_ScreensPageState extends State<Store_ScreensPage> {
                           spacing: 10,
                           runSpacing: 10,
                           children: [
+                            ...List.generate(widget.store.officialPhotoImage.length, (index) {
+                              final image = widget.store.officialPhotoImage[index] ?? '';
+                              return Image.network(
+                                image,
+                                width: 100,
+                                height: 100,
+                                fit: BoxFit.cover,
+                                );
+                            }),
+                            ListView.builder(
+                              shrinkWrap: true,
+                              itemCount: wordOfMouthDatas?.length ?? 0,
+                              itemBuilder: ((context, index) {
+                                final wordOfMouthData = wordOfMouthDatas![index];
+                                if (widget.store.storeName == wordOfMouthData.store_name) {
+                                  return Wrap(
+                                    spacing: 10,
+                                    runSpacing: 10,
+                                    children: [
+                                      ...List.generate(wordOfMouthData.wordOfMouthPhot.length, (index) {
+                                        final image = wordOfMouthData.wordOfMouthPhot[index];
+                                        return Image.network(
+                                          image,
+                                          width: 100,
+                                          height: 100,
+                                          fit: BoxFit.cover,
+                                        );
+                                      })
+                                    ],
+                                  ); 
+                                }
+                              })
+                            ),
                             TextButton.icon(
                               onPressed: () async {
                                 Navigator.push(
                                   context,
                                   MaterialPageRoute(
-                                    builder: (context) => Add_photImage(),
+                                    builder: (context) => Add_photImage(storeid: widget.store.id),
                                   ),
                                 );
                               },
@@ -315,6 +381,14 @@ class _Store_ScreensPageState extends State<Store_ScreensPage> {
                   ],
                 ),
               ),
+            ),
+            storeDetailsData == null || storeDetailsData!.isEmpty
+              ? Center(child: Text('No data available')) // モデルなしの場合の表示
+              : Column(
+                children: List.generate(storeDetailsData!.length, (index) {
+                  final storeName = storeDetailsData![index]['storeName'] ?? 'No Name'; // nullならデフォルト値
+                  return Text(storeName);
+              }),
             ),
           ],
         ),

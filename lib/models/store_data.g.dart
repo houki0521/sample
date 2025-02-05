@@ -7,35 +7,55 @@ part of 'store_data.dart';
 // **************************************************************************
 
 StoreData _$StoreDataFromJson(Map<String, dynamic> json) => StoreData(
-      storeImages: (json['storeImages'] as List<dynamic>)
-          .map((e) => e as String)
-          .toList(),
-      storeName: json['storeName'] as String,
-      prText: json['prText'] as String,
-      featureText: json['featureText'] as String,
-      fastidiousnessImages: (json['fastidiousnessImages'] as List<dynamic>)
-          .map((e) => e as String)
-          .toList(),
-      fastidiousnessText: (json['fastidiousnessText'] as List<dynamic>)
-          .map((e) => e as String)
-          .toList(),
-      seatImages: (json['seatImages'] as List<dynamic>)
-          .map((e) => e as String)
-          .toList(),
-      seatText:
-          (json['seatText'] as List<dynamic>).map((e) => e as String).toList(),
-      coursImages: (json['coursImages'] as List<dynamic>)
-          .map((e) => e as String)
-          .toList(),
-      coursText:
-          (json['coursText'] as List<dynamic>).map((e) => e as String).toList(),
-      menuText:
-          (json['menuText'] as List<dynamic>).map((e) => e as String).toList(),
-      drinkText:
-          (json['drinkText'] as List<dynamic>).map((e) => e as String).toList(),
+      id: (json['id'] as num?)?.toInt(),
+      storeImages: (json['storeImages'] as List<dynamic>?)
+              ?.map((e) => e as String)
+              .toList() ??
+          [], // nullの場合は空リストを設定
+      storeName: json['storeName'] as String ?? '',
+      prText: json['prText'] as String ?? '',
+      featureText: json['featureText'] as String ?? '',
+      fastidiousnessImages: (json['fastidiousnessImages'] as List<dynamic>?)
+              ?.map((e) => e as String)
+              .toList() ??
+          [], // nullの場合は空リストを設定
+      fastidiousnessText: (json['fastidiousnessText'] as List<dynamic>?)
+              ?.map((e) => e as String)
+              .toList() ??
+          [], // nullの場合は空リストを設定
+      seatImages: (json['seatImages'] as List<dynamic>?)
+              ?.map((e) => e as String)
+              .toList() ??
+          [], // nullの場合は空リストを設定
+      seatText: (json['seatText'] as List<dynamic>?)
+              ?.map((e) => e as String)
+              .toList() ??
+          [], // nullの場合は空リストを設定
+      coursImages: (json['coursImages'] as List<dynamic>?)
+              ?.map((e) => e as String)
+              .toList() ??
+          [], // nullの場合は空リストを設定
+      coursText: (json['coursText'] as List<dynamic>?)
+              ?.map((e) => e as String)
+              .toList() ??
+          [], // nullの場合は空リストを設定
+      menuText: (json['menuText'] as List<dynamic>?)
+              ?.map((e) => e as String)
+              .toList() ??
+          [], // nullの場合は空リストを設定
+      drinkText: (json['drinkText'] as List<dynamic>?)
+              ?.map((e) => e as String)
+              .toList() ??
+          [], // nullの場合は空リストを設定
+      officialPhotoImage: (json['officialPhotoImage'] as List<dynamic>?)
+              ?.map((e) => e as String)
+              .toList() ??
+          [], // nullの場合は空リストを設定
     );
 
+
 Map<String, dynamic> _$StoreDataToJson(StoreData instance) => <String, dynamic>{
+      'id': instance.id,
       'storeImages': instance.storeImages,
       'storeName': instance.storeName,
       'prText': instance.prText,
@@ -48,4 +68,5 @@ Map<String, dynamic> _$StoreDataToJson(StoreData instance) => <String, dynamic>{
       'coursText': instance.coursText,
       'menuText': instance.menuText,
       'drinkText': instance.drinkText,
+      'officialPhotoImage': instance.officialPhotoImage,
     };
