@@ -47,24 +47,36 @@ class _Store_ScreensPageState extends State<Store_ScreensPage> {
   final session = supabase.auth.currentSession; // 現在のセッション
   final user = session?.user; // ユーザー情報
   try {
-    // データベース取得
-    final response = await supabase
+    // 1. 口コミデータ取得
+    final wordOfMouthResponse = await supabase
+      .from('wordOfMouthData')
+      .select('*');
+    
+    // 口コミデータをWordOfMouthDataクラスに変換
+    final wordOfMouthList = (wordOfMouthResponse as List<dynamic>)
+        .map((storeJson) => WordOfMouthData.fromJson(storeJson))
+        .toList();
+    
+    // 2. 店舗データ取得
+    final storeDetailsResponse = await supabase
       .from('storeDetailsData')
       .select('*');
     
-    // 取得したデータを Map に変換
-    final storesList = (response as List<dynamic>)
-        .map((storeJson) => storeJson as Map<String, dynamic>) // Mapに変換
+    // 店舗データをMapに変換
+    final storeDetailsList = (storeDetailsResponse as List<dynamic>)
+        .map((storeJson) => storeJson as Map<String, dynamic>)
         .toList();
 
     setState(() {
       // リストをセット状態で更新
-      storeDetailsData = storesList;
+      wordOfMouthDatas = wordOfMouthList;
+      storeDetailsData = storeDetailsList;
     });
   } catch (e) {
-    print('取得時にエラーが発生しました: ${e.toString()}');
+    print('データ取得時にエラーが発生しました: ${e.toString()}');
   }
 }
+
 
   @override
   Widget build(BuildContext context) {
@@ -360,6 +372,42 @@ class _Store_ScreensPageState extends State<Store_ScreensPage> {
                 ),
               ),
             ),
+            const SizedBox(height: 10),
+            Align(
+              alignment: Alignment.topLeft, // Textの配置位置を調整
+              child: Container(
+                width: double.infinity,
+                child: Card(
+                  shape: BeveledRectangleBorder(
+                    borderRadius: BorderRadius.circular(0),
+                  ),
+                  color: Colors.white,
+                  child: Column(
+                    children: [
+                      Align(
+                        alignment: Alignment.topLeft, // Textの配置位置を調整
+                        child: Wrap(
+                          spacing: 10.0,
+                          runSpacing: 10.0,
+                          children: [
+                            Text(
+                              '口コミ',
+                              style: TextStyle(
+                              fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                      ...List.generate(wordOfMouthDatas!.length, (index) {
+                        final wordOfMouthData = wordOfMouthDatas![index];
+                        return Text(wordOfMouthData.wordOfMouthText);
+                      })
+                    ],
+                  ),
+                ),
+              ),
+            ),
             Padding(
               padding: const EdgeInsets.all(10),
               child: SizedBox(
@@ -387,7 +435,16 @@ class _Store_ScreensPageState extends State<Store_ScreensPage> {
               : Column(
                 children: List.generate(storeDetailsData!.length, (index) {
                   final storeName = storeDetailsData![index]['storeName'] ?? 'No Name'; // nullならデフォルト値
-                  return Text(storeName);
+                  final furigana = storeDetailsData![index]['furigana'] ?? 'No Name';
+                  if (storeName == widget.store.storeName) {
+                    return Column(
+                      children: [
+                        Text(storeName),
+                        Text(furigana)
+                      ],
+                    );
+                  }
+                  return Container();
               }),
             ),
           ],
